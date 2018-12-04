@@ -8,8 +8,8 @@ createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
   conditionvars, predsInit = NULL, cPlotPCP = FALSE, cPlotn = 1000,
   orderConditionVars, threshold = 1, thresholdmax, linecols = NULL,
   showsim = FALSE, dataplot = NULL, probs, view3d, theta3d, phi3d,
-  predictArgs, xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
-  showdata = TRUE)
+  predictArgs, xlim = NULL, ylim = NULL, zlim = NULL,
+  density = FALSE, showdata = TRUE)
 }
 \arguments{
 \item{CVfit}{a list of fits}

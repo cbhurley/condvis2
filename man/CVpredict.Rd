@@ -66,8 +66,8 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
 
 \method{CVpredict}{loess}(fit, newdata = NULL, ...)
 
-\method{CVpredict}{ksvm}(fit, newdata, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{ksvm}(fit, newdata, ..., type = NULL,
+  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
 
 \method{CVpredict}{glmnet}(fit, newdata, ..., type = "response",
   ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
@@ -81,8 +81,9 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
   ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
   s = NULL)
 
-\method{CVpredict}{cv.glmnet.formula}(fit, newdata, ..., type = "response",
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{cv.glmnet.formula}(fit, newdata, ...,
+  type = "response", ptype = "pred", pthreshold = NULL,
+  ylevels = NULL, ptrans = NULL)
 
 \method{CVpredict}{keras.engine.training.Model}(fit, newdata, ...,
   ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
@@ -90,8 +91,9 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
 
 \method{CVpredict}{kde}(fit, newdata = fit$x, ..., scale = TRUE)
 
-\method{CVpredict}{densityMclust}(fit, newdata = NULL, ..., ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL, scale = TRUE)
+\method{CVpredict}{densityMclust}(fit, newdata = NULL, ...,
+  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
+  scale = TRUE)
 
 \method{CVpredict}{MclustDA}(fit, newdata, ..., ptype = "pred",
   pthreshold = NULL, ylevels = NULL, ptrans = NULL)

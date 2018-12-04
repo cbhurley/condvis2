@@ -27,13 +27,14 @@ claraPath(data, fits = NULL, length = 10, reorder = TRUE,
 fastkmedPath(data, fits = NULL, length = 10, reorder = TRUE,
   conditionvars = NULL, ...)
 
-lofPath(data, fits, length = 10, reorder = TRUE, conditionvars = NULL,
-  predictArgs = NULL)
+lofPath(data, fits, length = 10, reorder = TRUE,
+  conditionvars = NULL, predictArgs = NULL)
 
-diffitsPath(data, fits, length = 10, reorder = TRUE, conditionvars = NULL,
-  predictArgs = NULL)
+diffitsPath(data, fits, length = 10, reorder = TRUE,
+  conditionvars = NULL, predictArgs = NULL)
 
-createPath(data, score, length = 10, reorder = TRUE, conditionvars = NULL)
+createPath(data, score, length = 10, reorder = TRUE,
+  conditionvars = NULL)
 }
 \arguments{
 \item{data}{A dataset}

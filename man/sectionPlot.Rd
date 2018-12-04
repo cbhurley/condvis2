@@ -7,9 +7,9 @@
 sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
   pointColor = NULL, sim = NULL, threshold = 1, linecols = NULL,
   dataplot = NULL, gridsize = 50, probs = FALSE, view3d = FALSE,
-  theta3d = 45, phi3d = 20, xlim = NULL, ylim = NULL, zlim = NULL,
-  pointSize = 2, predictArgs = NULL, resetpar = TRUE, density = FALSE,
-  showdata = density == FALSE)
+  theta3d = 45, phi3d = 20, xlim = NULL, ylim = NULL,
+  zlim = NULL, pointSize = 2, predictArgs = NULL, resetpar = TRUE,
+  density = FALSE, showdata = density == FALSE, returnCoords = FALSE)
 }
 \arguments{
 \item{CVdata}{the dataset used for the fit}
@@ -57,9 +57,11 @@ sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
 \item{density}{default FALSE. Use TRUE if model is a density function.}
 
 \item{showdata}{If FALSE, data on section not shown.}
+
+\item{returnCoords}{If TRUE, returns coordinates for some plots}
 }
 \value{
-a plot
+plotted coordinates, for some plots
 }
 \description{
 Plots the main condvis display
