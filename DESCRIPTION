@@ -1,0 +1,13 @@
+Package: condvisV2
+Title: Conditional visualization for statistical models
+Version: 0.1.0
+Authors@R: c(person("Catherine", "Hurley", email = "catherine.hurley@mu.ie", role = c("aut", "cre")),person("Mark", "OConnell", email = "mark_ajoc@yahoo.ie", role = c( "aut")),person("Katarina", "Domijan", email = "katarina.domijan@mu.ie", role = c("aut")))
+Description: Constructs a shiny app function with interactive displays for conditional visualation of models, data and density functions.
+License: GPL (>= 2.0)
+Encoding: UTF-8
+LazyData: true
+Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown,hdrcde,scagnostics, keras, kernlab,mclust
+VignetteBuilder: knitr

@@ -1,0 +1,2 @@
+devtools::install_git("https://cbhurley:nirg2323@gitlab.com/cbhurley/condvisV2.git”)
+devtools::install_git("https://cbhurley:nirg2323@gitlab.com/cbhurley/condvisV2.git")
