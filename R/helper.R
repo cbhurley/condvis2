@@ -45,6 +45,8 @@
 #'@param zlim passed on to sectionplot
 #'@param density default FALSE. Use TRUE if model is a density function.
 #'@param showdata defaults to \code{density==TRUE}. If FALSE, data on section not shown.
+#' @param displayHeight supply a value for the display height
+
 #' @return NULL
 #' @export
 #'
@@ -69,7 +71,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                     orderConditionVars=arrangeC, threshold=1, thresholdmax=8*threshold,
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
                     dataplot=NULL, tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
-                    showdata= density==FALSE) {
+                    showdata= density==FALSE,displayHeight=900) {
 
   if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
@@ -173,9 +175,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
-  app <- shiny::shinyApp(ui, server,options = list(height = 500) )
-
-  shiny::runApp(app)
+  shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight))
 }
 
 

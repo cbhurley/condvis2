@@ -120,6 +120,7 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
           }
 
           sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
+         
           # if (type=="gg") sectionPlotFN <-paste0("gg",sectionPlotFN)
           if (sp == "nnn" && view3d){
             sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
@@ -171,13 +172,29 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
   }
   m <- rbind(seq(along=fitnames), length(fitnames)+1)
 
+  if(isRunning() & length(fitnames)==1) {
+    m <- rbind(c(0,1,0), c(0,2,0))
+    layout(mat = m,heights = c(.9,.1), widths=c(.17,.66,.17))
+  }
+  else {m <- rbind(seq(along=fitnames), length(fitnames)+1)
   layout(mat = m,heights = c(.9,.1))
+  }
+  
+  # if(isRunning() & length(fitnames)==1) {
+  #   
+  #   pmar <- par("mar")
+  #   pmar[2]<- 9
+  #   pmar[4]<- 9
+  #   par(mar=pmar)
+  # }
+  
+  
   for (i in seq(along=fitnames)){
     gf <- grid[[fitnames[i]]]
 
 
     plot(c(min(gx)-xoffset,max(gx)+xoffset),  c(min(gy)-yoffset,max(gy)+yoffset),  type="n",xlab=sectionvar[1],
-         ylab=if(i==1) sectionvar[2] else "", main=fitnames[i])
+         ylab=if(i==1) sectionvar[2] else "", main=fitnames[i], xaxs="i", yaxs="i")
 
     col <- fitcolfn(gf)
 
@@ -248,7 +265,11 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
   # plot(x, y, col=pcols,xlim=xlim,ylim=ylim,
   #      xlab=sectionvar, ylab=response,pch=20,cex=2,...)
 
-
+  if(isRunning() & length(fitnames)==1) {
+    ppar <- par("pin")
+    ppar[1] <- min(ppar[1], 1.4*ppar[2])
+    par(pin=ppar)
+  }
 
   for (j in seq(along=fitnames)){
     fn <- fitnames[j]
@@ -437,6 +458,24 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
      pcols <- NULL
      clickCoords <- NULL
    }
+   # if(isRunning()) {
+   #  pmar <- par("mar")
+   #  pmar[2]<- 9
+   #  pmar[4]<- 9
+   #  par(mar=pmar)
+   # }
+   
+   if(isRunning()) {
+     ppar <- par("pin")
+     ppar[1] <- min(ppar[1], 1.4*ppar[2])
+     par(pin=ppar)
+   }
+   
+   # if(isRunning() & length(fitnames)==1) {
+   #   m <- rbind(c(0,1,0))
+   #   layout(mat = m,heights = 1, widths=c(.17,.66,.17))
+   # }
+   # zx <<- par()
     plot(x, y, col=pcols,xlim=xlim,ylim=ylim,
        xlab=xlab, ylab=ylab,pch=20,cex=pointSize,main="",...)
   if (!is.null(grid)){
@@ -686,7 +725,8 @@ colorfnfp <- function(vec=c(0,1), cols= NULL){
 }
 
 legendn <- function(colorY){
-  if (isRunning())
+ 
+   if (par("pin")[1]> 5)
     inset<- 20
   else inset <- 12
   r <- attr(colorY, "breaks")
@@ -703,9 +743,10 @@ legendn <- function(colorY){
 
 legendf <- function(colorY){
   r <- attr(colorY, "levels")
-  if (isRunning())
+  if (par("pin")[1]> 5)
     inset<- 20
   else inset <- 12
+  
   z1<- seq(along=r)
   z2<- z1+1
     rectcols <- colorY(r)

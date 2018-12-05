@@ -71,22 +71,21 @@ This gives the following display:
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('ozone.png')
 ```
-\begin{itemize}
-\item The histogram on the right shows the values for Solar.R.
-\item The selected value of Solar.R is 207. By clicking on the histogram,
+
+- The histogram on the right shows the values for Solar.R.
+- The selected value of Solar.R is 207. By clicking on the histogram,
 you can change this selection.
-\item The main display (on the left) shows the predicted values of Ozone, varying Wind
+- The main display (on the left) shows the predicted values of Ozone, varying Wind
 and fixing Solar.R at $f_2 =207$.
-\item Only observations which have Solar.R values near 207 are shown,i.e.,
+- Only observations which have Solar.R values near 207 are shown,i.e.,
 observations whose $d_i = |x_{i,2} - f_2|<1$, where Solar.R values  are measured
 in standard units.
-\item The nearness required can be increased or decreased from 1 by moving the Similarity Threshold
+- The nearness required can be increased or decreased from 1 by moving the Similarity Threshold
 slider. 
-\item Also, point colours
+- Also, point colours
 fade to reflect the distances $d_i$, so points very near or on the section are dark blue,
 with colour fading as distance increases.
-\item You can exchange the roles of Solar.R and Wind by choosing Solar.R in the `Choose a sectionvar` menu.
-\end{itemize}
+- You can exchange the roles of Solar.R and Wind by choosing Solar.R in the `Choose a sectionvar` menu.
 
 In this way we can see how well the curve fits to observations in its section.
 
@@ -107,21 +106,19 @@ the result is  shown in the screenshot below.
 knitr::include_graphics('ozone1.png')
 ```
 
-\begin{itemize}
-\item The plot on the right shows the values for Solar.R and Temp. By clicking
+- The plot on the right shows the values for Solar.R and Temp. By clicking
 on this plot, you can change the selected values.
-\item The main display (on the left) shows the predicted values of Ozone, varying Wind
+- The main display (on the left) shows the predicted values of Ozone, varying Wind
 and fixing Solar.R and Temp.
-\item Only observations which have Solar.R and Temp values near the pink
+- Only observations which have Solar.R and Temp values near the pink
 cross are shown.The distance is calculated as
 \[ d_i = max(|x_{i,2} - f_2|, |x_{i,3} - f_3|)<1,\]
 where $f_2$ and $f_3$ are the fixed values
 of Solar.R and Temp, and $(x_{i,2}, x_{i,3})$ are the observation coordinates (all standardised).
-\item Again, point colours
+- Again, point colours
 fade to reflect the distances $d_i$.
-\item The plot on the right shows all the observations, but points near the pink cross
+- The plot on the right shows all the observations, but points near the pink cross
 (those visible in the main plot) are slightly larger with a dark outline.
-\end{itemize}
 
 ## Two section variables
 
@@ -164,6 +161,11 @@ library(e1071)
 fit4 <- svm(Ozone~Wind+Solar.R+Temp, data=ozone)
 condvis(ozone, list(loess=fit3,svm=fit4), sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 ```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('ozone5.png')
+```
+
 We see big differences between the fits, especially for low Wind.
 
 Note: condvis uses CVpredict to extract predictions from fitted models. By default
@@ -198,5 +200,17 @@ condvis(ozone, list(loess=fit3,lower=fitl,upper=fitu),
 ```
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone5.png')
+knitr::include_graphics('ozone6.png')
 ```
+
+
+## Tour controls
+
+As the conditioning dimension increases, it might be easier to view sections that are
+automatically chosen. The tour controls offer various controls.
+
+- The simplest method chooses random observations in conditioning space
+to form the sections.
+-  Click on the arrow below `Tour Step` to watch.
+- You can increase the number of random points via the `Tour Length` slider.
+- If you want a smoother appearance to the tour, increase `Interp steps` from 0.

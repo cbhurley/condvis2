@@ -11,7 +11,7 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
   threshold, linecols = NULL, showsim = NULL, theta3d = 45,
   phi3d = 20, dataplot = NULL, tours = NULL, predictArgs = NULL,
   xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
-  showdata = density == FALSE)
+  showdata = density == FALSE, displayHeight = 900)
 }
 \arguments{
 \item{data}{the dataset used for the fit}
@@ -61,6 +61,8 @@ gives the azimuthal direction and \code{phi3d} the colatitude. See
 \item{density}{default FALSE. Use TRUE if model is a density function.}
 
 \item{showdata}{defaults to \code{density==TRUE}. If FALSE, data on section not shown.}
+
+\item{displayHeight}{supply a value for the display height}
 }
 \description{
 Creates Condvis Shiny app

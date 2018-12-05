@@ -49,9 +49,16 @@ sectionPlotd3prob <- function(CVdata,CVfit,sectionvar,response, conditionvals,pr
   yoffset<- min(gy[gy>gy[1]]) - gy[1]
   cols <- fitcolfn(ylevels)
 
-  m <- matrix(1:2)
 
+  if(isRunning()) {
+    m <- rbind(c(0,1,0), c(0,2,0))
+    layout(mat = m,heights = c(.9,.1), widths=c(.17,.66,.17))
+  }
+  else {m <- matrix(1:2)
   layout(mat = m,heights = c(.9,.1))
+  }
+  
+  
 
   plot(c(min(gx)-xoffset,max(gx)+xoffset),  c(min(gy)-yoffset,max(gy)+yoffset),
        type="n",xlab=sectionvar[1], ylab= sectionvar[2], main=names(CVfit)[w])

@@ -102,7 +102,7 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
                        column(5, offset=1,
                               radioButtons(inputId = "dist", "Distance",
                                          choices = list("maxnorm" ,"euclidean"), inline=TRUE))),
-             tags$br(),
+             # tags$br(),
              fluidRow(column(9, offset=1, wellPanel(
               fluidRow(
                column(4, offset=0, selectInput(inputId = "tour",
