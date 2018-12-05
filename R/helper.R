@@ -75,6 +75,19 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
 
   if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
+  
+  if (density ) {
+    response <- "densityY"
+    # if (is.null(ylim)){
+    # maxy <- sapply(1:length(model), function(w)
+    #   do.call(CVpredict,  c(list(model[[w]],data), predictArgs[[w]])))
+    #
+    # maxy <- max(maxy)
+    # # maxy <- max(sapply(model, function(m) max(CVpredict(m,data))))
+    # ylim<- c(0,1.05*maxy)
+    data$densityY <- runif(nrow(data))
+    # if (is.null(zlim)) zlim <- ylim
+  }
   if (!is.null(model)){
     if (!inherits(model, "list")) model <- list(model)
 
@@ -109,18 +122,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
         conditionvars <- preds[-1]
       }
 
-      if (density ) {
-        response <- "densityY"
-        # if (is.null(ylim)){
-        # maxy <- sapply(1:length(model), function(w)
-        #   do.call(CVpredict,  c(list(model[[w]],data), predictArgs[[w]])))
-        #
-        # maxy <- max(maxy)
-        # # maxy <- max(sapply(model, function(m) max(CVpredict(m,data))))
-        # ylim<- c(0,1.05*maxy)
-        data$densityY <- runif(nrow(data))
-        # if (is.null(zlim)) zlim <- ylim
-      }
+      
 
 
       probs <- is.factor(data[[response]])  &&
