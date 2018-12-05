@@ -624,3 +624,33 @@ CVpredict.Mclust <- function (fit, newdata,..., ptype="pred",pthreshold=NULL, yl
   else p <- p$z
   calcPred(ptype,p, pthreshold, ylevels,ptrans)
 }
+
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.train <- function(fit,newdata,..., type="response",ptype="pred",pthreshold=NULL,ylevels=NULL,ptrans=NULL){
+  
+  predvars <- setdiff(names(fit$trainingData), ".outcome")
+  newdata <- newdata[,predvars]
+  
+  if (is.null(ylevels)) ylevels <- levels(fit$trainingData$.outcome)
+  
+  if (fit$modelType=="Regression"){
+    # numeric prediction, same as: if (ptype=="pred" && is.null(ylevels))
+    p <- predict(fit, newdata)
+  } 
+  else if (ptype=="pred" && is.numeric(pthreshold)){
+    # fit$modelType=="Classification"
+    # calc probmatrix for class prediction using threshold
+    p <- as.matrix(predict(fit,newdata,type="prob",...))
+  } 
+  else if (ptype=="pred"){
+    # calc predicted classes
+    p <- predict(fit, newdata, type = "raw",...)
+  }
+  else {
+    # ptype is "prob" or "probmatrix", calculate probs
+    p <- as.matrix(predict(fit,newdata,type="prob",...))
+  }
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
+}
