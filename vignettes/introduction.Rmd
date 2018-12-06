@@ -69,7 +69,7 @@ condvis(ozone, fit2,sectionvars="Wind", conditionvars="Solar.R")
 This gives the following display:
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone.png')
+knitr::include_graphics('figs/ozone.png')
 ```
 
 - The histogram on the right shows the values for Solar.R.
@@ -103,7 +103,7 @@ condvis(ozone, fit3, sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 the result is  shown in the screenshot below.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone1.png')
+knitr::include_graphics('figs/ozone1.png')
 ```
 
 - The plot on the right shows the values for Solar.R and Temp. By clicking
@@ -126,7 +126,7 @@ You can also pick a second section variable, to see how the fitted surface looks
 of two variables, while the third is modified interactively.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone4.png')
+knitr::include_graphics('figs/ozone4.png')
 ```
 The image shows  fitted surface levels as a function of two predictors. The points shown
 are near the fixed conditioning values. 
@@ -144,7 +144,7 @@ main plot is not supported by the data. Prediction in this area is extrapolation
 
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone3.png')
+knitr::include_graphics('figs/ozone3.png')
 ```
 
 Alternatively, the relationship between Ozone and (Wind, Solar.R) for fixed Temp
@@ -163,7 +163,7 @@ condvis(ozone, list(loess=fit3,svm=fit4), sectionvars="Wind", conditionvars=c("S
 ```
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone5.png')
+knitr::include_graphics('figs/ozone5.png')
 ```
 
 We see big differences between the fits, especially for low Wind.
@@ -200,7 +200,7 @@ condvis(ozone, list(loess=fit3,lower=fitl,upper=fitu),
 ```
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('ozone6.png')
+knitr::include_graphics('figs/ozone6.png')
 ```
 
 

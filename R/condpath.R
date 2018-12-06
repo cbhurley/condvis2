@@ -257,23 +257,39 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
   else f <- lapply(fits, CVpredict,data)
 
   w <- sapply(f, is.numeric)
-  if (sum(w)>= 2) f <- simplify2array(f[w])
-  else {
-    warning("diffitsPath needs two or more numeric fits")
-    return(NULL)
-  }
+  facs <- sapply(f, is.factor)
+  if (sum(w)>= 2) {
+  f <- simplify2array(f[w])
+  
   dif <- apply(f,1,max)- apply(f,1,min)
   q <- sort(dif,decreasing=T)[length]
   s <-which(dif >= q)
+  }
+  else if (sum(facs)>= 2) {
+    f <- simplify2array(f[facs])
+    dif <- apply(f,1, function(x) length(unique(x)))
+    q <- sort(dif,decreasing=T)[length]
+    s <-which(dif >= q & dif > 1)
+  }
+  else {
+    warning("Cannot calculate differences")
+    return(NULL)
+  }
+  
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
-
-  lpath<- data[s,][1:length,]
-  if (reorder){
+  
+  if (length(s) > length)
+    s <- s[1:length]
+  lpath<- data[s,,drop=F]
+ 
+  if (reorder & nrow(lpath)> 2){
     d <- cluster::daisy(lpath)
     o <- DendSer::dser(d)
     lpath <- lpath[o,]
   }
+  else o <- 1:nrow(lpath)
   structure(lpath, rows = s[o])
+  
 }
 
 #' @describeIn condtour Returns a path showing highest scores

@@ -1,0 +1,130 @@
+---
+title: "Exploring model-based clustering with condvis2"
+author: "Catherine B. Hurley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5, fig.height=5 ,fig.align="center"
+)
+```
+
+`mclust` is a R package that offers
+- model-based clustering: `Mclust`
+- classification ( discrimininant analysis): `MclustDA`
+- density estimation `densityMclust`
+all based on mixtures of Normals.
+
+`condvis2` offers an interface to all of these.
+
+We start with 
+
+## Classification: MclustDA
+
+```{r}
+library(condvis2)
+library(mclust)
+```
+
+```{r}
+data(banknote)
+bankDA <- MclustDA(banknote[,-1], banknote[,1])
+```
+
+This fits an XXX=ellipsoidal multivariate normal for the genuine notes and
+EVE2 = ellipsoidal, equal volume and equal shape with two components for
+ counterfeits.
+
+```{r echo=F, eval=F}
+bankDA$models$genuine$modelName
+bankDA$models$genuine$G
+
+bankDA$models$counterfeit$modelName
+bankDA$models$counterfeit$G
+
+bankDA$models$counterfeit
+```
+
+
+
+
+```{r eval=F}
+svars <- c("Top", "Diagonal")
+cvars <- setdiff(names(banknote)[-1], svars)
+condvis(data = banknote, model = bankDA, 
+        response="Status", sectionvars=svars,conditionvars=cvars, 
+        pointColor="Status", showsim=TRUE
+        )
+```
+
+
+The `showsim=TRUE` setting means that the condition plots will mark points considered
+sufficiently near the section with a dark outline. This is the default setting only
+when $n <= 150$. One the condition plots, the green points are the genuine ones, pink
+are counterfeit.
+
+Here is a views of the result:
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('figs/mclustda1.png')
+```
+There is one point that appears to be mis-classified. However, as it's size is small it is not very close
+to the section.
+
+Selecting `Show probs`: we see there is some uncertainty about the classification on the classification
+boundaries.
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('figs/mclustda2.png')
+```
+
+Condvis uses a generic `CVpredict` to provide a uniform interface to `predict` methods.
+We will use it to find the number of misclassifications:
+
+```{r}
+table(banknote$Status, CVpredict(bankDA, banknote))
+```
+
+
+
+
+A different, simpler fit is got using
+
+```{r}
+bankDAe <- MclustDA(banknote[,-1], banknote[,1], modelType="EDDA")
+```
+
+This uses an EVE1 for each class, and there is one mis-classification, at case 70.
+
+
+
+We can use condvis to compare the two fits:
+
+```{r eval=F}
+condvis(data = banknote, model = list(bankDA=bankDA, bankDAe=bankDAe), 
+        response="Status", sectionvars=svars,conditionvars=cvars, 
+        pointColor="Status", showsim=T,
+        )
+```
+
+If you go to Tour, `Diff fits`, you can move through views where the
+conditioning points are those where the fits disagree. In this case there is
+only one such point.
+
+The screenshot shows that in this view.
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('figs/mclustda4.png')
+```
+The mis-classified point is genuine note classified as counterfeit by EDDA.
+
+<!-- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5096736/ -->

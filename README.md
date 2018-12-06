@@ -34,7 +34,7 @@ condvis(ozone, fit, sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 The result is shown in the screenshot below. It shows the loess prediction for Wind, conditional on values of the other two predictors.
 Only observations whose Solar.R and Temp values are near (207,79) are shown. The user can move around the pink cross to see how the prediction varies.
 
-<img src="vignettes/ozone1.png" width="100%" /> Check out the vignette `Introduction to condvis2` for more information and details.
+<img src="vignettes/figs/ozone1.png" width="100%" /> Check out the vignette `Introduction to condvis2` for more information and details.
 
 Example 2: A density estimate
 -----------------------------
@@ -51,4 +51,4 @@ condvis(data = iris, model = list(kde=irisf),
 
 The result is shown in the screenshot below. It shows the estimated density of two variables conditional on the third.
 
-<img src="vignettes/iris1.png" width="100%" />
+<img src="vignettes/figs/iris1.png" width="100%" />
