@@ -81,6 +81,7 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
 
 
       #if (sp == "fnn" && probs && any(sapply(CVfit, hasprobs,CVdata,levels(CVdata[[response]]))))
+  
         if (sp == "fnn" && probs &&
             any(sapply(1:length(CVfit), function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]])))){
         sectionPlotd3prob(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
@@ -328,7 +329,7 @@ sectionPlotfnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecol
 
   if (fitp) {
     ticy <- (0:4)/4
-    ylab <- paste0("prob(", response, "=", levs[2], ")")
+    ylab <- paste0("prob(", response, "=", tail(levs,1), ")")
     levs <- ticy
   }
   else {
@@ -387,7 +388,7 @@ sectionPlotfff <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecol
 
   if (fitp) {
     ticy <- (0:4)/4
-    ylab <- paste0("prob(", response, "=", levs[2], ")")
+    ylab <- paste0("prob(", response, "=", tail(levs,1), ")")
     levs <- ticy
   }
   else {
@@ -520,7 +521,7 @@ sectionPlotfn <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
   else fitp <- FALSE
   if (fitp) {
     ticy <- (0:4)/4
-    ylab <- paste0("prob(", response, "=", levs[2], ")")
+    ylab <- paste0("prob(", response, "=", tail(levs,1), ")")
     levs <- ticy
   }
   else {
@@ -556,7 +557,7 @@ sectionPlotff <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
 
    if (fitp) {
      ticy <- (0:4)/4
-     ylab <- paste0("prob(", response, "=", levsr[2], ")")
+     ylab <- paste0("prob(", response, "=", tail(levsr,1), ")")
      levsr <- ticy
    }
    else {

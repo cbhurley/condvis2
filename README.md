@@ -20,6 +20,12 @@ Example 1: A prediction model
 
 This is a basic condvis example.
 
+We will use the airquality data built in to R.
+
+``` r
+ozone <- na.omit(airquality)
+```
+
 ``` r
 fit <- loess(Ozone~Wind+Solar.R+Temp, data=ozone)
 condvis(ozone, fit, sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
