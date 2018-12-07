@@ -2,7 +2,7 @@
 # from Mark O'C
 
 
-sectionPlotd3prob <- function(CVdata,CVfit,sectionvar,response, conditionvals,predictArgs=NULL,...) {
+sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predictArgs=NULL,...) {
 
     par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
@@ -14,9 +14,9 @@ sectionPlotd3prob <- function(CVdata,CVfit,sectionvar,response, conditionvals,pr
 
    #w <- which(sapply(CVfit, hasprobs, CVdata))[1]
 
-   w <- which(sapply(1:length(CVfit),
-                     function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]])))[1]
-
+   # w <- which(sapply(1:length(CVfit),
+   #                   function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]])))[1]
+   w <- 1
    # set up grid
 
    sectionvals <- lapply(sectionvar, function(p)

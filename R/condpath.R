@@ -35,9 +35,13 @@ randomPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL
   rpath<- data[s,,drop=FALSE]
 
   if (reorder){
+    if (ncol(rpath) ==1)
+      rpath <- rpath[order(rpath[,1]),,drop=FALSE]
+    else{
     d <- cluster::daisy(rpath)
     o <- DendSer::dser(d)
     rpath <- rpath[o,]
+    }
   }
   rpath
   }
@@ -139,7 +143,7 @@ pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,..
   if (reorder){
     d <- cluster::daisy(centers)
     o <- DendSer::dser(d)
-    centers <- centers[o,]
+    centers <- centers[o,,drop=F]
   }
   centers
 }
@@ -166,7 +170,7 @@ claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,
   if (reorder){
     d <- dist(centers)
     o <- DendSer::dser(d)
-    centers <- centers[o,]
+    centers <- centers[o,,drop=F]
   }
   data.frame(centers)
 }
@@ -189,7 +193,7 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
   if (reorder){
     d <- cluster::daisy(centers)
     o <- DendSer::dser(d)
-    centers <- centers[o,]
+    centers <- centers[o,,drop=F]
   }
   centers
 }
@@ -285,7 +289,7 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
   if (reorder & nrow(lpath)> 2){
     d <- cluster::daisy(lpath)
     o <- DendSer::dser(d)
-    lpath <- lpath[o,]
+    lpath <- lpath[o,,drop=F]
   }
   else o <- 1:nrow(lpath)
   structure(lpath, rows = s[o])
@@ -306,7 +310,7 @@ createPath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
   if (reorder){
     d <- cluster::daisy(lpath)
     o <- DendSer::dser(d)
-    lpath <- lpath[o,]
+    lpath <- lpath[o,,drop=F]
   }
   structure(lpath, rows = s[o])
 }

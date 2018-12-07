@@ -29,7 +29,7 @@ lines(wind, predict(fit2, data.frame(Wind=wind, Solar.R= s)))
 #  condvis(ozone, fit2,sectionvars="Wind", conditionvars="Solar.R")
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone.png')
+knitr::include_graphics('figs/ozone.png')
 
 ## ------------------------------------------------------------------------
 fit3 <- loess(Ozone~Wind+Solar.R+Temp, data=ozone)
@@ -38,13 +38,13 @@ fit3 <- loess(Ozone~Wind+Solar.R+Temp, data=ozone)
 #  condvis(ozone, fit3, sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone1.png')
+knitr::include_graphics('figs/ozone1.png')
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone4.png')
+knitr::include_graphics('figs/ozone4.png')
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone3.png')
+knitr::include_graphics('figs/ozone3.png')
 
 ## ----eval=F--------------------------------------------------------------
 #  library(e1071)
@@ -52,7 +52,7 @@ knitr::include_graphics('ozone3.png')
 #  condvis(ozone, list(loess=fit3,svm=fit4), sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone5.png')
+knitr::include_graphics('figs/ozone5.png')
 
 ## ----eval=F--------------------------------------------------------------
 #  fitu <- fit3
@@ -76,5 +76,5 @@ knitr::include_graphics('ozone5.png')
 #          linecols=c("red", "blue","blue"))
 
 ## ----echo=FALSE, out.width='100%'----------------------------------------
-knitr::include_graphics('ozone6.png')
+knitr::include_graphics('figs/ozone6.png')
 

@@ -125,9 +125,11 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
       
 
 
-      probs <- is.factor(data[[response]])  &&
-        any(sapply(1:length(model),
-                   function(i) hasprobs(model[[i]], data, predictArgs=predictArgs[[i]])))
+      # probs <- is.factor(data[[response]])  &&
+      #   any(sapply(1:length(model),
+      #              function(i) hasprobs(model[[i]], data, predictArgs=predictArgs[[i]])))
+      # 
+      probs <- is.factor(data[[response]])
       view3d <-  is.numeric(data[[response]]) && (sum(sapply(data[,c(sectionvars,conditionvars)], is.numeric)) >=2)
 
 

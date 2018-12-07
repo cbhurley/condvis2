@@ -77,16 +77,14 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
     if (is.null(names(CVfit)))
       names(CVfit) <- paste0("fit", 1:length(CVfit))
     fitnames <- names(CVfit)
+    # hasprob <- sapply(1:length(CVfit), 
+    #                       function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]]))
 
-
-
-      #if (sp == "fnn" && probs && any(sapply(CVfit, hasprobs,CVdata,levels(CVdata[[response]]))))
-  
-        if (sp == "fnn" && probs &&
-            any(sapply(1:length(CVfit), function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]])))){
-        sectionPlotd3prob(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
+        if (sp == "fnn" && probs && 
+            (length(levels(CVdata[[response]])) > 2) ){
+        sectionPlotpnn(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
         }
-      else {
+       else {
          sectionvals <- lapply(sectionvar, function(p)
             if ( is.factor(CVdata[[p]]))
               levels(CVdata[[p]])
@@ -103,8 +101,16 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
          if (is.factor(CVdata[[response]]))
             ylevels <- levels(CVdata[[response]])
           else ylevels <- NULL
+         
+         if (length(predictArgs)!= length(CVfit)) predictArgs<- NULL
+           
+         if (!is.null(ylevels)  & probs)
+           if (!is.null(predictArgs))
+             predictArgs <- lapply(predictArgs, function(x) { x$ptype <- "prob"; x})
+           else predictArgs <- lapply(CVfit, function(x) list(ptype="prob"))
+         
 
-          if (length(predictArgs) == length(CVfit))
+          if (!is.null(predictArgs)){
             for (i  in 1:length(CVfit)){
               fitname <- fitnames[i]
               f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
@@ -112,12 +118,14 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
               if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
               grid[[fitname]] <- f
             }
-          else
+          }
+          else {
           for (i  in 1:length(CVfit)){
             fitname <- fitnames[i]
             f <- CVpredict(CVfit[[i]], grid1, ylevels=ylevels)
             if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
             grid[[fitname]] <- f
+          }
           }
 
           sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
