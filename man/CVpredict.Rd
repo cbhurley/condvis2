@@ -26,6 +26,7 @@
 \alias{CVpredict.MclustDR}
 \alias{CVpredict.Mclust}
 \alias{CVpredict.train}
+\alias{CVpredict.bartMachine}
 \title{A predict generic function for condvis}
 \usage{
 CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
@@ -106,6 +107,9 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
   pthreshold = NULL, ylevels = NULL, ptrans = NULL)
 
 \method{CVpredict}{train}(fit, newdata, ..., type = "response",
+  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+
+\method{CVpredict}{bartMachine}(fit, newdata, ..., type = NULL,
   ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
 }
 \arguments{
@@ -202,5 +206,7 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 \item \code{Mclust}: CVpredict method
 
 \item \code{train}: CVpredict method
+
+\item \code{bartMachine}: CVpredict method
 }}
 

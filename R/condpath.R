@@ -202,6 +202,8 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
 #'@export
 #'
 lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
+  # this one should be fixed to work with CVpredict and response for data
+  # removed from ui for the moment
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length > nrow(data)) {
     warning("Pick length <= nrows")
@@ -227,10 +229,10 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
   rall <- abs(rall)
   r <- apply(rall,1,max)
   q <- sort(r,decreasing=T)[length]
-  s <- which(abs(r) >= q)
+  s <- which(r >= q)[1:length]
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
-
-  lpath<- data[s,][1:length,]
+ 
+  lpath<- data[s,,drop=F]
   if (reorder){
     d <- cluster::daisy(lpath)
     o <- DendSer::dser(d)

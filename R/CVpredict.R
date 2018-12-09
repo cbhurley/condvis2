@@ -678,7 +678,6 @@ CVpredict.train <- function(fit,newdata,..., type="response",ptype="pred",pthres
 CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
   if (is.null(ylevels))
     ylevels <- fit$y_levels
-  
   newdata <- newdata[,head(colnames(fit$model_matrix_training_data),-1)]
   
   if (ptype=="pred" && is.null(ylevels)){

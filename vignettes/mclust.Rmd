@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 `mclust` is a R package that offers
 - model-based clustering: `Mclust`
-- classification ( discrimininant analysis): `MclustDA`
+- classification ( discriminant analysis): `MclustDA`
 - density estimation `densityMclust`
 all based on mixtures of Normals.
 
@@ -38,7 +38,7 @@ library(mclust)
 
 ```{r}
 data(banknote)
-bankDA <- MclustDA(banknote[,-1], banknote[,1])
+bankDA <- MclustDA(banknote[,-1], banknote[,1],verbose=F)
 ```
 
 This fits an XXX=ellipsoidal multivariate normal for the genuine notes and
@@ -103,7 +103,7 @@ boundaries.
 A different, simpler fit is got using
 
 ```{r}
-bankDAe <- MclustDA(banknote[,-1], banknote[,1], modelType="EDDA")
+bankDAe <- MclustDA(banknote[,-1], banknote[,1], modelType="EDDA",verbose=F)
 ```
 
 This uses an EVE1 for each class, and there is one mis-classification, at case 70.
@@ -143,7 +143,7 @@ counterfeits.
 First calculate a density estimate of two variables.
 ```{r}
 data(banknote)
-dens2 <- densityMclust(banknote[,c("Diagonal","Left")]) 
+dens2 <- densityMclust(banknote[,c("Diagonal","Left")],verbose=F) 
 summary(dens2)
 ```
 
@@ -170,7 +170,7 @@ knitr::include_graphics('figs/left3.png')
 Estimating the density of three variables:
 
 ```{r}
-dens3 <- densityMclust(banknote[,c("Right", "Bottom", "Diagonal")]) 
+dens3 <- densityMclust(banknote[,c("Right", "Bottom", "Diagonal")],verbose=F) 
 summary(dens3)
 ```
 
