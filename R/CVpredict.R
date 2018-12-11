@@ -512,6 +512,9 @@ CVpredict.keras.engine.training.Model  <- function(fit, newdata,...,  ptype = "p
    else if (ptype=="pred" && is.numeric(pthreshold)){
      # calc probmatrix for class prediction using threshold
      p <- keras::predict_proba(fit,x,  batch_size = batch_size,...)
+     if(length(ylevels)==2){
+       p <- cbind(1-p,p)
+     }
    }
    else if (ptype=="pred"){
      # calc predicted classes
