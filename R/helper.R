@@ -71,7 +71,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                     orderConditionVars=arrangeC, threshold=1, thresholdmax=8*threshold,
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
                     dataplot=NULL, tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
-                    showdata= density==FALSE,displayHeight=900) {
+                    showdata= density==FALSE,displayHeight=950) {
 
   if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
