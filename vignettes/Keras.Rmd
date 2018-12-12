@@ -261,6 +261,6 @@ Ticking `Show 3d surface` shows the 3d-surface of the fit and you can use the `R
 knitr::include_graphics('figs/Boston.png')
 ```
 
-Random forest gives a `blockier` fit, compared to the smooth gams and the neural net. The fit ios more flexible in the areas where there is more data points.
+Random forest gives a blockier fit, compared to the smooth gams and the neural net. The RF fit is more flexible in the areas where there is more data points.
 
 
