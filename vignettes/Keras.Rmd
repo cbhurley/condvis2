@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 `keras` is an R based interface to the [Keras](https://keras.io/): the Python Deep Learning library. It uses the [TensorFlow](https://www.tensorflow.org/) backend engine.
 
-
+The basic workflow is to define a model object of class `keras.engine.training.Model` by initialising it using the `keras_model_sequential` function and then adding layers to it. Function  `fit` trains a Keras model. It requires the predictors (inputs) and responses (targets/labels) to be passed a two separate data objects as vector, matrix, or arrays. 
 
 ## Classification:
 
@@ -34,7 +34,7 @@ library(MASS)
 set.seed(123)
 ```
 
-Prepare data:
+Prepare data for Keras and Condvis: 
 ```{r}
 # Training features
 Pima.training <- Pima.tr[,1:7]
@@ -52,7 +52,7 @@ Pima.trainLabels <- to_categorical(as.numeric(Pima.tr[,8]) -1)[, 2]
 # One hot encode test target values
 Pima.testLabels <- to_categorical(as.numeric(Pima.te[,8]) -1)[, 2]
 
-
+# Create dataframes for Condvis
 dtf <- data.frame(Pima.training)
 dtf$Pima.trainLabels <- Pima.tr[,8]
 
@@ -60,7 +60,9 @@ dtf.te <- data.frame(Pima.testing)
 dtf.te$Pima.testLabels <- Pima.te[,8]
 ```
 
-Fit the model:
+
+
+Define and fit the model:
 ```{r}
 
 model <- keras_model_sequential() # Add layers to the model
