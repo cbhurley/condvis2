@@ -38,7 +38,7 @@ randomPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL
     if (ncol(rpath) ==1)
       rpath <- rpath[order(rpath[,1]),,drop=FALSE]
     else{
-    d <- cluster::daisy(rpath)
+    d <- cluster::daisy(rpath, stand=TRUE)
     o <- DendSer::dser(d)
     rpath <- rpath[o,]
     }
@@ -92,6 +92,7 @@ kmeansPath<- function(data,fits=NULL, length=10, reorder=TRUE,conditionvars=NULL
 
   clustering <- kmeans(x, centers = length)
   centers <- clustering$centers
+ 
   if (reorder & nrow(centers)> 2){
     d <- dist(centers)
     o <- DendSer::dser(d)
@@ -139,9 +140,10 @@ pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,..
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   d <- cluster::daisy(data,stand=TRUE)
   clustering <- cluster::pam(d, k = length)
-  centers <- data[clustering$medoids, ]
+  centers <- data[clustering$medoids, ,drop=F]
+ 
   if (reorder){
-    d <- cluster::daisy(centers)
+    d <- cluster::daisy(centers,stand=TRUE)
     o <- DendSer::dser(d)
     centers <- centers[o,,drop=F]
   }
@@ -167,8 +169,9 @@ claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,
   }
   clustering <- cluster::clara(data, k = length, stand=TRUE)
   centers <- clustering$medoids
+  print(centers)
   if (reorder){
-    d <- dist(centers)
+    d <- dist(scale(centers))
     o <- DendSer::dser(d)
     centers <- centers[o,,drop=F]
   }
@@ -178,7 +181,7 @@ claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,
 
 #' @describeIn condtour Returns a path using fastkmed from package kmed
 #' @export
-#'
+
 fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
   if (length(conditionvars)==0) conditionvars <- NULL
   if (length > nrow(data)) {
@@ -189,11 +192,16 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
   d <- cluster::daisy(data,stand=TRUE)
   class(d)<- "dist"
   clustering <- kmed::fastkmed(d, ncluster = length, iterate=50)
-  centers <- data[clustering$medoid, ]
+  centers <- data[clustering$medoid, ,drop=FALSE]
+
   if (reorder){
-    d <- cluster::daisy(centers)
-    o <- DendSer::dser(d)
-    centers <- centers[o,,drop=F]
+    if (ncol(centers) ==1)
+      centers <- centers[order(centers[,1]),,drop=FALSE]
+    else{
+      d <- cluster::daisy(centers,stand=TRUE)
+      o <- DendSer::dser(d)
+      centers <- centers[o,,drop=F]
+    }
   }
   centers
 }
@@ -308,9 +316,9 @@ createPath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
   s <-which(score >= q)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
 
-  lpath<- data[s,]
+  lpath<- data[s,,drop=F]
   if (reorder){
-    d <- cluster::daisy(lpath)
+    d <- cluster::daisy(lpath, stand=TRUE)
     o <- DendSer::dser(d)
     lpath <- lpath[o,,drop=F]
   }
