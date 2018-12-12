@@ -88,6 +88,20 @@ history <-model %>% fit(Pima.training, Pima.trainLabels,
               class_weight = as.list(c("0" = 1, "1"=3))
 )
 ```
+Condvis uses a generic `CVpredict` to provide a uniform interface to `predict` methods. For classification, the choice of `ptype` allows for output for each observation as:
+
+- predicted class `ptype` = "pred" (default)
+- predicted probability for the last class `ptype` = "prob" (e.g. $P(X=1)$ in binary classification).
+- matrix of predicted probabilities for each class `ptype` = "probmatrix"
+
+```{r}
+CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7)
+CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7, ptype="prob")
+CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7, ptype="probmatrix")
+```
+
+
+Note that `keras` models do not use the formula interface, so one needs to specify the name of response and predictors for `CVpredict`. When creating the Condvis shiny app, arguments for `CVpredict` can be passed in `condvis` using `predictArgs` argument.
 
 Calculate model accuracy from:
 
