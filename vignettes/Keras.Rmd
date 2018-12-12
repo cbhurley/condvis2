@@ -53,12 +53,11 @@ Pima.trainLabels <- to_categorical(as.numeric(Pima.tr[,8]) -1)[, 2]
 Pima.testLabels <- to_categorical(as.numeric(Pima.te[,8]) -1)[, 2]
 
 
-dtf <- data.frame(cbind(Pima.training,  Pima.trainLabels))
-dtf$Pima.trainLabels <- as.factor(dtf$Pima.trainLabels)
+dtf <- data.frame(Pima.training)
+dtf$Pima.trainLabels <- Pima.tr[,8]
 
-dtf.te <- data.frame(cbind(Pima.testing,  Pima.testLabels))
-dtf.te$Pima.testLabels <- as.factor(dtf.te$Pima.testLabels)
-
+dtf.te <- data.frame(Pima.testing)
+dtf.te$Pima.testLabels <- Pima.te[,8]
 ```
 
 Fit the model:
