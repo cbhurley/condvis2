@@ -519,7 +519,7 @@ CVpredict.keras.engine.training.Model  <- function(fit, newdata,...,  ptype = "p
    else if (ptype=="pred"){
      # calc predicted classes
      p <- keras::predict_classes(fit,x,  batch_size = batch_size,...) +1
-     p <- ylevels[p]
+     p <- factor(ylevels[p], levels=ylevels)
    }
    else {
      # ptype is "prob" or "probmatrix", calculate probs
