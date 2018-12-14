@@ -387,8 +387,7 @@ CVpredict.gbm <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, yle
 CVpredict.loess <- function(fit, newdata=NULL, ...){
   if (is.null(newdata))
     predict(fit)
-  else 
-    predict(fit, as.matrix(newdata[fit$xnames]))
+  else predict(fit, as.matrix(newdata[fit$xnames]))
 }
 
 #' @describeIn CVpredict  CVpredict method
@@ -682,8 +681,9 @@ CVpredict.train <- function(fit,newdata,..., type="response",ptype="pred",pthres
 CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
   if (is.null(ylevels))
     ylevels <- fit$y_levels
-  newdata <- newdata[,head(colnames(fit$model_matrix_training_data),-1)]
-  
+  # newdata <- newdata[,head(colnames(fit$model_matrix_training_data),-1)]
+  cols <- colnames(fit$X)
+  newdata <- newdata[,cols]
   if (ptype=="pred" && is.null(ylevels)){
     # numeric prediction
     p <- predict(fit,newdata,...)
