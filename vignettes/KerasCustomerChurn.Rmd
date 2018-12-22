@@ -31,11 +31,11 @@ There are many nice examples of analysis of this data, see:
 
 Load libraries:
 ```{r}
-suppressMessages(library(tidyverse)) # for tidy data analysis
-library(readr)     # for fast reading of input files
-library(keras)     # for neural nets
+suppressMessages(library(tidyverse)) 
+library(readr)    
+library(keras)     
 library(condvis2)
-library(ggthemes)  # for additional plotting themes
+library(ggthemes) 
 
 theme_set(theme_minimal())
 ```
