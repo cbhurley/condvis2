@@ -31,12 +31,10 @@ There are many nice examples of analysis of this data, see:
 
 Load libraries:
 ```{r}
-library(tidyverse) # for tidy data analysis
+suppressMessages(library(tidyverse)) # for tidy data analysis
 library(readr)     # for fast reading of input files
-library(caret)     # for convenient splitting
 library(keras)     # for neural nets
 library(condvis2)
-library(yardstick) # for evaluation
 library(ggthemes)  # for additional plotting themes
 
 theme_set(theme_minimal())
@@ -239,7 +237,7 @@ CVpredict.multicatInputs <- function(f, newdata, ptype = "pred",pthreshold = NUL
 
 Fit some models for comparison:
 ```{r}
-suppressWarnings(library(bartMachine))
+suppressMessages(library(bartMachine))
 
 fit.bart <- bartMachine(dtf_tr[ ,1:19], dtf_tr$Churn)
 
@@ -265,7 +263,7 @@ condvis(dtf_tr, list(model.keras = fit.keras, model.glm = fit.glm, model.bart = 
 ```
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/Churn.png')
+knitr::include_graphics('figs/churn.png')
 ```
 
 
