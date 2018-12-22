@@ -35,7 +35,7 @@ library(tidyverse) # for tidy data analysis
 library(readr)     # for fast reading of input files
 library(caret)     # for convenient splitting
 library(keras)     # for neural nets
-
+library(condvis2)
 library(yardstick) # for evaluation
 library(ggthemes)  # for additional plotting themes
 
@@ -99,7 +99,6 @@ churn_data %>%
 ```
 
 Partition the data:
-
 ```{r}
 set.seed(42)
 
@@ -108,27 +107,30 @@ ind <- sample(2, nrow(churn_data), replace=TRUE, prob=c(0.7, 0.3))
 train_data <- churn_data[ind==1, ]
 test_data  <- churn_data[ind==2, ]
 
-index2 <- createDataPartition(test_data$Churn, p = 0.5, list = FALSE)
+ind <- sample(2, nrow(test_data), replace=TRUE, prob=c(0.5, 0.5))
 
-valid_data <- test_data[-index2, ]
-test_data <- test_data[index2, ]
+valid_data <- test_data[ind==1, ]
+test_data <- test_data[ind==2, ]
+```
 
-nrow(train_data)
-nrow(valid_data)
-nrow(test_data)
+Prepare the datasets for `keras` and `condvis`:
+* `condvis` requires thedataset to be passed as a dataframe,
+* `fit` unction in ``keras` requires the predictors (inputs) and responses (targets/labels) to be passed a two separate data objects as vector, matrix, or arrays. I this dataset there are a number of categorical predictors so we will construct a matrix of dummy variables. 
 
+The dataset contains a 
+
+```{r}
+
+# for condvis
 dtf_tr <- as.data.frame(unclass(train_data))
 dtf_valid <- as.data.frame(unclass(valid_data))
 dtf_te <- as.data.frame(unclass(test_data))
 
-
-
-str(dtf_tr)
-
-
+# for keras
 train_data <- model.matrix(~ ., train_data[,-20])[,-1]
 valid_data <- model.matrix(~ ., valid_data[,-20])[,-1]
 test_data <- model.matrix(~ ., test_data[,-20])[,-1]
+
 # Normalize training data
 train_data <- scale(train_data)
 # Use means and standard deviations from training set to normalize test set
@@ -157,7 +159,7 @@ valid_data_bk <- valid_data
 test_data_bk <- test_data
 ```
 
-Define model:
+Define `keras` model:
 ```{r}
 model_keras <- keras_model_sequential()
 
@@ -204,93 +206,85 @@ plot(fit_keras) +
 
 ```
 
-Predictions using Keras:
-```{r}
-pred_classes_test <- predict_classes(object = model_keras, x = as.matrix(test_data_bk))
-pred_proba_test  <- predict_proba(object = model_keras, x = as.matrix(test_data_bk))
 
-head(pred_classes_test)
-head(pred_proba_test)
-```
+Predictions using `condvis2`:
 
-Predictions using condvis2:
-Note: will feed the dataframe of the original data - not dummy variables to condvis. We need a new CVpredict method to take this, create dummy variables and scale the inputs before passing to predict
+Note: we will feed the dataframe of the original data - not dummy variables to condvis. We need a new CVpredict method to take this, create dummy variables and scale the inputs before passing to `CVpredict.keras.engine.training.Model`. 
 
 ```{r}
 
-library(condvis2)
-fitKeras <- model_keras
-class(fitKeras)<- c("multicatInputs", class(fitKeras))
-
-
+fit.keras <- model_keras
+class(fit.keras)<- c("multicatInputs", class(fit.keras))
 
 
 CVpredict.multicatInputs <- function(f, newdata, ptype = "pred",pthreshold = NULL,response = NULL, predictors=NULL, ylevels = NULL,...){
   
   if (is.null(ylevels)){
-  if (!is.null(response))
+    if (!is.null(response))
      ylevels <- levels(newdata[, response])
   }
   
-    # newy <- newdata[,response]
-   if (!is.null(predictors)) newdata <- newdata[,predictors] else newdata <- newdata
+  if (!is.null(predictors)) newdata <- newdata[,predictors] else newdata <- newdata
 
-   newdata <- model.matrix(~ ., newdata)[,-1]
-   newdata <- scale(newdata, center = col_means_train, scale = col_stddevs_train)
-   newdata <- data.frame(newdata)
-       # newdebug <<- newdata
-   # newdata$Churn <- as.factor(newy)
-       # response= ncol(newdata)+1
+  newdata <- model.matrix(~ ., newdata)[,-1]
+  newdata <- scale(newdata, center = col_means_train, scale = col_stddevs_train)
+  newdata <- data.frame(newdata)
+ 
   p <- condvis2:::CVpredict.keras.engine.training.Model(f, newdata, predictors = 1:ncol(newdata), response = response, ptype = ptype, pthreshold = pthreshold, ylevels = ylevels)
-
-
   return(p)
 }
 
-
-# Work OK
-head(CVpredict(fitKeras, dtf_te, response = 20, predictors = 1:19))
-
-
-
-head(CVpredict(fitKeras, dtf_te, ptype = "prob", response = 20, predictors = 1:19))
-
-head(CVpredict(fitKeras, dtf_te, pthreshold=0.6, response = 20, predictors = 1:19))
-
 ```
 
+
+Fit some models for comparison:
 ```{r}
-# For comparison
-library(bartMachine)
+suppressWarnings(library(bartMachine))
 
-model_bart <- bartMachine(dtf_tr[ ,1:19], dtf_tr$Churn)
-predict(model_bart, dtf_te[ ,1:19])
+fit.bart <- bartMachine(dtf_tr[ ,1:19], dtf_tr$Churn)
 
-
-
-
-condvis(dtf_tr, list(model.bart = model_bart),  response="Churn")
-
-
-library(randomForest)
-
-
-# 'works'
 fit.glm <- glm(Churn~., data = dtf_tr, family = "binomial")
-table(CVpredict(fit.glm, dtf_te), dtf_te$Churn)
-table(CVpredict(fitKeras, dtf_te, predictors = 1:19, response = 20), dtf_te$Churn)
-
-plot(CVpredict(fitKeras, dtf_te, ptype="prob", response = 20, predictors = 1:19), CVpredict(fit.glm, dtf_te, ptype="prob"))
-table(CVpredict(fitKeras, dtf_tr, response = 20, predictors = 1:19),CVpredict(fit.glm, dtf_tr))
-
-# works
 
 
-kArgs1 <-  list(ptype="pred",  predictors = 1:19, response = 20)
-# does not work
 
-condvis(dtf_tr, list(model.keras = fitKeras),  response="Churn", predictArgs = list(kArgs1))
+table(CVpredict(fit.keras, dtf_te, response = 20, predictors = 1:19),CVpredict(fit.glm, dtf_te))
 
-condvis(dtf_tr, list(model.keras = fitKeras, model.glm = fit.glm, model.bart = model_bart),  response="Churn", predictArgs = list(kArgs1, kArgs1,  kArgs1))
+table(CVpredict(fit.keras, dtf_te, response = 20, predictors = 1:19),CVpredict(fit.bart, dtf_te))
+
 
 ```
+
+Visualise using `condvis`. We can select different variables for te section plot. Searching through the space we see that  `keras` and `bart` give fairly similar fits. 
+
+
+```{r eval = FALSE}
+kArgs1 <-  list(ptype="prob",  predictors = 1:19, response = 20)
+
+condvis(dtf_tr, list(model.keras = fit.keras, model.glm = fit.glm, model.bart = fit.bart),  response="Churn", predictArgs = list(kArgs1, kArgs1,  kArgs1))
+
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('figs/Churn.png')
+```
+
+
+<!-- ```{r} -->
+<!-- get_roc <- function(labels, scores){ -->
+<!--   labels <- labels[order(scores, decreasing=TRUE)] -->
+<!--   data.frame(TPR=cumsum(labels)/sum(labels),  -->
+<!--              FPR=cumsum(!labels)/sum(!labels)) -->
+<!-- } -->
+
+<!-- roc.glm <- get_roc(as.numeric(dtf_te$Churn)-1,CVpredict(fit.glm, dtf_te, ptype = "prob")) -->
+<!-- roc.bart <- get_roc(as.numeric(dtf_te$Churn)-1,CVpredict(fit.bart, dtf_te, ptype = "prob")) -->
+<!-- roc.keras <- get_roc(as.numeric(dtf_te$Churn)-1,CVpredict(fit.keras, dtf_te, response = 20, predictors = 1:19,ptype = "prob")) -->
+
+<!-- plot(roc.glm$FPR, roc.glm$TPR, xlab = "FPR", ylab = "TPR", col = 0) -->
+<!-- lines(roc.glm$FPR, roc.glm$TPR) -->
+<!-- lines(roc.bart$FPR, roc.bart$TPR, col = 2) -->
+<!-- lines(roc.keras$FPR, roc.keras$TPR, col = 3) -->
+<!-- ``` -->
+
+
+
