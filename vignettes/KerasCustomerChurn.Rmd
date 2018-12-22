@@ -1,0 +1,296 @@
+---
+title: "Keras customer churn example"
+author: "K. Domijan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5, fig.height=5 ,fig.align="center"
+)
+```
+
+The Telco Customer Churn data set can be downloaded from  [IBM Watson](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
+
+There are many nice examples of analysis of this data, see:
+
+* [Matt Dancho](http://www.business-science.io/business/2017/11/28/customer_churn_analysis_keras.html)
+* [JJ Allaire](https://github.com/rstudio/keras-customer-churn)
+* [Susan Li](https://towardsdatascience.com/predict-customer-churn-with-r-9e62357d47b4)
+* [John Sullivan](https://jtsulliv.github.io/churn-eda/)
+* [Shirin Glander](https://www.r-bloggers.com/code-for-case-study-customer-churn-with-keras-tensorflow-and-h2o/).
+
+Load libraries:
+```{r}
+library(tidyverse) # for tidy data analysis
+library(readr)     # for fast reading of input files
+library(caret)     # for convenient splitting
+library(keras)     # for neural nets
+
+library(yardstick) # for evaluation
+library(ggthemes)  # for additional plotting themes
+
+theme_set(theme_minimal())
+```
+
+Read in the dataset:
+```{r}
+churn_data_raw <- read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+
+churn_data <- churn_data_raw %>%
+  select(-customerID)
+
+
+churn_data <- churn_data %>%
+  drop_na()
+
+churn_data <- churn_data %>%
+  mutate(SeniorCitizen = as.character(SeniorCitizen))
+
+```
+
+Response variable is customer churn:
+
+```{r}
+churn_data_raw %>%
+  count(Churn)
+```
+
+Make some plots:
+
+```{r}
+
+# Categorical inputs
+churn_data %>%
+  select_if(is.character) %>%
+  select(Churn, everything()) %>%
+  gather(x, y, gender:PaymentMethod) %>%
+  count(Churn, x, y) %>% group_by(x, y) %>%
+  mutate(prop = n/sum(n)) %>%
+  ggplot(aes(x = y, y = prop, fill = Churn, color = Churn)) +
+    facet_wrap(~ x, ncol = 4, scales = "free") +
+    geom_bar(stat = "identity", alpha = 0.5) +
+    theme(axis.text.x = element_text(angle = 20, hjust = 1),
+          legend.position = "top") +
+    scale_color_tableau() +
+    scale_fill_tableau()
+
+# Continuous inputs
+churn_data %>% 
+  select(Churn, which(sapply(.,class)=="numeric"|sapply(.,class)=="integer")) %>%
+  gather(x, y, tenure:TotalCharges) %>%
+  ggplot(aes(x = y, fill = Churn, color = Churn)) +
+    facet_wrap(~ x, ncol = 3, scales = "free") +
+    geom_density(alpha = 0.5) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1),
+          legend.position = "top") +
+    scale_color_tableau() +
+    scale_fill_tableau()
+
+```
+
+Partition the data:
+
+```{r}
+set.seed(42)
+
+ind <- sample(2, nrow(churn_data), replace=TRUE, prob=c(0.7, 0.3))
+
+train_data <- churn_data[ind==1, ]
+test_data  <- churn_data[ind==2, ]
+
+index2 <- createDataPartition(test_data$Churn, p = 0.5, list = FALSE)
+
+valid_data <- test_data[-index2, ]
+test_data <- test_data[index2, ]
+
+nrow(train_data)
+nrow(valid_data)
+nrow(test_data)
+
+dtf_tr <- as.data.frame(unclass(train_data))
+dtf_valid <- as.data.frame(unclass(valid_data))
+dtf_te <- as.data.frame(unclass(test_data))
+
+
+
+str(dtf_tr)
+
+
+train_data <- model.matrix(~ ., train_data[,-20])[,-1]
+valid_data <- model.matrix(~ ., valid_data[,-20])[,-1]
+test_data <- model.matrix(~ ., test_data[,-20])[,-1]
+# Normalize training data
+train_data <- scale(train_data)
+# Use means and standard deviations from training set to normalize test set
+col_means_train <- attr(train_data, "scaled:center")
+col_stddevs_train <- attr(train_data, "scaled:scale")
+valid_data <- scale(valid_data, center = col_means_train, scale = col_stddevs_train)
+test_data <- scale(test_data, center = col_means_train, scale = col_stddevs_train)
+
+
+train_y_drop <- to_categorical(as.integer(as.factor(dtf_tr$Churn)) - 1, 2)
+colnames(train_y_drop) <- c("No", "Yes")
+
+valid_y_drop <- to_categorical(as.integer(as.factor(dtf_valid$Churn)) - 1, 2)
+colnames(valid_y_drop) <- c("No", "Yes")
+
+test_y_drop <- to_categorical(as.integer(as.factor(dtf_te$Churn)) - 1, 2)
+colnames(test_y_drop) <- c("No", "Yes")
+
+# since training with binary crossentropy
+train_y_drop <- train_y_drop[, 2, drop = FALSE]
+valid_y_drop <- valid_y_drop[, 2, drop = FALSE]
+test_y_drop <- test_y_drop[, 2, drop = FALSE]
+
+train_data_bk <- train_data
+valid_data_bk <- valid_data
+test_data_bk <- test_data
+```
+
+Define model:
+```{r}
+model_keras <- keras_model_sequential()
+
+model_keras %>% 
+  layer_dense(units = 32, kernel_initializer = "uniform", activation = "relu", 
+              input_shape = ncol(train_data_bk)) %>% 
+  layer_dropout(rate = 0.2) %>%
+  
+  layer_dense(units = 16, kernel_initializer = "uniform", activation = "relu") %>% 
+  layer_dropout(rate = 0.2) %>%
+  
+  layer_dense(units = 8, kernel_initializer = "uniform", activation = "relu") %>% 
+  layer_dropout(rate = 0.2) %>%
+
+  layer_dense(units = 1,
+              kernel_initializer = "uniform", activation = "sigmoid") %>%
+  
+  compile(
+        optimizer = 'adamax',
+        loss      = 'binary_crossentropy',
+        metrics   = c("binary_accuracy", "mse")
+    )
+
+summary(model_keras)
+
+```
+
+Fit model:
+
+```{r}
+fit_keras <- fit(model_keras, 
+    x = as.matrix(train_data_bk), 
+    y = train_y_drop,
+    batch_size = 32, 
+    epochs = 20,
+    validation_split = 0.30,
+    verbose = 2
+    )
+
+plot(fit_keras) +
+  scale_color_tableau() +
+  scale_fill_tableau()
+
+
+```
+
+Predictions using Keras:
+```{r}
+pred_classes_test <- predict_classes(object = model_keras, x = as.matrix(test_data_bk))
+pred_proba_test  <- predict_proba(object = model_keras, x = as.matrix(test_data_bk))
+
+head(pred_classes_test)
+head(pred_proba_test)
+```
+
+Predictions using condvis2:
+Note: will feed the dataframe of the original data - not dummy variables to condvis. We need a new CVpredict method to take this, create dummy variables and scale the inputs before passing to predict
+
+```{r}
+
+library(condvis2)
+fitKeras <- model_keras
+class(fitKeras)<- c("multicatInputs", class(fitKeras))
+
+
+
+
+CVpredict.multicatInputs <- function(f, newdata, ptype = "pred",pthreshold = NULL,response = NULL, predictors=NULL, ylevels = NULL,...){
+  
+  if (is.null(ylevels)){
+  if (!is.null(response))
+     ylevels <- levels(newdata[, response])
+  }
+  
+    # newy <- newdata[,response]
+   if (!is.null(predictors)) newdata <- newdata[,predictors] else newdata <- newdata
+
+   newdata <- model.matrix(~ ., newdata)[,-1]
+   newdata <- scale(newdata, center = col_means_train, scale = col_stddevs_train)
+   newdata <- data.frame(newdata)
+       # newdebug <<- newdata
+   # newdata$Churn <- as.factor(newy)
+       # response= ncol(newdata)+1
+  p <- condvis2:::CVpredict.keras.engine.training.Model(f, newdata, predictors = 1:ncol(newdata), response = response, ptype = ptype, pthreshold = pthreshold, ylevels = ylevels)
+
+
+  return(p)
+}
+
+
+# Work OK
+head(CVpredict(fitKeras, dtf_te, response = 20, predictors = 1:19))
+
+
+
+head(CVpredict(fitKeras, dtf_te, ptype = "prob", response = 20, predictors = 1:19))
+
+head(CVpredict(fitKeras, dtf_te, pthreshold=0.6, response = 20, predictors = 1:19))
+
+```
+
+```{r}
+# For comparison
+library(bartMachine)
+
+model_bart <- bartMachine(dtf_tr[ ,1:19], dtf_tr$Churn)
+predict(model_bart, dtf_te[ ,1:19])
+
+
+
+
+condvis(dtf_tr, list(model.bart = model_bart),  response="Churn")
+
+
+library(randomForest)
+
+
+# 'works'
+fit.glm <- glm(Churn~., data = dtf_tr, family = "binomial")
+table(CVpredict(fit.glm, dtf_te), dtf_te$Churn)
+table(CVpredict(fitKeras, dtf_te, predictors = 1:19, response = 20), dtf_te$Churn)
+
+plot(CVpredict(fitKeras, dtf_te, ptype="prob", response = 20, predictors = 1:19), CVpredict(fit.glm, dtf_te, ptype="prob"))
+table(CVpredict(fitKeras, dtf_tr, response = 20, predictors = 1:19),CVpredict(fit.glm, dtf_tr))
+
+# works
+
+
+kArgs1 <-  list(ptype="pred",  predictors = 1:19, response = 20)
+# does not work
+
+condvis(dtf_tr, list(model.keras = fitKeras),  response="Churn", predictArgs = list(kArgs1))
+
+condvis(dtf_tr, list(model.keras = fitKeras, model.glm = fit.glm, model.bart = model_bart),  response="Churn", predictArgs = list(kArgs1, kArgs1,  kArgs1))
+
+```
