@@ -193,3 +193,5 @@ As you vary the level of Right, both densities look quite similar.
 knitr::include_graphics('figs/dens3Right2.png')
 ```
 <!-- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5096736/ -->
+
+Click on "Show 3d surface" to get a wireframe plot.
