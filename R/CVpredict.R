@@ -519,7 +519,7 @@ CVpredict.keras.engine.training.Model  <- function(fit, newdata,...,  ptype = "p
    else if (ptype=="pred"){
      # calc predicted classes
      p <- keras::predict_classes(fit,x,  batch_size = batch_size,...) +1
-     p <- ylevels[p]
+     p <- factor(ylevels[p], levels=ylevels)
    }
    else {
      # ptype is "prob" or "probmatrix", calculate probs
@@ -681,8 +681,9 @@ CVpredict.train <- function(fit,newdata,..., type="response",ptype="pred",pthres
 CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
   if (is.null(ylevels))
     ylevels <- fit$y_levels
-  newdata <- newdata[,head(colnames(fit$model_matrix_training_data),-1)]
-  
+  # newdata <- newdata[,head(colnames(fit$model_matrix_training_data),-1)]
+  cols <- colnames(fit$X)
+  newdata <- newdata[,cols]
   if (ptype=="pred" && is.null(ylevels)){
     # numeric prediction
     p <- predict(fit,newdata,...)
