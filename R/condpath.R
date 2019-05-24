@@ -337,7 +337,8 @@ createPath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
 pathInterpolate <-function (x, ninterp=4){
   if (ninterp < 0)
     stop("'ninterp' should be >= 0")
-    UseMethod("pathInterpolate", x)
+  if (ninterp==0) x
+  else UseMethod("pathInterpolate", x)
   }
 
 #' @describeIn pathInterpolate Default interpolate method
@@ -371,6 +372,10 @@ pathInterpolate.factor <- pathInterpolate.character <-function (x, ninterp = 4L)
 
 pathInterpolate.data.frame <- function(x, ninterp = 4L){
   ans <- lapply(x, pathInterpolate, ninterp)
-  data.frame(ans)
+  ans <- data.frame(ans)
+  s <- (1:nrow(x))*(ninterp+1) -1
+  # avoid rounding error
+  ans[s,]<- x 
+  ans
 }
 

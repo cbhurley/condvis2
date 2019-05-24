@@ -11,10 +11,10 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
   threshold, linecols = NULL, showsim = NULL, theta3d = 45,
   phi3d = 20, dataplot = NULL, tours = NULL, predictArgs = NULL,
   xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
-  showdata = density == FALSE, displayHeight = 900)
+  showdata = density == FALSE, displayHeight = 950)
 }
 \arguments{
-\item{data}{the dataset used for the fit}
+\item{data}{the dataset used for the fit. Should not have NAs for response, sectionvars or conditionvars.}
 
 \item{model}{A fitted model or list of models. May be NULL.}
 

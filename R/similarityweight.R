@@ -1,7 +1,7 @@
 #' @title Calculate the similarity weight for a set of observations
 #'
 #' @description Calculate the similarity weight for a set of observations, based
-#' on their distance from some arbitary points in data space. Observations which
+#' on their distance from some arbitrary points in data space. Observations which
 #' are very similar to the point under consideration are given weight 1, while
 #' observations which are dissimilar to the point are given weight zero.
 #'

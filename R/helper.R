@@ -19,7 +19,7 @@
 
 #' Creates Condvis Shiny app
 #'
-#' @param data the dataset used for the fit
+#' @param data the dataset used for the fit. Should not have NAs for response, sectionvars or conditionvars.
 #' @param model A fitted model or list of models. May be NULL.
 #' @param response name of response variable. If null, tries to extract from model.
 #' @param sectionvars names of sectionvars. If null, extracts from data.

@@ -18,6 +18,7 @@
 #' @param batch_size Used by CVpredict.keras.engine.training.Model, passed to predict
 #' @param response Used by CVpredict.keras.engine.training.Model. Name of response (optional)
 #' @param predictors Used by CVpredict.keras.engine.training.Model. Name of predictors
+#' @param scale Used by CVpredict for densities. If TRUE (default) rescales the conditional density to integrate to 1.
 #' @return a vector of predictions, or a matrix when type is "probmatrix"
 #' @details This is a wrapper for predict used by condvis.
 #' When the model response is numeric, the result is a vector of predictions.

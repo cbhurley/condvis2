@@ -12,7 +12,7 @@
 #'@param threshold used for similarity weights, defaults to 1.
 #' @param linecols vector of line colours
 #' @param dataplot if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot
-#'@param gridsize used to contruct grid of fitted values.
+#'@param gridsize used to construct grid of fitted values.
 #'@param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes. Only available with two numeric sectionvars and the model's predict method provides this.
 #' @param view3d Logical; if \code{TRUE} plots a three-dimensional regression surface if possible.
 #' @param theta3d,phi3d Angles defining the viewing direction. \code{theta3d} gives the azimuthal direction and \code{phi3d} the colatitude. See\code{\link[graphics]{persp}}.

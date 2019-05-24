@@ -34,7 +34,7 @@ sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
 
 \item{dataplot}{if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot}
 
-\item{gridsize}{used to contruct grid of fitted values.}
+\item{gridsize}{used to construct grid of fitted values.}
 
 \item{probs}{Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes. Only available with two numeric sectionvars and the model's predict method provides this.}
 

@@ -140,6 +140,8 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
 \item{response}{Used by CVpredict.keras.engine.training.Model. Name of response (optional)}
 
 \item{predictors}{Used by CVpredict.keras.engine.training.Model. Name of predictors}
+
+\item{scale}{Used by CVpredict for densities. If TRUE (default) rescales the conditional density to integrate to 1.}
 }
 \value{
 a vector of predictions, or a matrix when type is "probmatrix"

@@ -59,6 +59,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       w <- plyr::adply(CVdata[conditionvars], 1,function(x,y) all(x==y),
                        predsInit[conditionvars],.expand=FALSE)[,2]
       simInit[w]<- 1
+     
     }
     else simInit <- similarityweight(predsInit,CVdata[conditionvars], threshold)
     cPlots <- NULL
@@ -186,7 +187,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
         condtour <<-pathInterpolate(as.data.frame(condtour),input$ninterp)
       }
       else condtour <<- mkpath
-
+     
       # print("updating slider")
       #print(input$ninterp)
       updateSliderInput(session, "tourstep", value=0,
@@ -203,6 +204,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
 
         rv$pset[1,conditionvars] <- condtour[index,conditionvars]
+        
       }
     })
 
