@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=5, fig.height=5 ,fig.align="center"
 )
+fpath <- "vignettefigs/"
 ```
 
 `mclust` is a R package that offers
@@ -78,13 +79,13 @@ condvis(data = banknote, model = bankDA,
 
 The `showsim=TRUE` setting means that the condition plots will mark points considered
 sufficiently near the section with a dark outline. This is the default setting only
-when $n <= 150$. One the condition plots, the green points are the genuine ones, pink
+when $n <= 150$. In the condition plots, the green points are the genuine ones, pink
 are counterfeit.
 
 Here is a views of the result:
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/mclustda1.png')
+knitr::include_graphics(paste0(fpath, "mclustda1.png"))
 ```
 There is one point that appears to be mis-classified (though it is not). 
 However, as it's size is small it is not very close
@@ -127,7 +128,7 @@ boundaries.
 
 The screenshot shows that in this view.
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/mclustda6.png')
+knitr::include_graphics(paste0(fpath, "mclustda6.png"))
 ```
 
 The mis-classified point is a genuine note (green) which is just inside the
@@ -157,15 +158,11 @@ condvis(data = banknote, model = dens2, response=NULL,
         density=T, showdata=T)
 ```
 
-The density of Diagonal varies with the Left value, from
+The density of Diagonal varies with the Left value. Click on left to check this.
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/left1.png')
+knitr::include_graphics(paste0(fpath, "left1.png"))
 ```
-to 
 
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/left3.png')
-```
 
 Estimating the density of three variables:
 
@@ -190,7 +187,7 @@ condvis(data = banknote, model = list(mclust=dens3, kde=kdens3), response=NULL,
 As you vary the level of Right, both densities look quite similar.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/dens3Right2.png')
+knitr::include_graphics(paste0(fpath, "dens3Right2.png"))
 ```
 <!-- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5096736/ -->
 

@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=5, fig.height=5 ,fig.align="center", eval=FALSE
 )
+fpath <- "vignettefigs/"
 ```
 
 `keras` is an R based interface to the [Keras](https://keras.io/): the Python Deep Learning library. It uses the [TensorFlow](https://www.tensorflow.org/) backend engine.
@@ -131,8 +132,8 @@ condvis(dtf, list(model.keras = model, model.lda = fit.lda), sectionvars = c("bm
 ```
 
 
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/Pima.png')
+```{r echo=FALSE, out.width='100%', eval=T}
+knitr::include_graphics(paste0(fpath, "Pima.png"))
 ```
 
 
@@ -257,8 +258,8 @@ condvis(train_df, list(gam = gam.model, rf = rf.model, kerasmodel = model), sect
 
 Ticking `Show 3d surface` shows the 3d-surface of the fit and you can use the `Rotate` slider to rotate them around the z-axis.
 
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('figs/Boston.png')
+```{r echo=FALSE, out.width='100%', eval=T}
+knitr::include_graphics(paste0(fpath, "Boston.png"))
 ```
 
 Random forest gives a blockier fit, compared to the smooth gams and the neural net. The RF fit is more flexible in the areas where there is more data points.
