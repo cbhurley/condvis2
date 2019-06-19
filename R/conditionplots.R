@@ -12,9 +12,39 @@ getCPlotFN <- function(CVdata, var){
     get(CPlotFN)
 }
 
+#' Plots a conditionPlot.
+#'
+#' Plots a conditionPlot, showing one, two or many predictors. The predictor setting in \code{varVal} is drawn in magenta.
+#'
+#' @param CVdata the dataset used for the fit
+#' @param var one more condition vars. Draws a parallel coordinate plot for more than two.
+#' @param varVal the current setting of the conditionvars, shown in magenta.
+#' @param pointColor a color, vector of colors,or the name of variable to be used for coloring
+#' @param sim If non-NULL should be a vector of similarity weights.
+#' @param resetpar For use withing shiny app.
+#' @param plotrows If non-NULL should be a vector of case indices
+#'
+#' @return NULL
+#' @export
+#'
+#' @examples
+#'conditionPlot(mtcars, c("wt","hp"), c("wt"=3, "hp"=200), pointColor="am")
+#'
+#' conditionPlot(mtcars, c("wt","hp"), mtcars[1,], pointColor="am")
+#' 
+#' #Calculate similarity using wt, hp observations from first case
+#' sim <- similarityweight(mtcars[1, c("wt","hp")], mtcars[, c("wt","hp")], threshold=1)
+#' 
+#' # Marks points with black border with positive sim values. These are points within 1 (threshold) sd
+#' #of pink cross.
+#' conditionPlot(mtcars, c("wt","hp"), mtcars[1,], pointColor="am", sim=sim)
+#' 
+#' sim <- similarityweight(mtcars[1, ], mtcars, threshold=2)
+#' conditionPlot(mtcars, names(mtcars), mtcars[1,], sim=sim)
+#'
 
-conditionPlot <- function(CVdata, var, varVal, pointColor=NULL,
-                          sim=NULL, oldplot=NULL, resetpar=TRUE, plotrows=NULL){
+conditionPlot <- function(CVdata, var, varVal, pointColor="steelblue",
+                          sim=NULL,  resetpar=TRUE, plotrows=NULL){
 
   if (resetpar){
     op <- par(no.readonly = TRUE)
@@ -30,7 +60,7 @@ conditionPlot <- function(CVdata, var, varVal, pointColor=NULL,
 
 
 
-conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
+conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   # op <- par(no.readonly = TRUE)
   # on.exit(par(op))
   par(mar = c(3, 3, .5,.5),
@@ -52,7 +82,7 @@ conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
 
 
 
-conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
+conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   # op <- par(no.readonly = TRUE)
   # on.exit(par(op))
   par(mar = c(3, 3, .5,.5),
@@ -69,7 +99,7 @@ conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
 
 
 
-conditionPlotnn <- function(CVdata, var, varVal,pointColor=NULL,sim,oldplot,plotrows){
+conditionPlotnn <- function(CVdata, var, varVal,pointColor=NULL,sim,plotrows){
   # op <- par(no.readonly = TRUE)
   # on.exit(par(op))
   par(mar = c(3, 3, .5,.5),
@@ -94,15 +124,15 @@ conditionPlotnn <- function(CVdata, var, varVal,pointColor=NULL,sim,oldplot,plot
 
 
 
-conditionPlotnf <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
-  conditionPlotfn(CVdata, rev(var),varVal,pointColor,sim,oldplot,plotrows)
+conditionPlotnf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
+  conditionPlotfn(CVdata, rev(var),varVal,pointColor,sim,plotrows)
 }
 
 
 
 
 
-conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
+conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   # op <- par(no.readonly = TRUE)
   # on.exit(par(op))
   par(mar = c(3, 3, .5,.5),
@@ -120,7 +150,7 @@ conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows)
 
 
 
-conditionPlotff <- function(CVdata, var, varVal,pointColor,sim,oldplot,plotrows){
+conditionPlotff <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
   par(mar = c(3, 3, .5,.5),
       mgp = c(1.5, .2, 0),

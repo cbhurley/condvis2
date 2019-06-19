@@ -15,7 +15,7 @@
 #' @param thresholdmax maximum value allowed of threshold.
 #' @param linecols vector of colors to be used for fits
 #' @param showsim if TRUE, shows sim in conditionplots with points
-#' @param dataplot if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot
+#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional  regression surface if possible.
 #' @param theta3d,phi3d Angles defining the viewing direction. \code{theta3d} gives the azimuthal direction and \code{phi3d} the colatitude. See \code{\link[graphics]{persp}}.
@@ -29,7 +29,7 @@
 
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
                            predsInit=NULL,cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,threshold=1,thresholdmax, linecols=NULL,
-                           showsim=FALSE, dataplot=NULL,probs,
+                           showsim=FALSE, dataplot="pcp",probs,
                            view3d,theta3d,phi3d,predictArgs, xlim=NULL,ylim=NULL, zlim=NULL, density=FALSE,
                            showdata=TRUE){
 
@@ -72,7 +72,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       CVdata <- rv$CVdata
 
       clickCoords<<- sectionPlot(CVdata,CVfit,response,preds,sectionvar= rv$sectionvars,
-                                 conditionvals=rv$pset, sim=rv$sim, linecols=linecols,
+                                 conditionvals=rv$pset, pointColor= NULL,sim=rv$sim, linecols=linecols,
                                  dataplot=dataplot,
                                  probs=probs && input$showprobs, theta3d=input$theta3d,phi3d=phi3d,
                                  view3d=view3d && input$view3d,xlim = ranges$x,
@@ -277,11 +277,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
           if (showsim)
             output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,sim= rv$sim, resetpar=FALSE, plotrows=plotrows)
+              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= rv$sim, resetpar=FALSE, plotrows=plotrows)
             })
           else
             output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,sim= NULL, resetpar=FALSE, plotrows=plotrows)
+              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= NULL, resetpar=FALSE, plotrows=plotrows)
             })
 
           observeEvent(input[[clickname]],{

@@ -29,7 +29,20 @@
 #' For ptype="prob", the result is a vector of probabilities for the last factor level.
 #' For ptype="probmatrix", the result is a matrix  of probabilities for each factor level.
 #' @export
-#'
+#' @examples
+#' #Fit a model. 
+#' f <- lm(Fertility~ ., data=swiss)
+#' CVpredict(f)
+#' 
+#' #Fit a model with a factor response
+#' swiss1 <- swiss
+#' swiss1$Fertility <-  cut(swiss$Fertility, c(0,80,100))
+#' levels(swiss1$Fertility)<- c("lo", "hi")
+#' f <- glm(Fertility~ ., data=swiss1, family="binomial")
+#' CVpredict(f) # by default gives a factor
+#' CVpredict(f, ptype="prob") # gives prob of level hi
+#' CVpredict(f, ptype="probmatrix") # gives prob of both levels
+
 
 CVpredict <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
   UseMethod("CVpredict", fit)

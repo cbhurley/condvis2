@@ -1,12 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-condvis2
-========
 
-The goal of condvis2 is to visualise prediction models via shiny. Predictions are generated from one or more model fits. Low-dimensional visualisations are constructed showing the relationship between the response and one or two (section) predictors, conditional on the remaining predictors. The section predictors and conditioning values are selected within the shiny app.
+# condvis2
 
-Installation
-------------
+The goal of condvis2 is to visualise prediction models via shiny.
+Predictions are generated from one or more model fits. Low-dimensional
+visualisations are constructed showing the relationship between the
+response and one or two (section) predictors, conditional on the
+remaining predictors. The section predictors and conditioning values are
+selected within the shiny app.
+
+## Installation
 
 You can install condvis2 from github with:
 
@@ -15,8 +19,7 @@ You can install condvis2 from github with:
 devtools::install_github("cbhurley/condvis2")
 ```
 
-Example 1: A prediction model
------------------------------
+## Example 1: A prediction model
 
 This is a basic condvis example.
 
@@ -31,13 +34,18 @@ fit <- loess(Ozone~Wind+Solar.R+Temp, data=ozone)
 condvis(ozone, fit, sectionvars="Wind", conditionvars=c("Solar.R", "Temp"))
 ```
 
-The result is shown in the screenshot below. It shows the loess prediction for Wind, conditional on values of the other two predictors.
-Only observations whose Solar.R and Temp values are near (207,79) are shown. The user can move around the pink cross to see how the prediction varies.
+The result is shown in the screenshot below. It shows the loess
+prediction for Wind, conditional on values of the other two
+predictors.  
+Only observations whose Solar.R and Temp values are near (207,79) are
+shown. The user can move around the pink cross to see how the prediction
+varies.
 
-<img src="vignettes/figs/ozone1.png" width="100%" /> Check out the vignette `Introduction to condvis2` for more information and details.
+<img src="vignettes/vignettefigs/ozone1.png" width="100%" /> Check out
+the vignette `Introduction to condvis2` for more information and
+details.
 
-Example 2: A density estimate
------------------------------
+## Example 2: A density estimate
 
 ``` r
 library(ks)
@@ -49,6 +57,7 @@ condvis(data = iris, model = list(kde=irisf),
         conditionvars= "Petal.Length", density=T)
 ```
 
-The result is shown in the screenshot below. It shows the estimated density of two variables conditional on the third.
+The result is shown in the screenshot below. It shows the estimated
+density of two variables conditional on the third.
 
-<img src="vignettes/figs/iris1.png" width="100%" />
+<img src="vignettes/vignettefigs/iris1.png" width="100%" />

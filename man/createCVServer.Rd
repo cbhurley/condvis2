@@ -7,7 +7,7 @@
 createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
   conditionvars, predsInit = NULL, cPlotPCP = FALSE, cPlotn = 1000,
   orderConditionVars, threshold = 1, thresholdmax, linecols = NULL,
-  showsim = FALSE, dataplot = NULL, probs, view3d, theta3d, phi3d,
+  showsim = FALSE, dataplot = "pcp", probs, view3d, theta3d, phi3d,
   predictArgs, xlim = NULL, ylim = NULL, zlim = NULL,
   density = FALSE, showdata = TRUE)
 }
@@ -38,7 +38,7 @@ createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
 
 \item{showsim}{if TRUE, shows sim in conditionplots with points}
 
-\item{dataplot}{if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot}
+\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
 
 \item{probs}{Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.}
 

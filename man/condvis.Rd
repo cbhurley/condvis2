@@ -9,7 +9,7 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
   "grey0"), cPlotPCP = FALSE, cPlotn = 1000,
   orderConditionVars = arrangeC, threshold = 1, thresholdmax = 8 *
   threshold, linecols = NULL, showsim = NULL, theta3d = 45,
-  phi3d = 20, dataplot = NULL, tours = NULL, predictArgs = NULL,
+  phi3d = 20, dataplot = "pcp", tours = NULL, predictArgs = NULL,
   xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
   showdata = density == FALSE, displayHeight = 950)
 }
@@ -46,7 +46,7 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
 gives the azimuthal direction and \code{phi3d} the colatitude. See
 \code{\link[graphics]{persp}}.}
 
-\item{dataplot}{if model is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot}
+\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
 
 \item{tours}{A list of pre-calculated tours}
 
@@ -68,8 +68,8 @@ gives the azimuthal direction and \code{phi3d} the colatitude. See
 Creates Condvis Shiny app
 }
 \examples{
-mtcars$am <- as.factor(mtcars$am)
 fit <- lm(mpg ~ wt+hp+am, data=mtcars)
-vars <- all.vars(formula(fit))
-\dontrun{condvis(fit,mtcars, response=vars[1],vars[2], vars[-(1:2)], "red")}
+\dontrun{
+condvis(mtcars,fit, response="mpg",sectionvars="wt", conditionvars=c("am", "hp"), pointColor ="red")
+}
 }

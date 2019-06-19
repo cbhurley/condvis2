@@ -212,3 +212,17 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 \item \code{bartMachine}: CVpredict method
 }}
 
+\examples{
+#Fit a model. 
+f <- lm(Fertility~ ., data=swiss)
+CVpredict(f)
+
+#Fit a model with a factor response
+swiss1 <- swiss
+swiss1$Fertility <-  cut(swiss$Fertility, c(0,80,100))
+levels(swiss1$Fertility)<- c("lo", "hi")
+f <- glm(Fertility~ ., data=swiss1, family="binomial")
+CVpredict(f) # by default gives a factor
+CVpredict(f, ptype="prob") # gives prob of level hi
+CVpredict(f, ptype="probmatrix") # gives prob of both levels
+}

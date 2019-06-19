@@ -1,17 +1,26 @@
 
 
 #' Plots the main condvis display
+#' 
+#' The section plot relates a fit or fits to one or two predictors (\code{sectionvar}), 
+#' for fixed values of other predictors in  \code{conditionvals}.
+#' 
+#' The type of plot depends on the fit and the section variables. Observations with non zero values of the similarity weights 
+#' \code{sim} are shown. If no fit is provided, the data are shown as a parallel coordinate plot or pairs
+#' plot, depending on \code{dataplot}.
+#' The fit could also be a density estimate.
+#'
 #' @param CVdata the dataset used for the fit
 #' @param CVfit a fit or list of fits
 #' @param response name of response variable
 #' @param preds names of predictors
 #' @param sectionvar section variable
-#' @param conditionvals conditioning values. A list or dataframe with one row
-#' @param pointColor a color, or the name of variable to be used for coloring
+#' @param conditionvals conditioning values. A vector/list or dataframe with one row
+#' @param pointColor a color, vector of colors,or the name of variable to be used for coloring
 #' @param sim vector of similarity weights
 #'@param threshold used for similarity weights, defaults to 1.
 #' @param linecols vector of line colours
-#' @param dataplot if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot
+#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
 #'@param gridsize used to construct grid of fitted values.
 #'@param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes. Only available with two numeric sectionvars and the model's predict method provides this.
 #' @param view3d Logical; if \code{TRUE} plots a three-dimensional regression surface if possible.
@@ -27,10 +36,35 @@
 #'@param returnCoords  If TRUE, returns coordinates for some plots
 #' @return plotted coordinates, for some plots
 #' @export
+#' 
+#' @examples
+#' #Fit a model. 
+#' f <- lm(Fertility~ ., data=swiss)
+#' svar <- "Education"
+#' preds <- variable.names(f)[-1]
+#' sectionPlot(swiss,f, "Fertility",preds,svar, swiss[12,])
+#' sectionPlot(swiss,f, "Fertility",preds,svar, apply(swiss,2,median))
+#' sectionPlot(swiss,f, "Fertility",preds,preds[1:2], apply(swiss,2,median))
+#' sectionPlot(swiss,f, "Fertility",preds,preds[1:2], apply(swiss,2,median), view3d=TRUE)
+#' 
+#' # PCP of swiss data, showing only cases whose percent catholic and infant.mortality are
+#' # similar to those of the first case
+#'sectionPlot(swiss,preds=names(swiss),
+#'            sectionvar= names(swiss)[1:4],conditionvals=swiss[1,] ,dataplot="pairs" )     
 #'
-sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,pointColor=NULL,
+#' 
+#'  \dontrun{
+#'  library(ks)
+#' fde <-kde(iris[,1:3])
+#'sectionPlot(iris,list(fde), response=NULL,
+#'            preds=names(iris)[1:3],
+#'            sectionvar=names(iris)[1],
+#'            conditionvals=iris[1,],
+#'  }
+
+sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,conditionvals,pointColor="steelblue",
                         sim=NULL,threshold=1,linecols=NULL,
-                        dataplot=NULL, gridsize=50, probs=FALSE, view3d=FALSE,
+                        dataplot="pcp", gridsize=50, probs=FALSE, view3d=FALSE,
                         theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=2,
                         predictArgs=NULL, resetpar=TRUE, density=FALSE, showdata=density==FALSE,
                         returnCoords=FALSE){
@@ -38,14 +72,20 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
   op <- par(no.readonly=TRUE)
   if (resetpar) on.exit(par(op))
   if (view3d) gridsize <- 20
-
+  
+  if (density & is.null(response)) {
+    response <- "density"
+    CVdata$density <- runif(nrow(CVdata))
+  }
 
   conditionvars <-setdiff(preds, sectionvar)
 
-  conditionvals <- as.data.frame(conditionvals)
+  if (!is.data.frame(conditionvals))
+  conditionvals <- as.data.frame(as.list(conditionvals))
 
   if (!is.null(pointColor)) CVdata <- pointColor2var(CVdata,pointColor)
 
+  if (!is.null(response)){
   sp <- vector("character",3)
   if (is.numeric(CVdata[[response]])) sp[1] <- "n" else sp[1] <- "f"
   if (is.numeric(CVdata[[sectionvar[1]]])) sp[2]<- "n"else sp[2] <- "f"
@@ -53,14 +93,15 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
     if (is.numeric(CVdata[[sectionvar[2]]])) sp[3]<- "n"else sp[3] <- "f"
   sp <- paste(sp,collapse="")
   sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
-
+  }
 
 
   if (is.null(CVfit) ) {
     if (is.null(sim) )
       sim <- similarityweight(conditionvals,CVdata[conditionvars], threshold=threshold)
 
-    if (is.null (dataplot)) dataplot <- sectionPlotdata
+    if (dataplot %in% c("pairs", "pcp")) dataplot <- get(paste0("sectionPlot", dataplot))
+    else dataplot <- sectionPlotpcp
     cols <- weightcolor(CVdata$pointCols, sim)
     # CVdata$pointCols <- NULL
     if (length(sectionvar)==1)
@@ -98,7 +139,8 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
          grid[sectionvar] <- sectionvals[sectionvar]
          grid <- as.data.frame(grid)
          grid1 <- grid
-         if (is.factor(CVdata[[response]]))
+         
+         if (!is.null(response) && is.factor(CVdata[[response]]))
             ylevels <- levels(CVdata[[response]])
           else ylevels <- NULL
          
@@ -145,6 +187,7 @@ sectionPlot <- function(CVdata, CVfit,response,preds,sectionvar,conditionvals,po
       }
   }
 }
+
 
 
 
@@ -602,7 +645,29 @@ makeFnumeric <- function(grid, fitnames, prob=FALSE){
   grid
 }
 
-sectionPlotdata <- function(CVdata, sectionvars, cols,sim,...){
+
+sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
+  if (length(sectionvars) ==1){
+    index <- 1:nrow(CVdata)
+    CVdata <- rbind(index,CVdata)
+  }
+  else CVdata <- CVdata[,sectionvars]
+  # for ( i in 1:ncol(CVdata)){
+  #   if (is.factor(CVdata[[i]]))
+  #     CVdata[[i]]<- as.numeric(CVdata[[i]])
+  # }
+  # nums <- sapply(CVdata, is.numeric)
+  # CVdata <- as.matrix(CVdata[nums])
+  
+  if (nrow(CVdata) != 0){
+       o <- attr(cols, "order")
+    xo <- which(!(1:nrow(CVdata) %in% o))
+    o <- c(o,xo)
+    pairs(CVdata[o,], col=cols[o],pch=20,...)
+  
+  }
+}
+sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,...){
   if (length(sectionvars) ==1){
     index <- 1:nrow(CVdata)
     CVdata <- rbind(index,CVdata)
@@ -735,8 +800,8 @@ colorfnfp <- function(vec=c(0,1), cols= NULL){
 
 legendn <- function(colorY){
  
-   if (par("pin")[1]> 5)
-    inset<- 20
+   if (par("pin")[1]> 6)
+    inset<- 15
   else inset <- 12
   r <- attr(colorY, "breaks")
   z1<- r[-length(r)]

@@ -4,12 +4,13 @@
 \alias{sectionPlot}
 \title{Plots the main condvis display}
 \usage{
-sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
-  pointColor = NULL, sim = NULL, threshold = 1, linecols = NULL,
-  dataplot = NULL, gridsize = 50, probs = FALSE, view3d = FALSE,
-  theta3d = 45, phi3d = 20, xlim = NULL, ylim = NULL,
-  zlim = NULL, pointSize = 2, predictArgs = NULL, resetpar = TRUE,
-  density = FALSE, showdata = density == FALSE, returnCoords = FALSE)
+sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
+  conditionvals, pointColor = "steelblue", sim = NULL, threshold = 1,
+  linecols = NULL, dataplot = "pcp", gridsize = 50, probs = FALSE,
+  view3d = FALSE, theta3d = 45, phi3d = 20, xlim = NULL,
+  ylim = NULL, zlim = NULL, pointSize = 2, predictArgs = NULL,
+  resetpar = TRUE, density = FALSE, showdata = density == FALSE,
+  returnCoords = FALSE)
 }
 \arguments{
 \item{CVdata}{the dataset used for the fit}
@@ -22,9 +23,9 @@ sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
 
 \item{sectionvar}{section variable}
 
-\item{conditionvals}{conditioning values. A list or dataframe with one row}
+\item{conditionvals}{conditioning values. A vector/list or dataframe with one row}
 
-\item{pointColor}{a color, or the name of variable to be used for coloring}
+\item{pointColor}{a color, vector of colors,or the name of variable to be used for coloring}
 
 \item{sim}{vector of similarity weights}
 
@@ -32,7 +33,7 @@ sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
 
 \item{linecols}{vector of line colours}
 
-\item{dataplot}{if CVfit is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot}
+\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
 
 \item{gridsize}{used to construct grid of fitted values.}
 
@@ -64,5 +65,37 @@ sectionPlot(CVdata, CVfit, response, preds, sectionvar, conditionvals,
 plotted coordinates, for some plots
 }
 \description{
-Plots the main condvis display
+The section plot relates a fit or fits to one or two predictors (\code{sectionvar}), 
+for fixed values of other predictors in  \code{conditionvals}.
+}
+\details{
+The type of plot depends on the fit and the section variables. Observations with non zero values of the similarity weights 
+\code{sim} are shown. If no fit is provided, the data are shown as a parallel coordinate plot or pairs
+plot, depending on \code{dataplot}.
+The fit could also be a density estimate.
+}
+\examples{
+#Fit a model. 
+f <- lm(Fertility~ ., data=swiss)
+svar <- "Education"
+preds <- variable.names(f)[-1]
+sectionPlot(swiss,f, "Fertility",preds,svar, swiss[12,])
+sectionPlot(swiss,f, "Fertility",preds,svar, apply(swiss,2,median))
+sectionPlot(swiss,f, "Fertility",preds,preds[1:2], apply(swiss,2,median))
+sectionPlot(swiss,f, "Fertility",preds,preds[1:2], apply(swiss,2,median), view3d=TRUE)
+
+# PCP of swiss data, showing only cases whose percent catholic and infant.mortality are
+# similar to those of the first case
+sectionPlot(swiss,preds=names(swiss),
+           sectionvar= names(swiss)[1:4],conditionvals=swiss[1,] ,dataplot="pairs" )     
+
+
+ \dontrun{
+ library(ks)
+fde <-kde(iris[,1:3])
+sectionPlot(iris,list(fde), response=NULL,
+           preds=names(iris)[1:3],
+           sectionvar=names(iris)[1],
+           conditionvals=iris[1,],
+ }
 }

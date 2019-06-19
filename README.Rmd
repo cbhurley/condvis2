@@ -51,7 +51,7 @@ The result is shown in the screenshot below.
  The user can move around the pink cross to see how the prediction varies.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('vignettes/figs/ozone1.png')
+knitr::include_graphics('vignettes/vignettefigs/ozone1.png')
 ```
 Check out the vignette `Introduction to condvis2` for more information and details.
 
@@ -73,7 +73,7 @@ The result is shown in the screenshot below. It shows the estimated density of  
 variables conditional on the third.
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('vignettes/figs/iris1.png')
+knitr::include_graphics('vignettes/vignettefigs/iris1.png')
 ```
 
 

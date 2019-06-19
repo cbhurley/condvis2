@@ -37,7 +37,7 @@
 #' @param theta3d,phi3d Angles defining the viewing direction for 3d surface. \code{theta3d}
 #'   gives the azimuthal direction and \code{phi3d} the colatitude. See
 #'   \code{\link[graphics]{persp}}.
-#' @param dataplot if model is NULL, the data are plotted using this function. Defaults to a parallel coordinate plot
+#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
 #' @param tours A list of pre-calculated tours
 #' @param predictArgs a list with one entry per fit, giving arguments for CVpredict
 #' @param xlim passed on to sectionplot
@@ -49,12 +49,12 @@
 
 #' @return NULL
 #' @export
-#'
 #' @examples
-#' mtcars$am <- as.factor(mtcars$am)
-#'fit <- lm(mpg ~ wt+hp+am, data=mtcars)
-#'vars <- all.vars(formula(fit))
-#'\dontrun{condvis(fit,mtcars, response=vars[1],vars[2], vars[-(1:2)], "red")}
+#' fit <- lm(mpg ~ wt+hp+am, data=mtcars)
+#' \dontrun{
+#' condvis(mtcars,fit, response="mpg",sectionvars="wt", conditionvars=c("am", "hp"), pointColor ="red")
+#' }
+
 
 #' @import ggplot2
 #' @import shiny
@@ -70,9 +70,12 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                     cPlotn = 1000,
                     orderConditionVars=arrangeC, threshold=1, thresholdmax=8*threshold,
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
-                    dataplot=NULL, tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
+                    dataplot="pcp", tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
                     showdata= density==FALSE,displayHeight=950) {
 
+  if (!is.data.frame(data) ) 
+    stop("'data' must be a data.frame")
+  
   if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
   
@@ -88,6 +91,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
     data$densityY <- runif(nrow(data))
     # if (is.null(zlim)) zlim <- ylim
   }
+
   if (!is.null(model)){
     if (!inherits(model, "list")) model <- list(model)
 
@@ -150,6 +154,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   }
   r <- NULL
   if (!is.null(response)) r <- match(response, names(data))
+  
   if (is.numeric(r)) datar <- data[,-r]
   else datar <- data
 
@@ -204,7 +209,19 @@ pointColor2var <- function(data, pointColor){
 }
 
 
-## Function to weight colours according to a weight vector. Not exported.
+
+#' Fade colours according to a weight vector
+#'
+#' The colours whose weights are less than 1 are diluted. Colours whose weight is zero are returned as white, 
+#' other weights are grouped in \code{nlevels} groups and colours diluted proportionally.
+#' 
+#' @param col A vector of colour
+#' @param weights A vector of weights, values between 0 and 1
+#' @param nlevels  The number of groups
+#'
+#' @return A vector of colours
+#' @export
+#'
 
 weightcolor <-
   function(col, weights, nlevels=5)
