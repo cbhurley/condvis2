@@ -37,14 +37,14 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
   tours <- c(tours1, tours)
 
   fluidPage(
-     h3("Condvis"),
-    #  tags$style(type = "text/css",
-    #            "label { font-size: 12px; }"
-    # ),
-    # tags$head(tags$style(HTML("
-    #     .selectize-input, .selectize-dropdown {
-    #                           font-size: 12px;}"))),
-    #
+     # h3("Condvis"),
+     tags$style(type = "text/css",
+               "label { font-size: 12px; }"
+    ),
+    tags$head(tags$style(HTML("
+        .selectize-input, .selectize-dropdown {
+                              font-size: 12px;}"))),
+
     sidebarLayout(sidebarPanel(
       # selectInput(inputId = "sectionvar",
       #                                      label = "Choose a sectionvar",
@@ -54,11 +54,13 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
       #                                      ),
                              #  uiOutput("select2"),
                                uiOutput("cplots"),
-                               tags$br(),tags$br(),
+                               tags$br(),
+                               # tags$br(),
                                verbatimTextOutput("conditionInfo"),
-                               width=3,
-                               tags$head(tags$style("#conditionInfo{font-size: 9px;}")),
-                               actionButton("quit", "Return conditions")),
+                               width=4,
+                               tags$head(tags$style("#conditionInfo{font-size: 9px;}"))
+                               # actionButton("quit", "Return conditions")
+                               ),
 
 
     mainPanel(fluidRow(if (!is.null(CVfit)) column(3, offset=1,
@@ -81,22 +83,25 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
 
               if (probs) fluidRow(
                   column(2, offset=1, checkboxInput("showprobs", "Show probs", FALSE))),
-              if (view3d) fluidRow(
-
+              if (view3d)
+                conditionalPanel(
+                  condition = "input.sectionvar2 != 'None' ",
+                fluidRow(
                 column(3, offset=1, checkboxInput("view3d", "Show 3d surface", FALSE)),
-                column(4, offset=3, conditionalPanel(
-                  condition = "input.view3d == true",
+                column(4, offset=3, 
+                       conditionalPanel(
+                  condition = "input.view3d==true",
                   fluidRow(
                   column(2, offset=0, "Rotate"),
                   column(6, sliderInput(inputId = "theta3d",ticks=FALSE, step=10,
                               label = NULL,min=0, max=360,value=40,animate=animationOptions(loop=TRUE, interval=200))
-                ))))),
+                )))))),
              plotOutput("display",click = "display_click",
-                        dblclick = "display_dblclick",
+                        dblclick = "display_dblclick", height = "320px",
                         brush = brushOpts(
-                          id = "display_brush",
+                          id = "display_brush", 
                           resetOnNew = TRUE)),
-                        tags$br(),
+                        # tags$br(),
               fluidRow(column(4, offset=1,
                               sliderInput("threshold", "Similarity Threshold", 0,
                                           thresholdmax, threshold, step=min(.2, thresholdmax/20))),
@@ -104,6 +109,7 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
                               radioButtons(inputId = "dist", "Distance",
                                          choices = list("maxnorm" ,"euclidean"), inline=TRUE))),
              # tags$br(),
+            
              fluidRow(column(9, offset=1, wellPanel(
               fluidRow(
                column(4, offset=0, selectInput(inputId = "tour",
@@ -123,6 +129,7 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
                                              label = "Interp steps",min=0, max=6,value=0,step=1
              )))))
              )
+             
 
              ), position="right")
   )

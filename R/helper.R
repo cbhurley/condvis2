@@ -51,7 +51,7 @@
 #' @export
 #' @examples
 #' fit <- lm(mpg ~ wt+hp+am, data=mtcars)
-#' \dontrun{
+#' if(interactive()){
 #' condvis(mtcars,fit, response="mpg",sectionvars="wt", conditionvars=c("am", "hp"), pointColor ="red")
 #' }
 
@@ -184,7 +184,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
-  shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight))
+  shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
 }
 
 

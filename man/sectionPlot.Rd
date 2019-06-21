@@ -87,15 +87,16 @@ sectionPlot(swiss,f, "Fertility",preds,preds[1:2], apply(swiss,2,median), view3d
 # PCP of swiss data, showing only cases whose percent catholic and infant.mortality are
 # similar to those of the first case
 sectionPlot(swiss,preds=names(swiss),
-           sectionvar= names(swiss)[1:4],conditionvals=swiss[1,] ,dataplot="pairs" )     
+           sectionvar= names(swiss)[1:4],conditionvals=swiss[1,] )     
+# Use dataplot="pairs" to switch to a pairs plot
 
-
+# A density estimate example
  \dontrun{
  library(ks)
 fde <-kde(iris[,1:3])
-sectionPlot(iris,list(fde), response=NULL,
+sectionPlot(iris,list(kde=fde), response=NULL,
            preds=names(iris)[1:3],
            sectionvar=names(iris)[1],
-           conditionvals=iris[1,],
+           conditionvals=iris[1,],density=TRUE)
  }
 }

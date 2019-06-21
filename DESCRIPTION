@@ -4,7 +4,7 @@ Version: 0.1.0
 Authors@R: c(person("Catherine", "Hurley", email = "catherine.hurley@mu.ie", role = c("aut", "cre")),person("Mark", "OConnell", email = "mark_ajoc@yahoo.ie", role = c( "aut")),person("Katarina", "Domijan", email = "katarina.domijan@mu.ie", role = c("aut")))
 Description: Constructs a shiny app function with interactive displays for conditional visualization of models, 
      data and density functions. An extended version of package 'condvis'. 
-     Mark O'Connell, Catherine B. Hurley, Katarina Domijan. <doi:10.18637/jss.v081.i05>.
+     Mark O'Connell, Catherine B. Hurley, Katarina Domijan (2017) <doi:10.18637/jss.v081.i05>.
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true

@@ -119,6 +119,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     updateCS <- function(){
       s1 <- input$sectionvar
       s2 <- input$sectionvar2
+     
       sectionvars <- rv$sectionvars
 
       newS <- s1
@@ -277,7 +278,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
           if (showsim)
             output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= rv$sim, resetpar=FALSE, plotrows=plotrows)
+              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= rv$sim, 
+                            resetpar=FALSE, plotrows=plotrows)
             })
           else
             output[[plotname]] <- renderPlot({

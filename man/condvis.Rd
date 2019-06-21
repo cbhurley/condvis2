@@ -69,7 +69,7 @@ Creates Condvis Shiny app
 }
 \examples{
 fit <- lm(mpg ~ wt+hp+am, data=mtcars)
-\dontrun{
+if(interactive()){
 condvis(mtcars,fit, response="mpg",sectionvars="wt", conditionvars=c("am", "hp"), pointColor ="red")
 }
 }
