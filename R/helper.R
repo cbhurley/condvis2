@@ -185,7 +185,9 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
   s <-shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
-  runApp(s)
+  if(interactive()) 
+    runApp(s) 
+   else s
 }
 
 
