@@ -184,7 +184,8 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
-  shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
+  s <-shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
+  runApp(s)
 }
 
 

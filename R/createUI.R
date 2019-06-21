@@ -13,7 +13,7 @@
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional regression surface if possible.
 
-#'@return the UI
+#'@return a dataframe of conditions
 createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1,thresholdmax, tours,probs,
                        view3d){
   colorvars <- sapply(data, is.factor)
@@ -44,6 +44,7 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
     tags$head(tags$style(HTML("
         .selectize-input, .selectize-dropdown {
                               font-size: 12px;}"))),
+    tags$head(tags$style("#quit{font-size: 12px;}")),
 
     sidebarLayout(sidebarPanel(
       # selectInput(inputId = "sectionvar",
@@ -58,8 +59,8 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
                                # tags$br(),
                                verbatimTextOutput("conditionInfo"),
                                width=4,
-                               tags$head(tags$style("#conditionInfo{font-size: 9px;}"))
-                               # actionButton("quit", "Return conditions")
+                               tags$head(tags$style("#conditionInfo{font-size: 9px;}")),
+                                actionButton("quit", "Return conditions")
                                ),
 
 

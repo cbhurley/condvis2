@@ -29,7 +29,7 @@ createCVUI(CVfit, data, sectionvars, preds = NULL, pointColor,
 \item{view3d}{Logical; if \code{TRUE}, includes option for a three-dimensional regression surface if possible.}
 }
 \value{
-the UI
+a dataframe of conditions
 }
 \description{
 Constructs UI for Condvis
