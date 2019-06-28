@@ -130,7 +130,7 @@ kmeansPath<- function(data,fits=NULL, length=10, reorder=TRUE,conditionvars=NULL
 
 #' @describeIn condtour Returns a path using pam medoids from package cluster
 #' @export
-#'
+
 pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
   if (length(conditionvars)==0) conditionvars <- NULL
   if (length > nrow(data)) {
@@ -152,7 +152,7 @@ pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,..
 
 #' @describeIn condtour Returns a path using clara medoids from package cluster
 #' @export
-#'
+
 claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
   if (length(conditionvars)==0) conditionvars <- NULL
   # data must be numeric
@@ -208,7 +208,7 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
 
 #'@describeIn condtour Returns a path showing biggest absolute residuals from fits.
 #'@export
-#'
+
 lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
   # this one should be fixed to work with CVpredict and response for data
   # removed from ui for the moment
@@ -254,7 +254,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
 
 #'@describeIn condtour Returns a path showing biggest difference in fits
 #'@export
-#'
+
 diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length > nrow(data)) {
@@ -307,8 +307,8 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
 }
 
 #' @describeIn condtour Returns a path showing highest scores
-#'  @export
-#'
+#' @export
+
 createPath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
   if (length(conditionvars)==0) conditionvars <- NULL
   # find rows with the highest score values
@@ -329,10 +329,9 @@ createPath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
 #'
 #' @param x a numeric or factor vector or dataframe
 #' @param ninterp number of interpolated steps
-#'
 #' @return interpolated version of x
 #' @export
-#'
+
 
 pathInterpolate <-function (x, ninterp=4){
   if (ninterp < 0)

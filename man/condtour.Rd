@@ -82,6 +82,5 @@ Paths are reordered using dser from package DendSer.
 \item \code{diffitsPath}: Returns a path showing biggest difference in fits
 
 \item \code{createPath}: Returns a path showing highest scores
-@export
 }}
 
