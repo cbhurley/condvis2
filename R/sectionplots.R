@@ -665,7 +665,6 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
        o <- attr(cols, "order")
     xo <- which(!(1:nrow(CVdata) %in% o))
     o <- c(o,xo)
-    
     plot(CVdata[o,], col=cols[o],pch=20,...)
   
   }
