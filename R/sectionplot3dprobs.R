@@ -121,71 +121,71 @@ myglyph2a <-
 
 sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols,
                           theta3d, phi3d,density=FALSE,zlim=NULL,predictArgs=NULL,showdata,... ){
-
-
-
-
+  
+  
+  
+  
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
       tck = -.01)
-
+  
   if (is.null(zlim))
     if (density){
       ymax <- sapply(fitnames, function(fn) max(grid[[fn]]))
       zlim <- c(0, max(ymax))
-      }
+    }
   else zlim <- range(CVdata[[response]])
-
+  
   if (is.null(zlim))
     fitcolfn <- colorfn(CVdata[[response]], density=density)
   else fitcolfn <- colorfn(zlim, density=density)
-
+  
   v1 <- sectionvar[1]
   v2 <- sectionvar[2]
   if (showdata){
-  pcols <- weightcolor(CVdata$pointCols, sim)
-  o <- attr(pcols, "order")
-  CVdata1 <- CVdata[o,]
-  pcols1 <- pcols[o]
+    pcols <- weightcolor(CVdata$pointCols, sim)
+    o <- attr(pcols, "order")
+    CVdata1 <- CVdata[o,]
+    pcols1 <- pcols[o]
   }
   else o <- NULL
   #par(mfrow=c(1, length(fitnames)))
+  
   m <- rbind(seq(along=fitnames), length(fitnames)+1)
-
+  
   layout(mat = m,heights = c(.9,.1))
   preds <- names(grid)
   preds <- preds[1:(length(preds) - length(fitnames))]
   for (w in seq(along=fitnames)){
-   # yhat <- CVpredict(CVfit[[w]],CVdata[,preds])
-  z <- matrix(grid[[fitnames[w]]], ncol = 20L, byrow = FALSE)
-  zfacet <- (z[-1, -1] + z[-1, -ncol(z)] + z[-nrow(z), -1]
-             + z[-nrow(z), -ncol(z)]) / 4
-  colorfacet <- fitcolfn(zfacet)
-
-
-
-  persp.object <-
-    suppressWarnings(persp(x = unique(grid[, v1]), y = unique(grid[, v2]),
-                           border = rgb(0.3, 0.3, 0.3), lwd= 0.1, z = z,
-                           col = colorfacet, zlim = zlim,
-                           xlab = v1, ylab=v2, zlab=response,
-                           d = 10, ticktype = "detailed", main = fitnames[w],
-                           theta = theta3d, phi = phi3d))
-
-  if (length(o) > 0 && !density && showdata){
-
-    # yhat <- yhat[o]
-    yhat <- do.call(CVpredict,  c(list(CVfit[[w]],CVdata[o,preds]), predictArgs[[w]]))
-
-    points(trans3d(CVdata1[,v1], CVdata1[,v2], CVdata1[,response],
-                   pmat = persp.object), col = pcols1, pch = 20)
-
-    linestarts <- trans3d(CVdata1[,v1], CVdata1[,v2], CVdata1[,response], pmat = persp.object)
-    lineends <- trans3d(CVdata1[,v1], CVdata1[,v2], yhat, pmat = persp.object)
-    segments(x0 = linestarts$x, y0 = linestarts$y, x1 = lineends$x,
-             y1 = lineends$y, col = pcols1)
+    # yhat <- CVpredict(CVfit[[w]],CVdata[,preds])
+    z <- matrix(grid[[fitnames[w]]], ncol = 20L, byrow = FALSE)
+    zfacet <- (z[-1, -1] + z[-1, -ncol(z)] + z[-nrow(z), -1]
+               + z[-nrow(z), -ncol(z)]) / 4
+    colorfacet <- fitcolfn(zfacet)
+    
+    
+    persp.object <-
+      suppressWarnings(persp(x = unique(grid[, v1]), y = unique(grid[, v2]),
+                             border = rgb(0.3, 0.3, 0.3), lwd= 0.1, z = z,
+                             col = colorfacet, zlim = zlim,
+                             xlab = v1, ylab=v2, zlab=response,
+                             d = 10, ticktype = "detailed", main = fitnames[w],
+                             theta = theta3d, phi = phi3d))
+    
+    if (length(o) > 0 && !density && showdata){
+      
+      # yhat <- yhat[o]
+      yhat <- do.call(CVpredict,  c(list(CVfit[[w]],CVdata[o,preds]), predictArgs[[w]]))
+      
+      points(trans3d(CVdata1[,v1], CVdata1[,v2], CVdata1[,response],
+                     pmat = persp.object), col = pcols1, pch = 20)
+      
+      linestarts <- trans3d(CVdata1[,v1], CVdata1[,v2], CVdata1[,response], pmat = persp.object)
+      lineends <- trans3d(CVdata1[,v1], CVdata1[,v2], yhat, pmat = persp.object)
+      segments(x0 = linestarts$x, y0 = linestarts$y, x1 = lineends$x,
+               y1 = lineends$y, col = pcols1)
+    }
   }
-  }
-  legendn(fitcolfn)
-   par(mfrow=c(1,1))
+    legendn(fitcolfn)
+  par(mfrow=c(1,1))
 }

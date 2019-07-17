@@ -15,7 +15,7 @@
 #' @param thresholdmax maximum value allowed of threshold.
 #' @param linecols vector of colors to be used for fits
 #' @param showsim if TRUE, shows sim in conditionplots with points
-#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
+#' @param dataplot "pcp" or "pairs". Used when there is no response, or more than two sectionvars.
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional  regression surface if possible.
 #' @param theta3d,phi3d Angles defining the viewing direction. \code{theta3d} gives the azimuthal direction and \code{phi3d} the colatitude. See \code{\link[graphics]{persp}}.

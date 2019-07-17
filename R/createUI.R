@@ -4,6 +4,7 @@
 #' Constructs UI for Condvis
 #' @param CVfit a list of fits
 #' @param data a dataset
+#' @param response name of response variable
 #' @param preds names of predictors
 #' @param sectionvars names of sectionvars
 #' @param pointColor a color, or the name of variable to be used for coloring
@@ -14,10 +15,11 @@
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional regression surface if possible.
 
 #'@return a dataframe of conditions
-createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1,thresholdmax, tours,probs,
+createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,threshold=1,thresholdmax, tours,probs,
                        view3d){
   colorvars <- sapply(data, is.factor)
   colorvars <- union(pointColor, names(data)[colorvars])
+  responsePlot <- !is.null(response) & length(sectionvars) <=2
   if (nrow(data) <= 1000)
   tours1 <- list("Random"= "randomPath",
        "Kmeans"= "kmeansPath",
@@ -64,14 +66,14 @@ createCVUI <- function(CVfit,data,sectionvars,preds=NULL, pointColor,threshold=1
                                ),
 
 
-    mainPanel(fluidRow(if (!is.null(CVfit)) column(3, offset=1,
+    mainPanel(fluidRow(if (responsePlot) column(3, offset=1,
                               selectInput(inputId = "sectionvar",
                                           label = "Choose a sectionvar",
                                           choices = preds,
                                           width=220,
                                           selected = sectionvars[1]
                               )),
-                       if (!is.null(CVfit)) column(3, offset=1,uiOutput("select2")),
+                       if (responsePlot) column(3, offset=1,uiOutput("select2")),
                        column(3, offset=1,
                               selectInput(inputId = "colourvar",
                                           label = "Choose a colourvar",

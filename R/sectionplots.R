@@ -14,13 +14,13 @@
 #' @param CVfit a fit or list of fits
 #' @param response name of response variable
 #' @param preds names of predictors
-#' @param sectionvar section variable
+#' @param sectionvar section variable, or variables.
 #' @param conditionvals conditioning values. A vector/list or dataframe with one row
 #' @param pointColor a color, vector of colors,or the name of variable to be used for coloring
 #' @param sim vector of similarity weights
 #'@param threshold used for similarity weights, defaults to 1.
 #' @param linecols vector of line colours
-#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
+#' @param dataplot "pcp" or "pairs". Used when there is no response, or more than two sectionvars.
 #'@param gridsize used to construct grid of fitted values.
 #'@param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes. Only available with two numeric sectionvars and the model's predict method provides this.
 #' @param view3d Logical; if \code{TRUE} plots a three-dimensional regression surface if possible.
@@ -66,10 +66,10 @@
 sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,conditionvals,pointColor="steelblue",
                         sim=NULL,threshold=1,linecols=NULL,
                         dataplot="pcp", gridsize=50, probs=FALSE, view3d=FALSE,
-                        theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=2,
+                        theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=1,
                         predictArgs=NULL, resetpar=TRUE, density=FALSE, showdata=density==FALSE,
                         returnCoords=FALSE){
-
+  
   op <- par(no.readonly=TRUE)
   if (resetpar) on.exit(par(op))
   if (view3d) gridsize <- 20
@@ -78,6 +78,9 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
     response <- "density"
     CVdata$density <- runif(nrow(CVdata))
   }
+  if (dataplot %in% c("pairs", "pcp")) dataplot <- get(paste0("sectionPlot", dataplot))
+  else dataplot <- sectionPlotpcp
+  
 
   conditionvars <-setdiff(preds, sectionvar)
 
@@ -85,8 +88,10 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
   conditionvals <- as.data.frame(as.list(conditionvals))
 
   if (!is.null(pointColor)) CVdata <- pointColor2var(CVdata,pointColor)
-
-  if (!is.null(response)){
+  sectionPlotFN <- NULL
+  # responsePlot <- !is.null(response) & length(sectionvar) <=2 & !is.null(CVfit)
+  responsePlot <- !is.null(response) & length(sectionvar) <=2 
+  if (responsePlot){
   sp <- vector("character",3)
   if (is.numeric(CVdata[[response]])) sp[1] <- "n" else sp[1] <- "f"
   if (is.numeric(CVdata[[sectionvar[1]]])) sp[2]<- "n"else sp[2] <- "f"
@@ -102,13 +107,11 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
     if (is.null(sim) )
       sim <- similarityweight(conditionvals,CVdata[conditionvars], threshold=threshold)
 
-    if (dataplot %in% c("pairs", "pcp")) dataplot <- get(paste0("sectionPlot", dataplot))
-    else dataplot <- sectionPlotpcp
     cols <- weightcolor(CVdata$pointCols, sim)
     # CVdata$pointCols <- NULL
-    if (length(sectionvar)==1)
+    if (responsePlot)
       sectionPlotFN(CVdata,NULL,sectionvar,response, sim,NULL,linecols=linecols,
-                    xlim=xlim,ylim=ylim,pointSize=pointSize)
+                    xlim=xlim,ylim=ylim,pointSize=pointSize,showdata=TRUE,returnCoords=returnCoords)
       else
     dataplot(CVdata,c(response,sectionvar),  cols,sim)
   }
@@ -127,6 +130,8 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
             (length(levels(CVdata[[response]])) > 2) ){
         sectionPlotpnn(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
         }
+    else if (!responsePlot)
+      dataplot(CVdata,c(response,sectionvar),  cols,sim)
        else {
          sectionvals <- lapply(sectionvar, function(p)
             if ( is.factor(CVdata[[p]]))
@@ -171,11 +176,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
             grid[[fitname]] <- f
           }
           }
-
-          sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
-         
-          # if (type=="gg") sectionPlotFN <-paste0("gg",sectionPlotFN)
-          if (sp == "nnn" && view3d){
+          if (sp == "nnn" && view3d  && !is.null(CVfit)){
             sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
                              theta3d = theta3d, phi3d = phi3d, xlim=xlim,ylim=ylim, zlim=zlim,
                           pointSize=pointSize, density=density,showdata=showdata, predictArgs=predictArgs)
@@ -202,13 +203,7 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
       tck = -.01)
 
   # if (is.null(fitcolfn)) fitcolfn <- colorfn(CVdata[[response]])
-  gx <- grid[[sectionvar[1]]]
-  gy <- grid[[sectionvar[2]]]
-  xoffset <- gx[2]- gx[1]
-  yoffset<- min(gy[gy>gy[1]]) - gy[1]
-
-  fudgex <- .07*xoffset
-  fudgey <- .07*yoffset
+  
 
   if (showdata){
   pcols <- CVdata$pointCols
@@ -217,15 +212,18 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
   pcolso <- pcols[o]
   # pfillso = fitcolfn(CVdata[o,response])
 
-  if (!density)
-  pfillso = fitcolfn(CVdata[o,response])
-  else pfillso <- NULL
+  if (!density){
+    pfill <- fitcolfn(CVdata[,response])
+    pfillso <- pfill[o]
+  }
+   else pfillso <- NULL
 
   CVdata1 <- CVdata[o,]
   pointsize <- (sim[o]*.7 + .3)*pointSize
   }
   m <- rbind(seq(along=fitnames), length(fitnames)+1)
 
+  if (is.null(fitnames)) fitnames <- ""
   if(isRunning() & length(fitnames)==1) {
     m <- rbind(c(0,1,0), c(0,2,0))
     layout(mat = m,heights = c(.9,.1), widths=c(.17,.66,.17))
@@ -234,16 +232,24 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
   layout(mat = m,heights = c(.9,.1))
   }
   
-  # if(isRunning() & length(fitnames)==1) {
-  #   
-  #   pmar <- par("mar")
-  #   pmar[2]<- 9
-  #   pmar[4]<- 9
-  #   par(mar=pmar)
-  # }
-  
-  
-  for (i in seq(along=fitnames)){
+  if (fitnames==""){
+    if (showdata){
+    xlim<- range(CVdata[[sectionvar[1]]])
+    ylim<- range(CVdata[[sectionvar[2]]])
+     plot(CVdata1[[sectionvar[1]]],CVdata1[[sectionvar[2]]],bg=pfillso,col=pcolso, pch=21, cex=pointsize,
+        xlab=sectionvar[1],ylab=sectionvar[2] ,main="",xlim=xlim,ylim=ylim)
+    }
+  }
+  else {
+    gx <- grid[[sectionvar[1]]]
+    gy <- grid[[sectionvar[2]]]
+    xoffset <- gx[2]- gx[1]
+    yoffset<- min(gy[gy>gy[1]]) - gy[1]
+    
+    fudgex <- .07*xoffset
+    fudgey <- .07*yoffset
+    
+    for (i in seq(along=fitnames)){
     gf <- grid[[fitnames[i]]]
 
 
@@ -255,6 +261,7 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
     rect(gx-xoffset, gy-yoffset,gx+xoffset+fudgex,gy+yoffset+fudgey, col=col,lty=0)
     if (showdata)
     points(CVdata1[[sectionvar[1]]],CVdata1[[sectionvar[2]]],bg=pfillso,col=pcolso, pch=21, cex=pointsize)
+    }
   }
 }
 
@@ -281,17 +288,22 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
       tck = -.01,
-      mfrow = c(1, length(fitnames)))
-
-
+      mfrow = c(1, max(1,length(fitnames))))
+ 
   #pcols <- alpha(CVdata[["pointCols"]],sim)
+  pcols <- CVdata$pointCols
   xvar <- sectionvar[1]
   fac <- sectionvar[2]
   faclevels <- levels(CVdata[[fac]])
-  if (length(linecols) < length(faclevels))
-    if (length(faclevels) <= 8)
-      linecols <- rev(RColorBrewer::brewer.pal(max(3, length(faclevels)), "Dark2"))[1:length(faclevels)]
-  else linecols <- colors()[1:length(faclevels)]
+  CVdata <- pointColor2var(CVdata,fac)
+  pfill <- CVdata$pointCols
+  linecols <- pfill[match(faclevels,CVdata[[fac]])]
+
+    
+  # if (length(linecols) < length(faclevels))
+  #   if (length(faclevels) <= 8)
+  #     linecols <- rev(RColorBrewer::brewer.pal(max(3, length(faclevels)), "Dark2"))[1:length(faclevels)]
+  # else linecols <- colors()[1:length(faclevels)]
 
 
   x <- CVdata[[xvar]]
@@ -299,9 +311,11 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
   xlim <- range(x)
   ylim <- range(y)
   if (showdata){
-  pcols <- weightcolor(CVdata$pointCols, sim)
+  pcols <- weightcolor(pcols, sim)
+  pfill <- weightcolor(pfill, sim)
   o <- attr(pcols, "order")
   pcols <- pcols[o]
+  pfill <- pfill[o]
   x <- x[o]
   y <- y[o]
   if (!is.null(jitter)){
@@ -324,12 +338,13 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
     ppar[1] <- min(ppar[1], 1.4*ppar[2])
     par(pin=ppar)
   }
+  if (is.null(fitnames)) fitnames <- ""
 
   for (j in seq(along=fitnames)){
     fn <- fitnames[j]
 
-    plot(x, y, col=pcols, xlim=xlim,ylim=ylim,
-         xlab=xvar, ylab=ylab,pch=20,cex=pointSize,
+    plot(x, y, col=pcols, bg=pfill,xlim=xlim,ylim=ylim,
+         xlab=xvar, ylab=ylab,pch=21,cex=pointSize,
          axes= isTRUE(drawaxes),
          main=fitnames[j])
     if (is.function(drawaxes))
@@ -479,13 +494,14 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
    #pcols <- alpha(CVdata[["pointCols"]],sim)
    x <- CVdata[[sectionvar]]
    y <- CVdata[[response]]
+   
    if (density && is.null(ylim)){
      ymax <- sapply(fitnames, function(fn) max(grid[[fn]]))
      ylim <- c(0, max(ymax))
      y <- y*ymax/10
    }
-   if (is.null(xlim))  xlim <- range(x)
 
+   if (is.null(xlim))  xlim <- range(x)
    if (is.null(ylim))  ylim <- range(y)
 
 
@@ -512,12 +528,7 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
      pcols <- NULL
      clickCoords <- NULL
    }
-   # if(isRunning()) {
-   #  pmar <- par("mar")
-   #  pmar[2]<- 9
-   #  pmar[4]<- 9
-   #  par(mar=pmar)
-   # }
+  
    
    if(isRunning()) {
      ppar <- par("pin")
@@ -530,8 +541,9 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
    #   layout(mat = m,heights = 1, widths=c(.17,.66,.17))
    # }
    # zx <<- par()
+   
     plot(x, y, col=pcols,xlim=xlim,ylim=ylim,
-       xlab=xlab, ylab=ylab,pch=20,cex=pointSize,main="",...)
+       xlab=xlab, ylab=ylab,pch=19,cex=pointSize,main="",...)
   if (!is.null(grid)){
 
   for (i in 1:length(fitnames))
@@ -597,16 +609,16 @@ sectionPlotfn <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
 sectionPlotff <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols,xlim,ylim,...){
     levs <- levels(CVdata[[sectionvar]])
    levsr <- levels(CVdata[[response]])
+   
    if (!is.null(grid)){
    fitp <- any(sapply(grid[,fitnames], function(p) is.double(p) && all(p >= 0) && all(p <=1)))
-
-
-   CVdata <- makeYnumeric(CVdata,response, fitp)
-   CVdata[[sectionvar]] <- as.numeric(CVdata[[sectionvar]])
-
    grid <- makeFnumeric(grid,fitnames, fitp)
    }
-   else fitp <- FALSE
+   else 
+     fitp <- FALSE
+     CVdata <- makeYnumeric(CVdata,response, fitp)
+     CVdata[[sectionvar]] <- as.numeric(CVdata[[sectionvar]])
+     
 
    if (fitp) {
      ticy <- (0:4)/4
@@ -649,11 +661,13 @@ makeFnumeric <- function(grid, fitnames, prob=FALSE){
 
 
 sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
-  if (length(sectionvars) ==1){
-    index <- 1:nrow(CVdata)
-    CVdata <- rbind(index,CVdata)
-  }
-  else CVdata <- CVdata[,sectionvars]
+  
+  CVdata <- CVdata[,sectionvars,drop=FALSE]
+  # if (length(sectionvars) ==1){
+  #   index <- 1:nrow(CVdata)
+  #   CVdata$index <-index
+  #   CVdata <- CVdata[,2:1]
+  # }
   # for ( i in 1:ncol(CVdata)){
   #   if (is.factor(CVdata[[i]]))
   #     CVdata[[i]]<- as.numeric(CVdata[[i]])
@@ -665,16 +679,19 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
        o <- attr(cols, "order")
     xo <- which(!(1:nrow(CVdata) %in% o))
     o <- c(o,xo)
-    plot(CVdata[o,], col=cols[o],pch=20,...)
+    plot(CVdata[o,,drop=FALSE], col=cols[o],pch=19,...)
   
   }
 }
 sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,...){
+  
+  CVdata <- CVdata[,sectionvars,drop=FALSE]
   if (length(sectionvars) ==1){
     index <- 1:nrow(CVdata)
-    CVdata <- rbind(index,CVdata)
+    CVdata$index <-index
+    CVdata <- CVdata[,2:1]
   }
-  else CVdata <- CVdata[,sectionvars]
+ 
   for ( i in 1:ncol(CVdata)){
     if (is.factor(CVdata[[i]]))
       CVdata[[i]]<- as.numeric(CVdata[[i]])
@@ -819,14 +836,14 @@ legendn <- function(colorY){
 
 legendf <- function(colorY){
   r <- attr(colorY, "levels")
-  if (par("pin")[1]> 5)
-    inset<- 20
-  else inset <- 12
   
+  insetx <- par("pin")[1]*1.5
+ 
+  insety <- par("pin")[2]*.5
   z1<- seq(along=r)
   z2<- z1+1
     rectcols <- colorY(r)
-  par(mar=c(1.5,inset,.5,inset))
+  par(mar=c(insety,insetx,.5,insetx))
   plot( c(z1[1], z2[length(z2)]),c(0,1),  ann=FALSE, axes=F, type="n")
 
   rect(z1,0,z2,1,col=rectcols, lty=0)

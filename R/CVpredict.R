@@ -717,3 +717,29 @@ CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthre
   }
   calcPred(ptype,p, NULL, ylevels,ptrans)
 }
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
+  if (is.null(ylevels))
+    ylevels <- fit$lvl 
+  
+  if (ptype=="pred" && is.null(ylevels)){
+    # numeric prediction
+    p <- predict(fit,...,type="numeric")[[1]]
+  }
+  else if (ptype=="pred" && is.numeric(pthreshold)){
+    # calc probmatrix for class prediction using threshold
+    p <- as.matrix(predict(fit,...,type="prob"))
+  }
+  else if (ptype=="pred"){
+    # calc predicted classes
+    p <- predict(fit,...,type="class")[[1]]
+  }
+  else {
+    # ptype is "prob" or "probmatrix", calculate probs
+    p <- as.matrix(predict(fit,...,type="prob"))
+  }
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
+}
+

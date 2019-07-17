@@ -37,7 +37,7 @@
 #' @param theta3d,phi3d Angles defining the viewing direction for 3d surface. \code{theta3d}
 #'   gives the azimuthal direction and \code{phi3d} the colatitude. See
 #'   \code{\link[graphics]{persp}}.
-#' @param dataplot "pcp" or "pairs". If CVfit is NULL, used to plot the data
+#' @param dataplot "pcp" or "pairs". Used when there is no response, or more than two sectionvars.
 #' @param tours A list of pre-calculated tours
 #' @param predictArgs a list with one entry per fit, giving arguments for CVpredict
 #' @param xlim passed on to sectionplot
@@ -141,7 +141,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   } else {
     probs <- FALSE
     view3d <- FALSE
-    response <- NULL
+    # response <- NULL
     if (!is.null(sectionvars) & !is.null(conditionvars))
       preds <- c(sectionvars, conditionvars)
     else if (is.null (conditionvars)){
@@ -175,7 +175,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
 
   if (thresholdmax==0) thresholdmax <-1
   # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
-  ui <- createCVUI(model,data,sectionvars,preds,pointColor,threshold, thresholdmax,tours, probs, view3d)
+  ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours, probs, view3d)
 
   server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit1,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
