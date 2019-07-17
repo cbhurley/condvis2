@@ -38,7 +38,7 @@ createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
 
 \item{showsim}{if TRUE, shows sim in conditionplots with points}
 
-\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
+\item{dataplot}{"pcp" or "pairs". Used when there is no response, or more than two sectionvars.}
 
 \item{probs}{Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.}
 

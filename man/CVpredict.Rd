@@ -27,6 +27,7 @@
 \alias{CVpredict.Mclust}
 \alias{CVpredict.train}
 \alias{CVpredict.bartMachine}
+\alias{CVpredict.model_fit}
 \title{A predict generic function for condvis}
 \usage{
 CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
@@ -111,6 +112,9 @@ CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
 
 \method{CVpredict}{bartMachine}(fit, newdata, ..., type = NULL,
   ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+
+\method{CVpredict}{model_fit}(fit, ..., type = NULL, ptype = "pred",
+  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
 }
 \arguments{
 \item{fit}{A fitted model}
@@ -210,6 +214,8 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 \item \code{train}: CVpredict method
 
 \item \code{bartMachine}: CVpredict method
+
+\item \code{model_fit}: CVpredict method
 }}
 
 \examples{

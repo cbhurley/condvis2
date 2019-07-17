@@ -8,7 +8,7 @@ sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
   conditionvals, pointColor = "steelblue", sim = NULL, threshold = 1,
   linecols = NULL, dataplot = "pcp", gridsize = 50, probs = FALSE,
   view3d = FALSE, theta3d = 45, phi3d = 20, xlim = NULL,
-  ylim = NULL, zlim = NULL, pointSize = 2, predictArgs = NULL,
+  ylim = NULL, zlim = NULL, pointSize = 1, predictArgs = NULL,
   resetpar = TRUE, density = FALSE, showdata = density == FALSE,
   returnCoords = FALSE)
 }
@@ -21,7 +21,7 @@ sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
 
 \item{preds}{names of predictors}
 
-\item{sectionvar}{section variable}
+\item{sectionvar}{section variable, or variables.}
 
 \item{conditionvals}{conditioning values. A vector/list or dataframe with one row}
 
@@ -33,7 +33,7 @@ sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
 
 \item{linecols}{vector of line colours}
 
-\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
+\item{dataplot}{"pcp" or "pairs". Used when there is no response, or more than two sectionvars.}
 
 \item{gridsize}{used to construct grid of fitted values.}
 

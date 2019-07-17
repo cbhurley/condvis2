@@ -4,13 +4,15 @@
 \alias{createCVUI}
 \title{Constructs UI for Condvis}
 \usage{
-createCVUI(CVfit, data, sectionvars, preds = NULL, pointColor,
+createCVUI(CVfit, data, response, sectionvars, preds = NULL, pointColor,
   threshold = 1, thresholdmax, tours, probs, view3d)
 }
 \arguments{
 \item{CVfit}{a list of fits}
 
 \item{data}{a dataset}
+
+\item{response}{name of response variable}
 
 \item{sectionvars}{names of sectionvars}
 

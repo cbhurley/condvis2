@@ -46,7 +46,7 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
 gives the azimuthal direction and \code{phi3d} the colatitude. See
 \code{\link[graphics]{persp}}.}
 
-\item{dataplot}{"pcp" or "pairs". If CVfit is NULL, used to plot the data}
+\item{dataplot}{"pcp" or "pairs". Used when there is no response, or more than two sectionvars.}
 
 \item{tours}{A list of pre-calculated tours}
 
