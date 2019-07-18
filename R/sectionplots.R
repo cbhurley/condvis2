@@ -36,7 +36,7 @@
 #'@param returnCoords  If TRUE, returns coordinates for some plots
 #' @return plotted coordinates, for some plots
 #' @export
-#' 
+#' @importFrom colorspace  lighten
 #' @examples
 #' #Fit a model. 
 #' f <- lm(Fertility~ ., data=swiss)
@@ -81,113 +81,122 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
   if (dataplot %in% c("pairs", "pcp")) dataplot <- get(paste0("sectionPlot", dataplot))
   else dataplot <- sectionPlotpcp
   
-
+  
   conditionvars <-setdiff(preds, sectionvar)
-
+  
   if (!is.data.frame(conditionvals))
-  conditionvals <- as.data.frame(as.list(conditionvals))
-
+    conditionvals <- as.data.frame(as.list(conditionvals))
+  
   if (!is.null(pointColor)) CVdata <- pointColor2var(CVdata,pointColor)
   sectionPlotFN <- NULL
   # responsePlot <- !is.null(response) & length(sectionvar) <=2 & !is.null(CVfit)
   responsePlot <- !is.null(response) & length(sectionvar) <=2 
   if (responsePlot){
-  sp <- vector("character",3)
-  if (is.numeric(CVdata[[response]])) sp[1] <- "n" else sp[1] <- "f"
-  if (is.numeric(CVdata[[sectionvar[1]]])) sp[2]<- "n"else sp[2] <- "f"
-  if (length(sectionvar)> 1)
-    if (is.numeric(CVdata[[sectionvar[2]]])) sp[3]<- "n"else sp[3] <- "f"
-  sp <- paste(sp,collapse="")
-  sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
+    sp <- vector("character",3)
+    if (is.numeric(CVdata[[response]])) sp[1] <- "n" else sp[1] <- "f"
+    if (is.numeric(CVdata[[sectionvar[1]]])) sp[2]<- "n"else sp[2] <- "f"
+    if (length(sectionvar)> 1)
+      if (is.numeric(CVdata[[sectionvar[2]]])) sp[3]<- "n"else sp[3] <- "f"
+      sp <- paste(sp,collapse="")
+      sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
   }
   else sp <- NULL
-
-
+  
+  
   if (is.null(CVfit) ) {
     if (is.null(sim) )
       sim <- similarityweight(conditionvals,CVdata[conditionvars], threshold=threshold)
-
+    
     cols <- weightcolor(CVdata$pointCols, sim)
     # CVdata$pointCols <- NULL
     if (responsePlot)
       sectionPlotFN(CVdata,NULL,sectionvar,response, sim,NULL,linecols=linecols,
                     xlim=xlim,ylim=ylim,pointSize=pointSize,showdata=TRUE,returnCoords=returnCoords)
-      else
-    dataplot(CVdata,c(response,sectionvar),  cols,sim)
+    else
+      dataplot(CVdata,c(response,sectionvar),  cols,sim)
   }
   else {
     if (is.null(sim) && showdata)
       sim <- similarityweight(conditionvals,CVdata[conditionvars], threshold=threshold)
-
+    
     if (!inherits(CVfit, "list"))  CVfit <- list(CVfit)
     if (is.null(names(CVfit)))
       names(CVfit) <- paste0("fit", 1:length(CVfit))
     fitnames <- names(CVfit)
     # hasprob <- sapply(1:length(CVfit), 
     #                       function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]]))
-
-        if (sp == "fnn" && probs && 
-            (length(levels(CVdata[[response]])) > 2) ){
-        sectionPlotpnn(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
-        }
+    
+    if (sp == "fnn" && probs && 
+        (length(levels(CVdata[[response]])) > 2) ){
+      sectionPlotpnn(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs)
+    }
     else if (!responsePlot)
       dataplot(CVdata,c(response,sectionvar),  cols,sim)
-       else {
-         sectionvals <- lapply(sectionvar, function(p)
-            if ( is.factor(CVdata[[p]]))
-              levels(CVdata[[p]])
-            else  seq(min(CVdata[[p]]),max(CVdata[[p]]),length.out=gridsize)
-          )
-
-         names(sectionvals)<- sectionvar
-         sectionvals <- expand.grid(sectionvals)
-         grid <- conditionvals
-         class(grid)<- "list"
-         grid[sectionvar] <- sectionvals[sectionvar]
-         grid <- as.data.frame(grid)
-         grid1 <- grid
-         
-         if (!is.null(response) && is.factor(CVdata[[response]]))
-            ylevels <- levels(CVdata[[response]])
-          else ylevels <- NULL
-         
-         if (length(predictArgs)!= length(CVfit)) predictArgs<- NULL
-           
-         if (!is.null(ylevels)  & probs)
-           if (!is.null(predictArgs))
-             predictArgs <- lapply(predictArgs, function(x) { x$ptype <- "prob"; x})
-           else predictArgs <- lapply(CVfit, function(x) list(ptype="prob"))
-         
-
-          if (!is.null(predictArgs)){
-            for (i  in 1:length(CVfit)){
-              fitname <- fitnames[i]
-              f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
-
-              if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
-              grid[[fitname]] <- f
-            }
-          }
-          else {
-          for (i  in 1:length(CVfit)){
-            fitname <- fitnames[i]
-            f <- CVpredict(CVfit[[i]], grid1, ylevels=ylevels)
-            if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
+    else {
+      sectionvals <- lapply(sectionvar, function(p)
+        if ( is.factor(CVdata[[p]]))
+          levels(CVdata[[p]])
+        else  seq(min(CVdata[[p]]),max(CVdata[[p]]),length.out=gridsize)
+      )
+      
+      names(sectionvals)<- sectionvar
+      sectionvals <- expand.grid(sectionvals)
+      grid <- conditionvals
+      class(grid)<- "list"
+      grid[sectionvar] <- sectionvals[sectionvar]
+      grid <- as.data.frame(grid)
+      grid1 <- grid
+      
+      if (!is.null(response) && is.factor(CVdata[[response]]))
+        ylevels <- levels(CVdata[[response]])
+      else ylevels <- NULL
+      
+      if (length(predictArgs)!= length(CVfit)) predictArgs<- NULL
+      
+      if (!is.null(ylevels)  & probs)
+        if (!is.null(predictArgs))
+          predictArgs <- lapply(predictArgs, function(x) { x$ptype <- "prob"; x})
+      else predictArgs <- lapply(CVfit, function(x) list(ptype="prob"))
+      
+      
+      if (!is.null(predictArgs)){
+        for (i  in 1:length(CVfit)){
+          fitname <- fitnames[i]
+          f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
+          
+          if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
+          
+          if (is.vector(f) | is.factor(f))
             grid[[fitname]] <- f
+          else { 
+            # f should be matrix with cols fit, lowerCI, upperCI
+            grid[[fitname]] <- f[,1]
+            grid[[paste0(fitname, "L")]] <- f[,2]
+            grid[[paste0(fitname, "U")]] <- f[,3]
           }
-          }
-          if (sp == "nnn" && view3d  && !is.null(CVfit)){
-            sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
-                             theta3d = theta3d, phi3d = phi3d, xlim=xlim,ylim=ylim, zlim=zlim,
-                          pointSize=pointSize, density=density,showdata=showdata, predictArgs=predictArgs)
-          }
-          else {
-
-          sectionPlotFN(CVdata,fitnames,sectionvar,response, sim,grid,linecols=linecols,
-                        xlim=xlim,ylim=ylim,zlim=zlim,pointSize=pointSize, density=density,showdata=showdata,
-                        returnCoords=returnCoords)
-          }
+        }
       }
+      else {
+        for (i  in 1:length(CVfit)){
+          fitname <- fitnames[i]
+          f <- CVpredict(CVfit[[i]], grid1, ylevels=ylevels)
+          
+          if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
+          grid[[fitname]] <- f
+        }
+      }
+      if (sp == "nnn" && view3d  && !is.null(CVfit)){
+        sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
+                      theta3d = theta3d, phi3d = phi3d, xlim=xlim,ylim=ylim, zlim=zlim,
+                      pointSize=pointSize, density=density,showdata=showdata, predictArgs=predictArgs)
+      }
+      else {
+        
+        sectionPlotFN(CVdata,fitnames,sectionvar,response, sim,grid,linecols=linecols,
+                      xlim=xlim,ylim=ylim,zlim=zlim,pointSize=pointSize, density=density,showdata=showdata,
+                      returnCoords=returnCoords)
+      }
+    }
   }
 }
 
@@ -546,8 +555,16 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
        xlab=xlab, ylab=ylab,pch=19,cex=pointSize,main="",...)
   if (!is.null(grid)){
 
-  for (i in 1:length(fitnames))
-    lines(grid[,sectionvar], grid[,fitnames[i]], col=linecols[i], lwd=2.5)
+  for (i in 1:length(fitnames)){
+    fn <- fitnames[i]
+    lines(grid[,sectionvar], grid[,fn], col=linecols[i], lwd=2.5)
+    
+    if (paste0(fn,"L") %in% names(grid))
+      lines(grid[,sectionvar], grid[,paste0(fn,"L")], col=lighten(linecols[i],.3), lwd=1,lty=2)
+    if (paste0(fn,"U") %in% names(grid))
+      lines(grid[,sectionvar], grid[,paste0(fn,"U")], col=lighten(linecols[i],.3), lwd=1,lty=2)
+      
+  }
     if (length(fitnames)> 1)
       legend("topright", legend = fitnames, col = linecols, lwd=2.5,bty="n", cex=.7)
   }

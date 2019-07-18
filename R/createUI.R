@@ -85,7 +85,7 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
                      ),
 
               if (probs) fluidRow(
-                  column(2, offset=1, checkboxInput("showprobs", "Show probs", FALSE))),
+                  column(3, offset=1, checkboxInput("showprobs", "Show probs", FALSE))),
               if (view3d)
                 conditionalPanel(
                   condition = "input.sectionvar2 != 'None' ",

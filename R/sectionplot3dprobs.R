@@ -155,7 +155,9 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
   
   layout(mat = m,heights = c(.9,.1))
   preds <- names(grid)
-  preds <- preds[1:(length(preds) - length(fitnames))]
+  fitpos <- match(fitnames[1], preds)
+  preds <- preds[1:(fitpos - 1)]
+  
   for (w in seq(along=fitnames)){
     # yhat <- CVpredict(CVfit[[w]],CVdata[,preds])
     z <- matrix(grid[[fitnames[w]]], ncol = 20L, byrow = FALSE)
@@ -175,7 +177,10 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
     if (length(o) > 0 && !density && showdata){
       
       # yhat <- yhat[o]
-      yhat <- do.call(CVpredict,  c(list(CVfit[[w]],CVdata[o,preds]), predictArgs[[w]]))
+      paw <- predictArgs[[w]]
+      paw$pinterval <- NULL
+      
+      yhat <- do.call(CVpredict,  c(list(CVfit[[w]],CVdata[o,preds]), pinterval=NULL,paw))
       
       points(trans3d(CVdata1[,v1], CVdata1[,v2], CVdata1[,response],
                      pmat = persp.object), col = pcols1, pch = 20)
