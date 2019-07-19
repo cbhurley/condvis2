@@ -228,7 +228,7 @@ sectionPlotd3 <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecols
    else pfillso <- NULL
 
   CVdata1 <- CVdata[o,]
-  pointsize <- (sim[o]*.7 + .3)*pointSize
+  pointsize <- (sim[o]*.7 + .3)*pointSize*1.5
   }
   m <- rbind(seq(along=fitnames), length(fitnames)+1)
 

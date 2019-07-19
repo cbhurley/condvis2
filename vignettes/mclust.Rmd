@@ -192,3 +192,22 @@ knitr::include_graphics(paste0(fpath, "dens3Right2.png"))
 <!-- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5096736/ -->
 
 Click on "Show 3d surface" to get a wireframe plot.
+
+
+# Clustering example
+
+```{r eval=F}
+bankC <- Mclust(banknote[,-1],verbose=F) # picks 3 clusters
+banknote1 <- banknote
+banknote1$cluster <- factor(CVpredict(bankC, banknote))
+
+svars <- c("Top", "Diagonal")
+cvars <- c("Left",    "Right" ,  "Bottom")
+condvis(data = banknote1, model = bankC, 
+        response="cluster", sectionvars=svars,conditionvars=cvars, 
+        pointColor="Status", showsim=TRUE
+)
+```
+
+
+

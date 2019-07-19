@@ -11,7 +11,7 @@ LazyData: true
 Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr,kmed, colorspace
 RoxygenNote: 6.1.1
 Suggests: knitr,
-    rmarkdown,hdrcde,scagnostics, keras, kernlab,mclust,MASS,ks,mgcv,randomForest,parsnip
+    rmarkdown,hdrcde,scagnostics, keras, kernlab,mclust,MASS,ks,mgcv,randomForest,parsnip, mlr
 VignetteBuilder: knitr
 BugReports:	https://github.com/cbhurley/condvis2/issues
 URL:	https://github.com/cbhurley/condvis2

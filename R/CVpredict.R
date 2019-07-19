@@ -11,7 +11,8 @@
 #' @param pthreshold Used for calculating classes from probs, in the two class case
 #' @param ylevels The levels of the response, when it is a factor
 #' @param ptrans A function to apply to the result
-#' @param pinterval NULL, "confidence" or "prediction". Only for lm and parsnip
+#' @param pinterval NULL, "confidence" or "prediction". Only for lm, parsnip, mlr(regression, confidence only)
+#' @param pinterval_level Defaults to 0.95
 #' @param type For some predict methods
 #' @param n.trees Used by CVpredict.gbm, passed to predict
 #' @param s Used by CVpredict.glmnet and CVpredict.cv.glmnet, passed to predict
@@ -45,7 +46,7 @@
 #' CVpredict(f, ptype="probmatrix") # gives prob of both levels
 
 
-CVpredict <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL,pinterval=NULL) {
+CVpredict <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL,pinterval=NULL,pinterval_level=0.95) {
   UseMethod("CVpredict", fit)
 }
 
@@ -127,7 +128,8 @@ calcPred <- function(ptype,pred=NULL, pthreshold=NULL, ylevels=NULL,ptrans=NULL,
 #' @describeIn CVpredict  CVpredict method
 #' @export
 
-CVpredict.default <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pinterval=NULL,ylevels=NULL, ptrans=NULL) {
+CVpredict.default <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pinterval=NULL,pinterval_level=0.95,
+                               ylevels=NULL, ptrans=NULL) {
   p <-drop(predict(fit, newdata, ...))
   calcPred(ptype,p, pthreshold, ylevels,ptrans)
 }
@@ -136,8 +138,9 @@ CVpredict.default <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pin
 #' @describeIn CVpredict  CVpredict method
 #' @export
 
-CVpredict.lm <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pinterval=NULL,ylevels=NULL, ptrans=NULL) {
-  p <-predict(fit, newdata, interval=pinterval,...)
+CVpredict.lm <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, 
+                          pinterval=NULL,pinterval_level=0.95,ylevels=NULL, ptrans=NULL) {
+  p <-predict(fit, newdata, interval=pinterval,level=pinterval_level,...)
   if (is.null(pinterval))
   calcPred(ptype,p, pthreshold, ylevels,ptrans)
   else calcPred(ptype,p[,1], pthreshold, ylevels,ptrans, p[,2:3])
@@ -147,7 +150,8 @@ CVpredict.lm <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pinterva
 #' @describeIn CVpredict  CVpredict method
 #' @export
 
-CVpredict.glm <- function (fit, ..., type="response", ptype="pred", pthreshold=NULL, pinterval=NULL,ylevels=NULL, ptrans=NULL) {
+CVpredict.glm <- function (fit, ..., type="response", ptype="pred", pthreshold=NULL, 
+                           pinterval=NULL,pinterval_level=0.95,ylevels=NULL, ptrans=NULL) {
   if (is.null(ylevels))
     ylevels <- levels(model.frame(fit)[,1])
   #if (length(ylevels) >2) pthreshold <- NULL
@@ -738,7 +742,7 @@ CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthre
 #' @describeIn CVpredict  CVpredict method for parsnip
 #' @export
 CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,
-                                 ptrans=NULL,pinterval=NULL) {
+                                 ptrans=NULL,pinterval=NULL, pinterval_level=0.95) {
   if (is.null(ylevels))
     ylevels <- fit$lvl 
   
@@ -747,7 +751,7 @@ CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NUL
     p <- predict(fit,...,type="numeric")[[1]]
     if (!is.null(pinterval)){
       intype <- if (pinterval=="prediction") "pred_int" else "conf_int"
-      pint <- as.matrix(predict(fit,...,type=intype))
+      pint <- as.matrix(predict(fit,...,type=intype, level=pinterval_level))
       p <- cbind(p,pint)
     }
   }
@@ -764,7 +768,7 @@ CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NUL
     p <- p[,ncol(p)]
     if (!is.null(pinterval)){
       intype <- if (pinterval=="prediction") "pred_int" else "conf_int"
-      pint <- as.matrix(predict(fit,...,type=intype))
+      pint <- as.matrix(predict(fit,...,type=intype, level=pinterval_level))
       # use only interval for last factor level
       npint <- ncol(pint)
       p <- cbind(p,pint[,(npint-1):npint])
@@ -781,9 +785,55 @@ CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NUL
 }
 
 
-# CVpredict.lm <- function (fit,newdata,...,ptype="pred",pthreshold=NULL, pinterval=NULL,ylevels=NULL, ptrans=NULL) {
-#   p <-predict(fit, newdata, interval=pinterval,...)
-#   if (is.null(pinterval))
-#     calcPred(ptype,p, pthreshold, ylevels,ptrans)
-#   else calcPred(ptype,p[,1], pthreshold, ylevels,ptrans, p[,2:3])
-# }
+#' @describeIn CVpredict  CVpredict method for mlr
+#' @export
+CVpredict.WrappedModel <- function (fit, newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,
+                                 ptrans=NULL,pinterval=NULL,pinterval_level=0.95) {
+  if (is.null(ylevels))
+    ylevels <- fit$task.desc$class.levels 
+  newdata <- newdata[,fit$features]
+  fitp <- predict(fit, newdata=newdata,...)
+  if (!(class(fitp)[1] %in% c("PredictionRegr","PredictionClassif","PredictionCluster")))
+    stop(paste("Condvis does not work for class" ,class(fitp)[1]))
+  if (ptype=="pred" && is.null(ylevels)){
+    # numeric prediction
+    p <- mlr::getPredictionResponse(fitp)
+    if (isTRUE(pinterval=="confidence")){
+      
+      se <- mlr::getPredictionSE(fitp)
+      if (!is.null(se)){
+        se <- -se*qnorm((1-pinterval_level)/2)
+        p <- cbind(p,p-se, p+se)
+      }
+    }
+  }
+  else if (ptype=="pred" && is.numeric(pthreshold)){
+    # calc probmatrix for class prediction using threshold
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+  }
+  else if (ptype=="pred"){
+    # calc predicted classes
+    p <- mlr::getPredictionResponse(fitp)
+  }
+  else if (ptype=="prob"){
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+    p <- p[,ncol(p)]
+    # if (!is.null(pinterval)){
+    #   intype <- if (pinterval=="prediction") "pred_int" else "conf_int"
+    #   pint <- as.matrix(predict(fit,...,type=intype))
+    #   # use only interval for last factor level
+    #   npint <- ncol(pint)
+    #   p <- cbind(p,pint[,(npint-1):npint])
+    # }
+    
+  }
+  else {
+    # ptype is"probmatrix", calculate probs
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+  }
+  if (is.null(pinterval) | !is.matrix(p))
+    calcPred(ptype,p, pthreshold, ylevels,ptrans)
+  else calcPred(ptype,p[,1], pthreshold, ylevels,ptrans, p[,2:3])
+}
+
+
