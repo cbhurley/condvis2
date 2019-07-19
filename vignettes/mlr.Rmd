@@ -1,0 +1,111 @@
+---
+title: "mlr fits and condvis2"
+author: "Catherine B. Hurley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mlr fits and condvis2}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5, fig.height=5 ,fig.align="center"
+)
+fpath <- "vignettefigs/"
+```
+
+`mlr` is a R package that offers
+a unified interface to machine learning models. 
+By writing an interface between `condvis2` and `mlr` a vast number
+of machine learning fits may be explored with `condvis`.
+Presently, regression, classification and clustering varieties of `mlr` learners
+work with `condvis'.
+
+
+## Regression
+
+Set up the task, learner and train the model.
+```{r eval=F}
+library(mlr)
+library(MASS)
+library(condvis2)
+Boston1 <- Boston[,9:14]
+
+rtask <- makeRegrTask(id = "bh", data = Boston1, target = "medv")
+rmod <- train(makeLearner("regr.lm"), rtask)
+rmod1 <- train(makeLearner("regr.fnn"), rtask)
+```
+
+Use condvis to explore the models:
+```{r eval=F}
+condvis(Boston1, model=list(rmod,rmod1), response="medv", sectionvars="lstat")
+```
+Choose tour "Diff fits" to explore differences between the fits
+
+
+Some tasks, for example linear regression, support standard errors and so confidence intervals.
+This option needs to be added to `makeLearner`.
+Then, tell `condvis` to plot an interval using `pinterval="confidence` for that fit.
+
+```{r eval=F}
+rmod <- train(makeLearner("regr.lm", predict.type="se"), rtask)
+condvis(Boston1, model=rmod, response="medv", sectionvars="lstat", predictArgs=list(list(pinterval="confidence")))
+```
+
+
+
+## Classification
+
+Set up the task, learner and train the model.
+```{r eval=F}
+cltask = makeClassifTask(data = iris, target = "Species")
+cllrn = makeLearner("classif.lda",predict.type = "prob") # need predict.type ="probs" to get probs
+clmod = train(cllrn, cltask)
+```
+Explore with `condvis`:
+```{r eval=F}
+condvis(iris, model=clmod, response="Species", sectionvars=c("Petal.Length", "Petal.Width"), pointColor="Species")
+```
+Click on "Show probs" to see class probabilities.
+
+## Clustering
+
+
+```{r eval=F}
+
+ctask = makeClusterTask(data = iris[,-5])
+clrn = makeLearner("cluster.kmeans") 
+cmod = train(clrn, ctask)
+```
+
+Add the predicted class to the data to act as the response:
+
+```{r eval=F}
+library(dplyr)
+iris1 <- iris
+
+iris1$pclass <- cmod %>%
+  predict(newdata=iris[,-5]) %>%
+  getPredictionResponse() %>% 
+    as.factor()
+
+```
+
+```{r eval=F}
+condvis(data = iris1, model = cmod, 
+        response="pclass",
+        sectionvars=c("Petal.Length", "Petal.Width"), 
+        conditionvars=c("Sepal.Length", "Sepal.Width"),pointColor="Species"
+)
+
+```
+
+
+
+

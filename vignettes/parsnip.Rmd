@@ -1,0 +1,106 @@
+---
+title: "parsnip fits and condvis2"
+author: "Catherine B. Hurley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{parsnip fits and condvis2}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5, fig.height=5 ,fig.align="center"
+)
+fpath <- "vignettefigs/"
+```
+
+`parsnip` is a R package that offers
+a unified interface to many machine learning models. 
+By writing an interface between `condvis2` and `parsnip` a vast number
+of machine learning fits may be explored with `condvis`.
+
+
+
+## Regression
+
+Fit the regression model with parsnip.
+
+```{r eval=F}
+library(parsnip)
+library(MASS)
+library(condvis2)
+Boston1 <- Boston[,9:14]
+
+fitlm <-
+  linear_reg() %>%
+  set_engine("lm") %>%
+  fit(medv ~ ., data = Boston1)
+
+fitrf <- rand_forest() %>%
+  set_engine("randomForest") %>%
+  fit(medv ~ ., data = Boston1)
+  
+```
+
+Use condvis to explore the models:
+```{r eval=F}
+condvis(Boston1, model=list(lm=fitlm,rf=fitrf), response="medv", sectionvars="lstat")
+```
+Choose tour "Diff fits" to explore differences between the fits
+
+
+Some tasks, for example linear regression, support  confidence intervals.
+Tell `condvis` to plot an interval using `pinterval="confidence` for that fit.
+The forest fit does not support confidence intervals so the predictArgs for that fit are
+NULL.
+
+```{r eval=F}
+condvis(Boston1, model=list(lm=fitlm,rf=fitrf), response="medv", sectionvars="lstat",
+        predictArgs=list(list(pinterval="confidence"), NULL))
+```
+
+
+
+## Classification
+
+Fit some classification models:
+```{r eval=F}
+clmodel <-
+   svm_poly(mode="classification") %>%
+  set_engine("kernlab") %>%
+  fit(Species ~ ., data = iris )
+```
+
+Explore with `condvis`:
+```{r eval=F}
+condvis(iris, model=clmodel, response="Species", sectionvars=c("Petal.Length", "Petal.Width"), pointColor="Species")
+```
+
+Click on "Show probs" to see class probabilities.
+
+## Survival
+
+Fit a survival model and explore with condvis:
+```{r eval=F}
+smodel <-
+  surv_reg() %>%
+  set_engine("survreg") %>%
+  fit(Surv(time, status) ~ inst+age+sex+ph.ecog, data=lung)
+
+condvis(na.omit(lung), smodel, response="time", sectionvars = c("inst","sex"), conditionvars=c("age","ph.ecog"))
+
+```
+
+
+## Clustering
+
+Unlike `mlr`, `parsnip` does not yet offer support for clustering fits.
+
+
+
