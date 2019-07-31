@@ -28,7 +28,8 @@
 #' @return a function
 
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
-                           predsInit=NULL,cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,threshold=1,thresholdmax, linecols=NULL,
+                           predsInit=NULL,cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
+                           threshold=1,thresholdmax, linecols=NULL,
                            showsim=FALSE, dataplot="pcp",probs,
                            view3d,theta3d,phi3d,predictArgs, xlim=NULL,ylim=NULL, zlim=NULL, density=FALSE,
                            showdata=TRUE){
@@ -43,7 +44,6 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
   function(input, output,session) {
 
     options(warn=-1)
-
     conditionvars <- setdiff(preds, sectionvars)
     plotnames <- NULL
     condtour <- NULL
@@ -61,7 +61,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       simInit[w]<- 1
      
     }
-    else simInit <- similarityweight(predsInit,CVdata[conditionvars], threshold)
+    else simInit <- similarityweight(predsInit,CVdata[conditionvars], threshold, distance="maxnorm")
     cPlots <- NULL
     rv <- reactiveValues(pset=predsInit, sectionvars=sectionvars, condArr=NULL, CVdata = CVdata, sim=simInit)
     tour <- reactiveValues(pos=0, step="stop")
@@ -70,21 +70,27 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
     output$display <- renderPlot({
       CVdata <- rv$CVdata
-
-      clickCoords<<- sectionPlot(CVdata,CVfit,response,preds,sectionvar= rv$sectionvars,
+      pointColorFromResponse <- !is.null(response) && (input$colourvar== response)
+       res<-sectionPlot(CVdata,CVfit,response,preds,sectionvar= rv$sectionvars,
                                  conditionvals=rv$pset, pointColor= NULL,sim=rv$sim, linecols=linecols,
                                  dataplot=dataplot,
                                  probs=probs && input$showprobs, theta3d=input$theta3d,phi3d=phi3d,
                                  view3d=view3d && input$view3d,xlim = ranges$x,
                   ylim=ranges$y,zlim=zlim,predictArgs=predictArgs, resetpar=FALSE, density=density,
-                  showdata=showdata, returnCoords=TRUE)
+                  showdata=showdata, returnInfo=TRUE,pointColorFromResponse=pointColorFromResponse)
+       clickCoords<<- res$clickCoords
+       
+       # if (!is.null(res$pointCols) && pointColorFromResponse){
+       #   rv$CVdata[["pointCols"]] <- res$pointCols
+       # }
+         
     })
 
 
 
     observeEvent(input$display_click, {
       # clickCoords is a data frame constructed by drawing functions.
-      # clicks are not always recorded when using the d3plot. Is it to do with layout?
+      # clicks are not always recorded when using layouts, ???
       # also, does not work with more than one plot via mfrow
       click <- input$display_click
        # print("handling click")
@@ -93,6 +99,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
         w <- nearPoints(clickCoords, click, xvar="x", yvar="y", threshold = 5, maxpoints = 1)
         if (nrow(w) ==1){
           rv$pset[1,conditionvars] <- CVdata[w$casenum, conditionvars]
+          print(paste("Condition on conditionvars from Case",w$casenum,collapse=" "))
         }
       }
     })
@@ -172,8 +179,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
       }
       else sim <- similarityweight(rv$pset,CVdata[conditionvars], input$threshold, input$dist)
-
       rv$sim <- sim
+    
       }
     })
 
@@ -211,6 +218,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
 
     observeEvent(input$colourvar, {
+      if (!is.null(response) &&input$colourvar == response && is.factor(CVdata[,response])){
+        f <- colorfnf(CVdata[[response]])
+        rv$CVdata[["pointCols"]] <- f(CVdata[,response])
+      }
+       else 
       rv$CVdata <- pointColor2var(rv$CVdata, input$colourvar)
     })
 
@@ -283,7 +295,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
             })
           else
             output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= NULL, resetpar=FALSE, plotrows=plotrows)
+              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= NULL, 
+                            resetpar=FALSE, plotrows=plotrows)
             })
 
           observeEvent(input[[clickname]],{

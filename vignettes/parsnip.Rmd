@@ -25,6 +25,8 @@ a unified interface to many machine learning models.
 By writing an interface between `condvis2` and `parsnip` a vast number
 of machine learning fits may be explored with `condvis`.
 
+A list of models supported by parsnip is found on this link:
+<https://tidymodels.github.io/parsnip/articles/articles/Models.html>
 
 
 ## Regression
@@ -88,6 +90,7 @@ Click on "Show probs" to see class probabilities.
 
 Fit a survival model and explore with condvis:
 ```{r eval=F}
+library(survival) # for the data
 smodel <-
   surv_reg() %>%
   set_engine("survreg") %>%

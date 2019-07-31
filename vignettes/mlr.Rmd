@@ -27,6 +27,8 @@ of machine learning fits may be explored with `condvis`.
 Presently, regression, classification and clustering varieties of `mlr` learners
 work with `condvis'.
 
+A list of models supported by `parsnip`mlr` is found on this link:
+<https://mlr.mlr-org.com/articles/tutorial/integrated_learners.html>
 
 ## Regression
 

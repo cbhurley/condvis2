@@ -105,12 +105,13 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
                           id = "display_brush", 
                           resetOnNew = TRUE)),
                         # tags$br(),
-              fluidRow(column(4, offset=1,
-                              sliderInput("threshold", "Similarity Threshold", 0,
-                                          thresholdmax, threshold, step=min(.2, thresholdmax/20))),
-                       column(5, offset=1,
+             
+              fluidRow( column(3, offset=1,
+                                sliderInput("threshold", "Similarity Threshold", 0,
+                                            thresholdmax, threshold, step=min(.2, thresholdmax/20))),
+                       column(6, offset=1,
                               radioButtons(inputId = "dist", "Distance",
-                                         choices = list("maxnorm" ,"euclidean"), inline=TRUE))),
+                                         choices = list("maxnorm" ,"euclidean", "gower"), inline=TRUE))),
              # tags$br(),
             
              fluidRow(column(9, offset=1, wellPanel(

@@ -10,7 +10,7 @@ sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
   view3d = FALSE, theta3d = 45, phi3d = 20, xlim = NULL,
   ylim = NULL, zlim = NULL, pointSize = 1, predictArgs = NULL,
   resetpar = TRUE, density = FALSE, showdata = density == FALSE,
-  returnCoords = FALSE)
+  returnInfo = FALSE, pointColorFromResponse = FALSE)
 }
 \arguments{
 \item{CVdata}{the dataset used for the fit}
@@ -59,7 +59,9 @@ sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
 
 \item{showdata}{If FALSE, data on section not shown.}
 
-\item{returnCoords}{If TRUE, returns coordinates for some plots}
+\item{returnInfo}{If TRUE, returns coordinates for some plots}
+
+\item{pointColorFromResponse}{ignore--For interactive use only}
 }
 \value{
 plotted coordinates, for some plots

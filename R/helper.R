@@ -179,7 +179,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
 
   server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit1,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
-                           orderConditionVars=orderConditionVars,
+                           orderConditionVars=orderConditionVars, 
                            threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, showsim=showsim,
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
@@ -192,79 +192,5 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
 
 
 
-
-pointColor2var <- function(data, pointColor){
-
-  if (pointColor %in% names(data) & is.numeric(data[[pointColor]])){
-    newname <- paste0(pointColor,"F3")
-    data[[newname]] <- cut(data[[pointColor]],3)
-    pointColor <- newname
-  }
-
-
-  if (pointColor %in% names(data)){
-    pointCols <-rev(scales::hue_pal()(max(4,length(levels(data[[pointColor]])))))
-    pointCols <- pointCols[as.numeric(data[[pointColor]])]
-  } else pointCols <- pointColor
-
-  data$pointCols <- pointCols
-  data
-}
-
-
-
-#' Fade colours according to a weight vector
-#'
-#' The colours whose weights are less than 1 are diluted. Colours whose weight is zero are returned as white, 
-#' other weights are grouped in \code{nlevels} groups and colours diluted proportionally.
-#' 
-#' @param col A vector of colour
-#' @param weights A vector of weights, values between 0 and 1
-#' @param nlevels  The number of groups
-#'
-#' @return A vector of colours
-#' @export
-#'
-
-weightcolor <-
-  function(col, weights, nlevels=5)
-  {
-
-    n <- length(weights)
-    if (length(col) ==1)
-     col <- rep(col, length.out = n)
-
-    ## Discretise `weights`. We just want nlevels different shades
-
-    if (nlevels==3)
-      wmax <- c(0, 0.4, 0.7, 1) # Mark's settings
-    else wmax <- (0:nlevels)/nlevels
-
-     weights <- wmax[findInterval(weights, c(0, .Machine$double.eps,
-                                                         wmax[-1]), rightmost.closed = TRUE)]
-
-
-    ## We won't perform calculations on elements with `weight` == 0.
-
-    weightsgr0 <- which(weights > 0)
-    data.order <- weightsgr0[order(weights[weightsgr0])]
-
-    ## Linearly fade the colours in `col` to white in RGB space according to their
-    ## `weights`.
-
-    # newcol <- (col2rgb(col[data.order]) * matrix(rep(weights[data.order], 3),
-    #                                              nrow = 3, byrow = TRUE) / 255) + matrix(rep(1 - weights[data.order], 3),
-    #                                                                                      nrow = 3, byrow = TRUE)
-    #
-    newcol1 <- t(col2rgb(col[data.order])) * weights[data.order]/255+ 1-weights[data.order]
-
-    data.colour <- rep(NA, n)
-    # data.colour[data.order] <- rgb(t(newcol))
-    data.colour[data.order] <- rgb(newcol1)
-
-    ## Return the weighted colours with the order as attribute.
-
-    structure(data.colour, order = data.order)
-  }
 
 

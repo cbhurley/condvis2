@@ -4,7 +4,7 @@
 \alias{similarityweight}
 \title{Calculate the similarity weight for a set of observations}
 \usage{
-similarityweight(x, data, threshold = NULL, distance = "euclidean",
+similarityweight(x, data, threshold = 1, distance = "euclidean",
   lambda = NULL, scale = TRUE)
 }
 \arguments{
@@ -19,7 +19,7 @@ Defaults to 1.}
 
 \item{distance}{The type of distance measure to be used, currently just three
 types of Minkowski distance: \code{"euclidean"} (default),
-\code{"maxnorm"} and \code{"manhattan"}}
+\code{"maxnorm"}, \code{"manhattan"} and also \code{"gower"}}
 
 \item{lambda}{A constant to multiply by the number of categorical
 mismatches, before adding to the Minkowski distance, to give a general
@@ -44,8 +44,7 @@ observations which are dissimilar to the point are given weight zero.
 Similarity weight is assigned to observations based on their
   distance from a given point. The distance is calculated as Minkowski
   distance between the numeric elements for the observations whose
-  categorical elements match, with the option to use a more general
-  dissimilarity measure comprising Minkowski distance and a mismatch count.
+  categorical elements match, or else the Gower distance.
 }
 \examples{
 ## Say we want to find observations similar to the first observation.

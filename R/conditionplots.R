@@ -50,6 +50,9 @@ conditionPlot <- function(CVdata, var, varVal, pointColor="steelblue",
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
   }
+  
+  
+  
   f <- getCPlotFN (CVdata, var)
   f(CVdata, var,varVal, pointColor,sim,plotrows=plotrows)
   return(NULL)
@@ -81,20 +84,25 @@ conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
 
 
-
 conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   # op <- par(no.readonly = TRUE)
   # on.exit(par(op))
-  par(mar = c(3, 3, .5,.5),
+  par(mar = c(3, 5, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = -.01)
-  b <- barplot(table(CVdata[[var]]),col="paleturquoise3", border="grey60", width=.8,space=.25, xlab=var)
   var1 <- CVdata[[var]]
   tab <- table(var1)
+  
+  if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
+  b <- barplot(tab,col="paleturquoise3", border="grey60", width=.8,space=.25, xlab=var,horiz=TRUE,las=1)
+  
+  
   varVal <- varVal[[var]]
-  crossx <- match(varVal, levels(var1))
-  crossy <- tab[crossx]/2
-  points(b[crossx,1], crossy, pch=43, col="magenta", cex=5)
+  crossy <- match(varVal, names(tab))
+  if (!is.na(crossy)){
+  crossx <- tab[crossy]/2
+  points(crossx,b[crossy,1], pch=43, col="magenta", cex=5)
+  }
 }
 
 
@@ -144,7 +152,6 @@ conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   points(x=match(varVal[[var[1]]], levels(var1)),
                y=varVal[[var[2]]],pch=43, col="magenta",cex=5)
 }
-
 
 
 
@@ -210,10 +217,13 @@ conditionClickn <- function(CVdata, var, click,plotrows){
 
 conditionClickf <- function(CVdata, var, click,plotrows){
 
-  rx <- ceiling(click$x)
+  ry <- ceiling(click$y)
   var1 <- CVdata[[var]]
-  if (rx >= 1 & rx <= length(levels(var1)))
-    setNames(levels(var1)[rx],var)
+  tab <- table(var1)
+  
+  if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
+   if (ry >= 1 & ry <= length(names(tab)))
+    setNames(names(tab)[ry],var)
    else NULL
 }
 

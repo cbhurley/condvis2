@@ -1,5 +1,5 @@
 Package: condvis2
-Title: Conditional Visualization for Statistical Models
+Title: Conditional Visualization for supervised and unsupervised models in Shiny
 Version: 0.1.0
 Authors@R: c(person("Catherine", "Hurley", email = "catherine.hurley@mu.ie", role = c("aut", "cre")),person("Mark", "OConnell", email = "mark_ajoc@yahoo.ie", role = c( "aut")),person("Katarina", "Domijan", email = "katarina.domijan@mu.ie", role = c("aut")))
 Description: Constructs a shiny app function with interactive displays for conditional visualization of models, 
@@ -8,7 +8,7 @@ Description: Constructs a shiny app function with interactive displays for condi
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true
-Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr,kmed, colorspace
+Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr,kmed, colorspace, gower
 RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown,hdrcde,scagnostics, keras, kernlab,mclust,MASS,ks,mgcv,randomForest,parsnip, mlr
