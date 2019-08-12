@@ -49,11 +49,14 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
   
   gx <- sectionvalsn[,1]
   gy <- sectionvalsn[,2]
-  if (is.factor(CVdata[[sectionvar[1]]])) xoffset <- .5
-  else xoffset <- gx[2]- gx[1]
   
-  if (is.factor(CVdata[[sectionvar[2]]])) yoffset <- .5
-  else yoffset<- min(gy[gy>gy[1]]) - gy[1]
+  xoffset <- (gx[2]- gx[1])*.5
+  yoffset<- .5*(min(gy[gy>gy[1]]) - gy[1])
+  # if (is.factor(CVdata[[sectionvar[1]]])) xoffset <- .5
+  # else xoffset <- gx[2]- gx[1]
+  # 
+  # if (is.factor(CVdata[[sectionvar[2]]])) yoffset <- .5
+  # else yoffset<- min(gy[gy>gy[1]]) - gy[1]
   
   
   cols <- fitcolfn(ylevels)
@@ -72,16 +75,19 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
   plot(c(min(gx)-xoffset,max(gx)+xoffset),  c(min(gy)-yoffset,max(gy)+yoffset),
        type="n",xlab=sectionvar[1], ylab= sectionvar[2], 
        main=if (length(fitnames) > 1) fitnames[w] else "", axes=F)
-  totalwidth <- abs(diff(par()$usr[1:2]))
-  totalheight <- abs(diff(par()$usr[3:4]))
+  # totalwidth <- abs(diff(par()$usr[1:2]))
+  # totalheight <- abs(diff(par()$usr[3:4]))
+  totalwidth <- diff(range(gx))+2*xoffset
+  totalheight <- diff(range(gy))+2*yoffset
+  
   
   if  (is.factor(CVdata[[sectionvar[1]]]))
     barw <- 0.4 * totalwidth / nlevels[1]
-  else barw <- 0.6 * totalwidth / nlevels[1]
+  else barw <- 0.9 * totalwidth / nlevels[1]
   
   if  (is.factor(CVdata[[sectionvar[2]]]))
     barh <- 0.4 * totalheight / nlevels[2]
-  else barh <- 0.6 * totalheight / nlevels[2]
+  else barh <- 0.85 * totalheight / nlevels[2]
   
   # o1 <- apply(cbind(grid[,sectionvar], p1), 1,
   #             function (x) myglyph2a(x[1], x[2], barw,
@@ -146,8 +152,11 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
   
   gx <- sectionvalsn
   
-  if (is.factor(xvar)) xoffset <- .5
-  else xoffset <- gx[2]- gx[1]
+  
+  # if (is.factor(xvar)) xoffset <- .5
+  # else xoffset <- gx[2]- gx[1]
+  
+  xoffset <- (gx[2]- gx[1])*.5
   
   cols <- fitcolfn(ylevels)
   
@@ -163,17 +172,18 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
   plot(c(min(gx)-xoffset,max(gx)+xoffset),  c(0,1),
        type="n",xlab=sectionvar[1], ylab= paste("prob", response),
        main=if (length(fitnames) > 1) fitnames[w] else "", axes=FALSE)
-  totalwidth <- abs(diff(par()$usr[1:2]))
-  totalheight <- abs(diff(par()$usr[3:4]))
+  
+  totalwidth <- diff(range(gx))+2*xoffset
   if (is.factor(xvar))
   barw <- 0.4 * totalwidth / nlevels
-  else barw <- 0.6 * totalwidth / nlevels
+  else barw <- .85*totalwidth / nlevels
   o1 <- apply(cbind(sectionvalsn, p1), 1,
               function (x) myglyph2a(x[1], 0,barw,
                                      1,
                                      x[2:(1 + ncol(p1))]))
   
   o2 <- matrix(t(o1), ncol = 5, byrow = FALSE)
+  
   rect(xleft = o2[, 1], xright = o2[, 2], ybottom = o2[, 3],
        ytop = o2[, 4], col = cols[o2[, 5]], border=NA)
   if (is.factor(xvar))
@@ -286,9 +296,20 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
   else o <- NULL
   #par(mfrow=c(1, length(fitnames)))
   
-  m <- rbind(seq(along=fitnames), length(fitnames)+1)
-  
+  if (is.null(fitnames)) fitnames <- ""
+  if(isRunning() & length(fitnames)==1) {
+    m <- rbind(c(0,1,0), c(0,2,0))
+    layout(mat = m,heights = c(.9,.1), widths=c(.17,.66,.17))
+  }
+  else {m <- rbind(seq(along=fitnames), 0)
+  m[2,ceiling(length(fitnames)/2)] <- length(fitnames)+1
   layout(mat = m,heights = c(.9,.1))
+  
+  }
+  
+  # m <- rbind(seq(along=fitnames), length(fitnames)+1)
+  # 
+  # layout(mat = m,heights = c(.9,.1))
   preds <- names(grid)
   fitpos <- match(fitnames[1], preds)
   preds <- preds[1:(fitpos - 1)]

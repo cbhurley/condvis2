@@ -34,7 +34,7 @@ colorfnf <- function(vec, cols= NULL){
       #cols <- RColorBrewer::brewer.pal(max(3, length(levs)), "Set3")[1:length(levs)]
       
       cols <- RColorBrewer::brewer.pal(max(4, length(levs)), "Accent")
-      if (length(levs)==2) cols <- cols[c(2,4)]
+      if (length(levs)==2) cols <- cols[c(1,2)]
       else cols <- cols[1:length(levs)]
     }
     # cols <- c("red", "blue", "yellow","green")
@@ -65,7 +65,9 @@ colorfnfp <- function(vec=c(0,1), cols= NULL){
 
 
 
-pointColor2var <- function(data, pointColor){
+
+
+pointColor2var <- function(data, pointColor, legend=FALSE){
   
   if (pointColor %in% names(data) & is.numeric(data[[pointColor]])){
     newname <- paste0(pointColor,"F3")
@@ -73,15 +75,18 @@ pointColor2var <- function(data, pointColor){
     pointColor <- newname
   }
   
-  
+  pcols <- NULL
   if (pointColor %in% names(data)){
-    pointCols <-rev(scales::hue_pal()(max(4,length(levels(data[[pointColor]])))))
-    pointCols <- pointCols[as.numeric(data[[pointColor]])]
+    levs <- levels(data[[pointColor]])
+    pcols <-rev(scales::hue_pal()(max(4,length(levs))))[1:length(levs)]
+    names(pcols)<- levs
+    pointCols <- pcols[as.numeric(data[[pointColor]])]
   } else pointCols <- pointColor
   
   
   data$pointCols <- pointCols
-  data
+  if (legend  ) list(data=data, cols=pcols)
+  else data
 }
 
 

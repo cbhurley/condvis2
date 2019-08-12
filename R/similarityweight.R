@@ -65,7 +65,7 @@ function (x, data, threshold =1, distance = "euclidean", lambda=NULL, scale=TRUE
     gowersimfn(data)
   else similarityweightfn(xc = data, scale=scale)
   
-  if (distance=="gower") threshold <- threshold/20
+  # if (distance=="gower") threshold <- threshold/20
   ## Make empty matrix for weights
   
   k <- matrix(nrow = nrow(x), ncol = nrow(data), dimnames = list(rownames(
@@ -321,7 +321,7 @@ dist1 <-function (x, X, distance)
 
 gowersimfn <- function(xc) {
   function(xc.cond,  sigma = 1,...){
-    d <- gower::gower_dist(xc.cond, xc)
+    d <- gower::gower_dist(xc.cond, xc)*ncol(xc)
     k <- pmax(0, 1 - d  / sigma)
     list(k = k, sigma = sigma, distance = "gower")
   }

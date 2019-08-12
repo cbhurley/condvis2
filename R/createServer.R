@@ -40,7 +40,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
   preds <- c(sectionvars, conditionvars)
   CVdata0 <- CVdata[,-ncol(CVdata)] # get rid of colour var
   clickCoords <- NULL
-
+  pcolInfo <- NULL
+  
   function(input, output,session) {
 
     options(warn=-1)
@@ -79,6 +80,10 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
                   ylim=ranges$y,zlim=zlim,predictArgs=predictArgs, resetpar=FALSE, density=density,
                   showdata=showdata, returnInfo=TRUE,pointColorFromResponse=pointColorFromResponse)
        clickCoords<<- res$clickCoords
+       if (! is.null(pcolInfo) && showdata){
+         legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7,
+                title=isolate(input$colourvar))
+       }
        
        # if (!is.null(res$pointCols) && pointColorFromResponse){
        #   rv$CVdata[["pointCols"]] <- res$pointCols
@@ -188,13 +193,15 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     observe({
       # print(input$tour)
       rv$condArr
-      mkpath <- get(input$tour)
-
-      if (is.function(mkpath)) {
-        condtour <<- mkpath(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,predictArgs=predictArgs)
+      mkpath <- input$tour
+      
+      if (mkpath %in% conditionvars)
+        condtour <<- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars])) 
+      else if (is.function(get(mkpath))) {
+        condtour <<- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,predictArgs=predictArgs)
         condtour <<-pathInterpolate(as.data.frame(condtour),input$ninterp)
-      }
-      else condtour <<- mkpath
+      } 
+      else condtour <<- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
      
       # print("updating slider")
       #print(input$ninterp)
@@ -221,9 +228,13 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       if (!is.null(response) &&input$colourvar == response && is.factor(CVdata[,response])){
         f <- colorfnf(CVdata[[response]])
         rv$CVdata[["pointCols"]] <- f(CVdata[,response])
+        pcolInfo <<- NULL
       }
-       else 
-      rv$CVdata <- pointColor2var(rv$CVdata, input$colourvar)
+       else {
+         res <- pointColor2var(rv$CVdata, input$colourvar, legend=TRUE)
+      rv$CVdata <- res$data
+      pcolInfo <<- res$cols
+       }
     })
 
     observeEvent(input$sectionvar, {
@@ -265,7 +276,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
     output$cplots <- renderUI({
       if (cPlotPCP) height<- min(800,(length(conditionvars)-1)*150) else
-        height<- min(220, round(800/length(rv$condArr)))
+        height<- min(210, round(800/length(rv$condArr)))
       plot_output_list <- lapply(1:length(rv$condArr), function(i) {
         plotname <- plotnames[i]
         plotOutput(plotname, height = height, width = 220, click=paste0(plotname,"Click"))

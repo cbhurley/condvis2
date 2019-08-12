@@ -20,23 +20,34 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
   colorvars <- sapply(data, is.factor)
   colorvars <- union(pointColor, names(data)[colorvars])
   responsePlot <- !is.null(response) & length(sectionvars) <=2
+  # if (nrow(data) <= 1000)
+  # tours1 <- list("Random"= "randomPath",
+  #      "Kmeans"= "kmeansPath",
+  #      "Kmed"= "pamPath",
+  #      "Along" = preds)
+  # else tours1 <- list("Random"= "randomPath",
+  #                     "Kmeans"= "kmeansPath",
+  #                     "Kmed"= "fastkmedPath",
+  #                     "Along" = preds)
+  
   if (nrow(data) <= 1000)
-  tours1 <- list("Random"= "randomPath",
-       "Kmeans"= "kmeansPath",
-       "Kmed"= "pamPath")
+    tours1 <- list("Random"= "randomPath",
+                   "Kmeans"= "kmeansPath",
+                   "Kmed"= "pamPath")
   else tours1 <- list("Random"= "randomPath",
                       "Kmeans"= "kmeansPath",
                       "Kmed"= "fastkmedPath")
+  
   if (!is.null(CVfit)){
     # tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
     # rework lofPath to calc y -yhat. needs to check there is response
     if (length(CVfit)> 1)
-      tours1 <- c(tours1, list("Diff fits" = "diffitsPath"))
+      tours1 <- c( tours1, list("Diff fits" = "diffitsPath") )
   }
 
   if ( !is.null(tours) & is.null(names(tours)))
     names(tours) <- paste0("Tour", seq(along=tours))
-  tours <- c(tours1, tours)
+  tours <- c(tours, tours1)
 
   fluidPage(
      # h3("Condvis"),

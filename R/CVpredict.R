@@ -679,7 +679,7 @@ CVpredict.Mclust <- function (fit, newdata,..., ptype="pred",pthreshold=NULL, yl
 }
 
 
-#' @describeIn CVpredict  CVpredict method
+#' @describeIn CVpredict  CVpredict method for caret
 #' @export
 CVpredict.train <- function(fit,newdata,..., type="response",ptype="pred",pthreshold=NULL,ylevels=NULL,ptrans=NULL){
   

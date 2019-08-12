@@ -47,6 +47,38 @@ randomPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL
   }
 
 
+#' @describeIn condtour Returns a  path along var
+#' @export
+alongPath<- function(data, var,length=10,current=NULL,...){
+  
+  dv <- data[[var]]
+
+  if (is.numeric(dv))
+   new <- seq(min(dv), max(dv), length.out=length)
+  else {
+    dv <- as.factor(dv)
+    new<- levels(dv)
+  }
+  if (!is.null(current)){
+    current[[var]]<- NULL
+    current<- data.frame(new, current,row.names=NULL)
+    names(current)[1]<- var
+    return(current)
+  }
+  else return (data.frame(var=new))
+}
+
+expandPath<- function(path,current=NULL){
+  
+  res <- path
+  if (!is.null(current)){
+    borrow <- setdiff(names(current), names(path))
+    if (length(borrow)>=1)
+    res<- data.frame(path, current[borrow],row.names=NULL)
+  }
+  return(res)
+}
+
 #'@describeIn condtour Returns a path using kmeans centroids
 #'@export
 kmeansPath<- function(data,fits=NULL, length=10, reorder=TRUE,conditionvars=NULL,...){

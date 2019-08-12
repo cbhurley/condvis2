@@ -3,6 +3,7 @@
 \name{condtour}
 \alias{condtour}
 \alias{randomPath}
+\alias{alongPath}
 \alias{kmeansPath}
 \alias{pamPath}
 \alias{claraPath}
@@ -14,6 +15,8 @@
 \usage{
 randomPath(data, fits = NULL, length = 10, reorder = TRUE,
   conditionvars = NULL, ...)
+
+alongPath(data, var, length = 10, current = NULL, ...)
 
 kmeansPath(data, fits = NULL, length = 10, reorder = TRUE,
   conditionvars = NULL, ...)
@@ -68,6 +71,8 @@ Paths are reordered using dser from package DendSer.
 \section{Functions}{
 \itemize{
 \item \code{randomPath}: Returns a random path
+
+\item \code{alongPath}: Returns a  path along var
 
 \item \code{kmeansPath}: Returns a path using kmeans centroids
 

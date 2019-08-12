@@ -231,7 +231,7 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 
 \item \code{Mclust}: CVpredict method
 
-\item \code{train}: CVpredict method
+\item \code{train}: CVpredict method for caret
 
 \item \code{bartMachine}: CVpredict method
 
