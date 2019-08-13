@@ -35,6 +35,7 @@
 #'@param showdata  If FALSE, data on section not shown.
 #'@param returnInfo  If TRUE, returns coordinates for some plots
 #'@param pointColorFromResponse  ignore--For interactive use only
+#'@param pcolInfo  ignore--For interactive use only
 #' @return plotted coordinates, for some plots
 #' @export
 #' @importFrom colorspace  lighten
@@ -69,7 +70,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
                         dataplot="pcp", gridsize=50, probs=FALSE, view3d=FALSE,
                         theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=1,
                         predictArgs=NULL, resetpar=TRUE, density=FALSE, showdata=density==FALSE,
-                        returnInfo=FALSE, pointColorFromResponse=FALSE){
+                        returnInfo=FALSE, pointColorFromResponse=FALSE, pcolInfo=NULL){
   
   op <- par(no.readonly=TRUE)
   
@@ -89,11 +90,12 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
   if (!is.data.frame(conditionvals))
     conditionvals <- as.data.frame(as.list(conditionvals))
   
-  pcolInfo<- NULL
+  
   if (!is.null(pointColor)) {
     pc <- pointColor2var(CVdata,pointColor, legend=TRUE)
     CVdata <- pc$data
-    pcolInfo <- pc$cols
+    pcolInfo <- pc[2:3]
+    
   }
   sectionPlotFN <- NULL
   # responsePlot <- !is.null(response) & length(sectionvar) <=2 & !is.null(CVfit)
@@ -118,9 +120,10 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
     # CVdata$pointCols <- NULL
     if (responsePlot)
       res<-sectionPlotFN(CVdata,NULL,sectionvar,response, sim,NULL,linecols=linecols,
-                    xlim=xlim,ylim=ylim,pointSize=pointSize,showdata=TRUE,returnInfo=returnInfo)
+                    xlim=xlim,ylim=ylim,pointSize=pointSize,showdata=TRUE,
+                    returnInfo=returnInfo,pcolInfo=pcolInfo)
     else
-      res<-dataplot(CVdata,c(response,sectionvar),  cols,sim)
+      res<-dataplot(CVdata,c(response,sectionvar),  cols,sim,pcolInfo=pcolInfo)
   }
   else {
     if (is.null(sim) && showdata)
@@ -138,11 +141,13 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
         (length(levels(CVdata[[response]])) > 2) ){
       substring(sp,1,1)<- "p"
       sectionPlotFN <- get(paste(c("sectionPlot",sp),collapse=""))
-      res<-sectionPlotFN(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs,
+      sectionPlotFN(CVdata,CVfit,sectionvar,response, conditionvals,xlim=xlim,ylim=ylim,predictArgs=predictArgs,
                     returnInfo=returnInfo)
+      # res$type <- sp
+      # res$nplots <- 1
     }
     else if (!responsePlot)
-      dataplot(CVdata,c(response,sectionvar),  cols,sim)
+      dataplot(CVdata,c(response,sectionvar),  cols,sim, pcolInfo=pcolInfo)
     else {
       sectionvals <- lapply(sectionvar, function(p)
         if ( is.factor(CVdata[[p]]))
@@ -197,24 +202,30 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
         }
       }
       if (sp == "nnn" && view3d  && !is.null(CVfit)){
-        res<-sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
+        sectionPlot3D(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols=linecols,
                       theta3d = theta3d, phi3d = phi3d, xlim=xlim,ylim=ylim, zlim=zlim,
-                      pointSize=pointSize, density=density,showdata=showdata, predictArgs=predictArgs)
+                      pointSize=pointSize, density=density,showdata=showdata, 
+                      predictArgs=predictArgs, pcolInfo=pcolInfo)
+        # res$type <- "view3d"
+        # res$nplots <- length(fitnames)
       }
       else {
         
         res<-sectionPlotFN(CVdata,fitnames,sectionvar,response, sim,grid,linecols=linecols,
                       xlim=xlim,ylim=ylim,zlim=zlim,pointSize=pointSize, density=density,showdata=showdata,
-                      returnInfo=returnInfo,pointColorFromResponse=pointColorFromResponse)
+                      returnInfo=returnInfo,pointColorFromResponse=pointColorFromResponse,pcolInfo=pcolInfo)
+        # res$type <- sp
+        # res$nplots <- if (sp == "nnn" | sp=="fnn") max(1,length(fitnames)) else 1
       }
     }
   }
   
   if (resetpar) par(op)
-  if (! is.null(pcolInfo) && showdata){
-    legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7, title=pointColor)
-  }
+  # if (! is.null(pcolInfo) && showdata){
+  #   legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7, title=pointColor)
+  # }
   res <- mget("res",ifnotfound=list(NULL))$res
+  
   if(returnInfo && !is.null(res)) return(res)
 }
 
@@ -223,8 +234,9 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
 
 
 sectionPlotd3 <- function(CVdata0,fitnames,sectionvar,response, sim,grid,linecols, fitcolfn=NULL,pointSize,
-                          density=FALSE,showdata,returnInfo=FALSE,pointColorFromResponse=FALSE,... ){
+                          density=FALSE,showdata,returnInfo=FALSE,pointColorFromResponse=FALSE,pcolInfo=NULL,... ){
 
+  
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
       tck = -.01)
@@ -266,12 +278,22 @@ sectionPlotd3 <- function(CVdata0,fitnames,sectionvar,response, sim,grid,linecol
   
   }
   
+  if(isRunning()) {
+    legendInset <- c(-.1,-.142)
+  }
+  else legendInset <- c(0,0)
+  
   if (fitnames==""){
     if (showdata){
     xlim<- range(CVdata0[[sectionvar[1]]], na.rm = TRUE)
     ylim<- range(CVdata0[[sectionvar[2]]], na.rm = TRUE)
      plot(CVdata1[[sectionvar[1]]],CVdata1[[sectionvar[2]]],bg=pfillso,col=pcolso, pch=21, cex=pointsize,
         xlab=sectionvar[1],ylab=sectionvar[2] ,main="",xlim=xlim,ylim=ylim)
+     if (! is.null(pcolInfo) && !is.null(pcolInfo$cols)){
+       
+       legend("topright", legend = names(pcolInfo$cols), 
+              col = pcolInfo$cols, pch=19,bty="n", cex=1, title=pcolInfo$cvar, inset=legendInset, xpd=NA)
+     }
     }
   }
   else {
@@ -294,8 +316,14 @@ sectionPlotd3 <- function(CVdata0,fitnames,sectionvar,response, sim,grid,linecol
     col <- fitcolfn(gf)
 
     rect(gx-xoffset, gy-yoffset,gx+xoffset+fudgex,gy+yoffset+fudgey, col=col,lty=0)
-    if (showdata )
+    if (showdata ){
     points(CVdata1[[sectionvar[1]]],CVdata1[[sectionvar[2]]],bg=pfillso,col=pcolso, pch=21, cex=pointsize)
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && i ==length(fitnames)){
+    
+      legend("topright", legend = names(pcolInfo$cols), 
+             col = pcolInfo$cols, pch=19,bty="n", cex=1, title=pcolInfo$cvar,inset=legendInset, xpd=NA)
+    }
+    }
     }
   }
   
@@ -323,14 +351,14 @@ sectionPlotnnn <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecol
   cc <-sectionPlotd3(CVdata,fitnames,sectionvar,response,sim,grid,linecols, fitcolfn=fitcolfn,density=density,...)
   legendn(fitcolfn)
   par(mfrow=c(1,1))
-  
+  layout(1)
   return(cc)
 
 }
 
 
 sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
-                           jitter=NULL,linecols,drawaxes=TRUE,ylab=response,pointSize,showdata,returnInfo,...){
+                           jitter=NULL,linecols,drawaxes=TRUE,ylab=response,pointSize,showdata,returnInfo,pcolInfo=NULL,...){
 
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
@@ -387,7 +415,12 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
     par(pin=ppar)
   }
   if (is.null(fitnames)) fitnames <- ""
-
+ 
+  if(isRunning()) {
+    legendInset <- c(-.1,-.2)
+  }
+  else legendInset <- c(0,0)
+  
   for (j in seq(along=fitnames)){
     fn <- fitnames[j]
 
@@ -405,7 +438,14 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
     }
 
     if (j ==1 & length(faclevels) >0)
-      legend("topleft", legend = faclevels, col = linecols, lwd=2.5,bty="n", title =fac, cex=.7)
+      legend("topleft", legend = faclevels, col = linecols, lwd=2.5,bty="n", title =fac, cex=.7,
+             inset=c(0, legendInset[2]), xpd=NA)
+    
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && showdata){
+      legend("topright", legend = names(pcolInfo$cols), 
+             col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, 
+             inset=legendInset, xpd=NA)
+    }
 
   }
 
@@ -484,6 +524,7 @@ sectionPlotfnn <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecol
     legendn(colorY)
  else legendf(colorY)
   par(mfrow=c(1,1))
+  layout(1)
   if (returnInfo) return(cc)
 }
 
@@ -530,7 +571,7 @@ sectionPlotfff <- function(CVdata,fitnames,sectionvar,response, sim,grid,linecol
 
 sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
                           jitter=NULL,linecols,xlim=NULL,ylim=NULL,xlab=sectionvar,ylab=response,pointSize=1,
-                          density=FALSE,showdata=TRUE,returnInfo=FALSE,pointColorFromResponse=FALSE,...){
+                          density=FALSE,showdata=TRUE,returnInfo=FALSE,pointColorFromResponse=FALSE,pcolInfo=NULL,...){
 
    par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
@@ -584,7 +625,9 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
      ppar <- par("pin")
      ppar[1] <- min(ppar[1], 1.4*ppar[2])
      par(pin=ppar)
+     legendInset <- c(-.1,-.2)
    }
+   else legendInset <- c(0,0)
    
    # if(isRunning() & length(fitnames)==1) {
    #   m <- rbind(c(0,1,0))
@@ -594,6 +637,11 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
    
     plot(x, y, col=pcols,xlim=xlim,ylim=ylim,
        xlab=xlab, ylab=ylab,pch=19,cex=pointSize,main="",...)
+    
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && showdata){
+      legend("topright", legend = names(pcolInfo$cols), 
+             col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, inset=legendInset,xpd=NA)
+    }
   if (!is.null(grid)){
 
   for (i in 1:length(fitnames)){
@@ -607,7 +655,8 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
       
   }
     if (length(fitnames)> 1)
-      legend("topleft", legend = fitnames, col = linecols, lwd=2.5,bty="n", cex=.7)
+      legend("topleft", legend = fitnames, col = linecols, lwd=2.5,bty="n", cex=.7,
+             inset=c(0, legendInset[2]), xpd=NA)
   }
    if (returnInfo)
     return (list(clickCoords=clickCoords))
@@ -722,7 +771,7 @@ makeFnumeric <- function(grid, fitnames, prob=FALSE){
 }
 
 
-sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
+sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
   
   CVdata <- CVdata[,sectionvars,drop=FALSE]
   # if (length(sectionvars) ==1){
@@ -742,10 +791,15 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,...){
     xo <- which(!(1:nrow(CVdata) %in% o))
     o <- c(o,xo)
     plot(CVdata[o,,drop=FALSE], col=cols[o],pch=19,...)
+   
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){
+      legend("topright", legend = names(pcolInfo$cols), 
+             col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar)
+    }
   
   }
 }
-sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,...){
+sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
   
   CVdata <- CVdata[,sectionvars,drop=FALSE]
   if (length(sectionvars) ==1){
@@ -768,10 +822,20 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,...){
     o <- attr(cols, "order")
     xo <- which(!(1:nrow(CVdata) %in% o))
     o <- c(o,xo)
-
+    
 
     parcoord1(CVdata[o,], cols[o],lwd=lwd[o],...)
-    axis(2)
+    # axis(2)
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){
+      if(isRunning()) {
+        legendInset <- c(-.1,-.2)
+      }
+      else legendInset <- c(0,0)
+      
+      legend("topright", legend = names(pcolInfo$cols), 
+             col = pcolInfo$cols, pch=19,bty="n", cex=.7, 
+             title=pcolInfo$cvar,inset=legendInset,xpd=NA)
+    }
   }
 }
 

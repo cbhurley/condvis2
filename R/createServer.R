@@ -8,6 +8,7 @@
 #' @param sectionvars names of at most two sectionvars
 #' @param conditionvars names of conditionvars
 #' @param predsInit starting value for predicts. Defaults to median, or mode for factors
+#' @param pointColor a color, or the name of variable to be used for coloring. If the named variable is numeric, it is first converted to a factor with 3 levels.
 #' @param cPlotPCP if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)
 #' @param cPlotn  Shows a sample of this number of points in conditionplots.
 #' @param orderConditionVars If supplied, a function to order the Condition Vars
@@ -28,7 +29,7 @@
 #' @return a function
 
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
-                           predsInit=NULL,cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
+                           predsInit=NULL,pointColor=NULL, cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
                            threshold=1,thresholdmax, linecols=NULL,
                            showsim=FALSE, dataplot="pcp",probs,
                            view3d,theta3d,phi3d,predictArgs, xlim=NULL,ylim=NULL, zlim=NULL, density=FALSE,
@@ -38,9 +39,12 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
   # if (is.null(CVdata)) CVdata <- extractModelData(CVdata)
 
   preds <- c(sectionvars, conditionvars)
+  res <- pointColor2var(CVdata, pointColor[1], legend=TRUE)
+  CVdata <- res$data
+  pcolInfo <- res[2:3]
+  
   CVdata0 <- CVdata[,-ncol(CVdata)] # get rid of colour var
   clickCoords <- NULL
-  pcolInfo <- NULL
   
   function(input, output,session) {
 
@@ -78,12 +82,27 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
                                  probs=probs && input$showprobs, theta3d=input$theta3d,phi3d=phi3d,
                                  view3d=view3d && input$view3d,xlim = ranges$x,
                   ylim=ranges$y,zlim=zlim,predictArgs=predictArgs, resetpar=FALSE, density=density,
-                  showdata=showdata, returnInfo=TRUE,pointColorFromResponse=pointColorFromResponse)
+                  showdata=showdata, returnInfo=TRUE,pointColorFromResponse=pointColorFromResponse,pcolInfo= pcolInfo)
        clickCoords<<- res$clickCoords
-       if (! is.null(pcolInfo) && showdata){
-         legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7,
-                title=isolate(input$colourvar))
-       }
+       # print("pcolInfo")
+       # print(pcolInfo)
+       # print("usr")
+       # print(par("usr"))
+       # print(res$nplots)
+       # if (! is.null(pcolInfo) && showdata){
+       #   # legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7,
+       #   #        title=isolate(input$colourvar))
+       #   pusr <- par("usr")
+       #   par(usr= c(0,1,0,1))
+       #   legendx <- 1.0
+       #   legendy <- 1.0
+       #   print(c(legendx, legendy))
+       #   legend(legendx,legendy, legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7, 
+       #          title=isolate(input$colourvar),xpd=NA)
+       #   par(usr=pusr)
+       #   
+       #   
+       # }
        
        # if (!is.null(res$pointCols) && pointColorFromResponse){
        #   rv$CVdata[["pointCols"]] <- res$pointCols
@@ -233,7 +252,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
        else {
          res <- pointColor2var(rv$CVdata, input$colourvar, legend=TRUE)
       rv$CVdata <- res$data
-      pcolInfo <<- res$cols
+      pcolInfo <<- res[2:3]
        }
     })
 

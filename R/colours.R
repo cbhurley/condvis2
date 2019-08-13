@@ -85,7 +85,7 @@ pointColor2var <- function(data, pointColor, legend=FALSE){
   
   
   data$pointCols <- pointCols
-  if (legend  ) list(data=data, cols=pcols)
+  if (legend  ) list(data=data, cols=pcols, cvar=pointColor)
   else data
 }
 

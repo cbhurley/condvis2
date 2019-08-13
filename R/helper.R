@@ -169,7 +169,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
     predsInit1[1,np] <- predsInit[1,np]
   }
 
-  data <- pointColor2var(data, pointColor[1])
+  # data <- pointColor2var(data, pointColor[1])
 
   if (is.null(showsim)) showsim <- nrow(data)<= 150 && showdata
 
@@ -177,7 +177,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
   ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours, probs, view3d)
 
-  server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit1,
+  server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit1,pointColor,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
                            orderConditionVars=orderConditionVars, 
                            threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, showsim=showsim,

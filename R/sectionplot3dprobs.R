@@ -112,6 +112,7 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
   
   legendf(fitcolfn)
   par(mfrow=c(1,1))
+  layout(1)
 }
 
 
@@ -193,6 +194,7 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
 
   legendf(fitcolfn)
   par(mfrow=c(1,1))
+  layout(1)
   
   
 }
@@ -265,7 +267,7 @@ myglyph2a <-
 
 
 sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols,
-                          theta3d, phi3d,density=FALSE,zlim=NULL,predictArgs=NULL,showdata,... ){
+                          theta3d, phi3d,density=FALSE,zlim=NULL,predictArgs=NULL,showdata,pcolInfo=NULL,... ){
   
   
   
@@ -346,8 +348,19 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
       lineends <- trans3d(CVdata1[,v1], CVdata1[,v2], yhat, pmat = persp.object)
       segments(x0 = linestarts$x, y0 = linestarts$y, x1 = lineends$x,
                y1 = lineends$y, col = pcols1)
+      if (! is.null(pcolInfo) && !is.null(pcolInfo$cols)){
+        if(isRunning()) {
+          legendInset <- c(-.1,-.2)
+        }
+        else legendInset <- 0
+        
+        legend("topright", legend = names(pcolInfo$cols), 
+               col = pcolInfo$cols, pch=19,bty="n", cex=1, title=pcolInfo$cvar, 
+               inset=legendInset,xpd=NA)
+      }
     }
   }
     legendn(fitcolfn)
   par(mfrow=c(1,1))
+  layout(1)
 }
