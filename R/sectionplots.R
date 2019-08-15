@@ -283,7 +283,7 @@ sectionPlotd3 <- function(CVdata0,fitnames,sectionvar,response, sim,grid,linecol
   }
   else legendInset <- c(0,0)
   
-  if (fitnames==""){
+  if (isTRUE(fitnames=="")){
     if (showdata){
     xlim<- range(CVdata0[[sectionvar[1]]], na.rm = TRUE)
     ylim<- range(CVdata0[[sectionvar[2]]], na.rm = TRUE)
@@ -773,6 +773,10 @@ makeFnumeric <- function(grid, fitnames, prob=FALSE){
 
 sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
   
+  par(mar = c(3, 3, 3,.5),
+      mgp = c(2, 0.4, 0),
+      tck = -.01)
+  
   CVdata <- CVdata[,sectionvars,drop=FALSE]
   # if (length(sectionvars) ==1){
   #   index <- 1:nrow(CVdata)
@@ -786,6 +790,15 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
   # nums <- sapply(CVdata, is.numeric)
   # CVdata <- as.matrix(CVdata[nums])
   
+  if(isRunning()) {
+    ppar <- par("pin")
+    ppar[1] <- min(ppar[1], 1.8*ppar[2])
+    par(pin=ppar)
+    legendInset <- c(-.1,-.2)
+  }
+  else legendInset <- c(0,0)
+  
+  
   if (nrow(CVdata) != 0){
        o <- attr(cols, "order")
     xo <- which(!(1:nrow(CVdata) %in% o))
@@ -794,7 +807,7 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
    
     if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){
       legend("topright", legend = names(pcolInfo$cols), 
-             col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar)
+             col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, inset=legendInset, xpd=NA)
     }
   
   }
@@ -840,8 +853,12 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
 }
 
 parcoord1 <-
-  function (x, col = 1, lty = 1, horiz=TRUE, autoscale=TRUE,var.label = FALSE, ...)
-  {
+  function (x, col = 1, lty = 1, horiz=TRUE, autoscale=TRUE,var.label = FALSE, ...){
+    
+    par(mar = c(3, 3, 3,.5),
+        mgp = c(2, 0.4, 0),
+        tck = -.01)
+    
     if (autoscale){
     rx <- apply(x, 2L, range, na.rm = TRUE)
     rx1 <- rx[2,]- rx[1,]

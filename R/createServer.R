@@ -84,29 +84,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
                   ylim=ranges$y,zlim=zlim,predictArgs=predictArgs, resetpar=FALSE, density=density,
                   showdata=showdata, returnInfo=TRUE,pointColorFromResponse=pointColorFromResponse,pcolInfo= pcolInfo)
        clickCoords<<- res$clickCoords
-       # print("pcolInfo")
-       # print(pcolInfo)
-       # print("usr")
-       # print(par("usr"))
-       # print(res$nplots)
-       # if (! is.null(pcolInfo) && showdata){
-       #   # legend("topright", legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7,
-       #   #        title=isolate(input$colourvar))
-       #   pusr <- par("usr")
-       #   par(usr= c(0,1,0,1))
-       #   legendx <- 1.0
-       #   legendy <- 1.0
-       #   print(c(legendx, legendy))
-       #   legend(legendx,legendy, legend = names(pcolInfo), col = pcolInfo, pch=19,bty="n", cex=.7, 
-       #          title=isolate(input$colourvar),xpd=NA)
-       #   par(usr=pusr)
-       #   
-       #   
-       # }
        
-       # if (!is.null(res$pointCols) && pointColorFromResponse){
-       #   rv$CVdata[["pointCols"]] <- res$pointCols
-       # }
          
     })
 
@@ -213,17 +191,24 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       # print(input$tour)
       rv$condArr
       mkpath <- input$tour
-      
+      newpath <- NULL
       if (mkpath %in% conditionvars)
-        condtour <<- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars])) 
+        newpath <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars])) 
       else if (is.function(get(mkpath))) {
-        condtour <<- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,predictArgs=predictArgs)
-        condtour <<-pathInterpolate(as.data.frame(condtour),input$ninterp)
-      } 
-      else condtour <<- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
-     
-      # print("updating slider")
-      #print(input$ninterp)
+        newpath <- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,
+                               predictArgs=predictArgs, response=response)
+      }  else newpath <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
+      
+      
+      if (is.data.frame(newpath)){
+        newpath <-pathInterpolate(as.data.frame(newpath),input$ninterp)
+        condtour <<- newpath
+      }
+      else {
+        print("Path not available")
+        condtour <<- NULL
+        }
+      
       updateSliderInput(session, "tourstep", value=0,
                         max=nrow(condtour)/(input$ninterp+1), step=round(1/(input$ninterp+1),2))
     })
@@ -234,8 +219,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
         # print("tourstep")
         # print(input$tourstep)
-        index <- round(input$tourstep*(input$ninterp+1))
-
+         index <- round(input$tourstep*(input$ninterp+1))
+        
 
         rv$pset[1,conditionvars] <- condtour[index,conditionvars]
         

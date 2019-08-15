@@ -30,17 +30,22 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
   #                     "Kmed"= "fastkmedPath",
   #                     "Along" = preds)
   
-  if (nrow(data) <= 1000)
-    tours1 <- list("Random"= "randomPath",
-                   "Kmeans"= "kmeansPath",
-                   "Kmed"= "pamPath")
-  else tours1 <- list("Random"= "randomPath",
-                      "Kmeans"= "kmeansPath",
-                      "Kmed"= "fastkmedPath")
+  
+  tours1 <- list("Random"= "randomPath",
+                 "Kmeans"= "kmeansPath",
+                 "Kmed"= "pamPath")
+  
+  # if (nrow(data) <= 1000)
+  #   tours1 <- list("Random"= "randomPath",
+  #                  "Kmeans"= "kmeansPath",
+  #                  "Kmed"= "pamPath")
+  # else tours1 <- list("Random"= "randomPath",
+  #                     "Kmeans"= "kmeansPath",
+  #                     "Kmed"= "fastkmedPath")
   
   if (!is.null(CVfit)){
-    # tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
-    # rework lofPath to calc y -yhat. needs to check there is response
+    tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
+   
     if (length(CVfit)> 1)
       tours1 <- c( tours1, list("Diff fits" = "diffitsPath") )
   }

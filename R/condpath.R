@@ -69,7 +69,7 @@ alongPath<- function(data, var,length=10,current=NULL,...){
 }
 
 expandPath<- function(path,current=NULL){
-  
+  if (is.null(path)) return(NULL)
   res <- path
   if (!is.null(current)){
     borrow <- setdiff(names(current), names(path))
@@ -121,7 +121,7 @@ kmeansPath<- function(data,fits=NULL, length=10, reorder=TRUE,conditionvars=NULL
   dummy <- do.call(cbind,dummylist)
     x <- cbind(x, dummy)
   }
-
+  
   clustering <- kmeans(x, centers = length)
   centers <- clustering$centers
  
@@ -170,8 +170,10 @@ pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,..
     return(NULL)
   }
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
+  if (nrow(data) >= 5000) print("Calculating Kmed path...")
+  
   d <- cluster::daisy(data,stand=TRUE)
-  clustering <- cluster::pam(d, k = length)
+  clustering <- cluster::pam(d, k = length,pamonce=5)
   centers <- data[clustering$medoids, ,drop=F]
  
   if (reorder){
@@ -179,6 +181,7 @@ pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,..
     o <- DendSer::dser(d)
     centers <- centers[o,,drop=F]
   }
+  if (nrow(data) >= 5000) print("Kmed path calculated")
   centers
 }
 
@@ -221,8 +224,11 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
     return(NULL)
   }
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
+  if (nrow(data) >= 5000) print("Calculating Kmed path...")
+  
   d <- cluster::daisy(data,stand=TRUE)
   class(d)<- "dist"
+  
   clustering <- kmed::fastkmed(d, ncluster = length, iterate=50)
   centers <- data[clustering$medoid, ,drop=FALSE]
 
@@ -235,38 +241,36 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
       centers <- centers[o,,drop=F]
     }
   }
+  if (nrow(data) >= 5000) print("Kmed path calculated")
   centers
 }
 
 #'@describeIn condtour Returns a path showing biggest absolute residuals from fits.
 #'@export
 
-lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
-  # this one should be fixed to work with CVpredict and response for data
-  # removed from ui for the moment
+lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,response=NULL,...){
+  
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length > nrow(data)) {
     warning("Pick length <= nrows")
     return(NULL)
   }
-
-  if (!is.null(predictArgs))
-    warning("predictArgs are ignored")
-
-  rall <- lapply(fits, residuals)
-  w <- !sapply(rall, is.null)
-  if (sum(w) != 0) rall <- simplify2array(rall[w])
-  else {
-    warning("No residuals defined for fits")
-    return(NULL)
+  if (is.null(response)) return(NULL)
+   y <- data[[response]]
+   if (!is.numeric(y)) return(NULL)
+  if (length(predictArgs) == length(fits)) {
+    f <- vector("list",length=length(fits))
+    for (i  in 1:length(fits)){
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
+    }
   }
-  if (! is.matrix(rall)){
-    warning("Residual vectors have different lengths")
-    return(NULL)
-  }
-  if (sum(w) != length(fits))
-    warning("Residuals not defined for some fits")
-  rall <- abs(rall)
+  else f <- lapply(fits, CVpredict,data)
+  
+  w <- sapply(f, is.numeric)
+  
+  if (sum(w)>= 1) {
+    f <- simplify2array(f[w])
+    rall <- abs(f - y)
   r <- apply(rall,1,max)
   q <- sort(r,decreasing=T)[length]
   s <- which(r >= q)[1:length]
@@ -279,15 +283,54 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
     lpath <- lpath[o,]
   }
   structure(lpath, rows = s[o])
+  }
 }
 
-
+# lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
+#   # this one should be fixed to work with CVpredict and response for data
+#   # removed from ui for the moment
+#   if (!inherits(fits, "list")) fits <- list(fits)
+#   if (length > nrow(data)) {
+#     warning("Pick length <= nrows")
+#     return(NULL)
+#   }
+#   
+#   if (!is.null(predictArgs))
+#     warning("predictArgs are ignored")
+#   
+#   rall <- lapply(fits, residuals)
+#   w <- !sapply(rall, is.null)
+#   if (sum(w) != 0) rall <- simplify2array(rall[w])
+#   else {
+#     warning("No residuals defined for fits")
+#     return(NULL)
+#   }
+#   if (! is.matrix(rall)){
+#     warning("Residual vectors have different lengths")
+#     return(NULL)
+#   }
+#   if (sum(w) != length(fits))
+#     warning("Residuals not defined for some fits")
+#   rall <- abs(rall)
+#   r <- apply(rall,1,max)
+#   q <- sort(r,decreasing=T)[length]
+#   s <- which(r >= q)[1:length]
+#   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
+#   
+#   lpath<- data[s,,drop=F]
+#   if (reorder){
+#     d <- cluster::daisy(lpath)
+#     o <- DendSer::dser(d)
+#     lpath <- lpath[o,]
+#   }
+#   structure(lpath, rows = s[o])
+# }
 
 
 #'@describeIn condtour Returns a path showing biggest difference in fits
 #'@export
 
-diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
+diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,...){
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length > nrow(data)) {
     warning("Pick length <= nrows")
