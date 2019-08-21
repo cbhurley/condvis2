@@ -33,7 +33,6 @@
 #'@param thresholdmax maximum value allowed of threshold.
 #'@param linecols vector of colors to be used for fits
 #'@param showsim if TRUE, shows sim in conditionplots with points/lines. Defaults to TRUE with 150 or fewer cases.
-
 #' @param theta3d,phi3d Angles defining the viewing direction for 3d surface. \code{theta3d}
 #'   gives the azimuthal direction and \code{phi3d} the colatitude. See
 #'   \code{\link[graphics]{persp}}.
@@ -68,7 +67,7 @@
 condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvars=NULL,
                     predsInit=NULL, pointColor=c("steelblue", "grey0"), cPlotPCP=FALSE,
                     cPlotn = 1000,
-                    orderConditionVars=arrangeC, threshold=1, thresholdmax=8*threshold,
+                    orderConditionVars="default", threshold=1, thresholdmax=8*threshold,
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
                     dataplot="pcp", tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
                     showdata= density==FALSE,displayHeight=950) {
@@ -78,6 +77,10 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   
   if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
+  
+  if (orderConditionVars=="default")
+    orderConditionVars <- if (!cPlotPCP) arrangeC else arrangePCP
+  
   
   if (density ) {
     response <- "densityY"

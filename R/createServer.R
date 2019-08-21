@@ -149,9 +149,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       if (length(conditionvars) ==0) conditionvars <- NULL
       if (is.null(conditionvars))
         condArr <- NULL
-      else if (cPlotPCP)
-        condArr <- list(conditionvars)
-      else if (is.null(orderConditionVars))
+      else if (cPlotPCP) {
+        if (is.null(orderConditionVars))
+          condArr <- list(conditionvars)
+        else condArr <- list(orderConditionVars(CVdata[conditionvars]))
+      } else if (is.null(orderConditionVars))
         condArr <- pairoff(conditionvars)
       else condArr <- orderConditionVars(CVdata[conditionvars])
 
@@ -192,6 +194,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       rv$condArr
       mkpath <- input$tour
       newpath <- NULL
+      condtour <<- NULL
       if (mkpath %in% conditionvars)
         newpath <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars])) 
       else if (is.function(get(mkpath))) {
@@ -206,7 +209,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       }
       else {
         print("Path not available")
-        condtour <<- NULL
+        
         }
       
       updateSliderInput(session, "tourstep", value=0,

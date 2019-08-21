@@ -814,6 +814,10 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
 }
 sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
   
+  par(mar = c(3, 3, 3,.5),
+      mgp = c(2, 0.4, 0),
+      tck = -.01)
+  
   CVdata <- CVdata[,sectionvars,drop=FALSE]
   if (length(sectionvars) ==1){
     index <- 1:nrow(CVdata)
@@ -855,11 +859,7 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
 parcoord1 <-
   function (x, col = 1, lty = 1, horiz=TRUE, autoscale=TRUE,var.label = FALSE, ...){
     
-    par(mar = c(3, 3, 3,.5),
-        mgp = c(2, 0.4, 0),
-        tck = -.01)
-    
-    if (autoscale){
+     if (autoscale){
     rx <- apply(x, 2L, range, na.rm = TRUE)
     rx1 <- rx[2,]- rx[1,]
     if (max(rx1)/min(rx1) > 4)
