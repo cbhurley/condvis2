@@ -453,3 +453,26 @@ pathInterpolate.data.frame <- function(x, ninterp = 4L){
   ans
 }
 
+#' Finds medoid of biggest cluster
+#'
+#' @param data 
+#' @param nclusters 
+#' @param maxn. If non null, calculates distance for pam based on at most maxn observations.  
+#'
+#' @return A dataframe with one row, which is the medoid of the biggest cluster found by pam.
+#' @export
+#'
+
+topMedoid<- function(data, nclusters=10, maxn=5000) {
+  if (!is.null(maxn) && nrow(data)> maxn){
+    data <- data[sample(nrow(data), maxn),]
+  }
+  if (length > nrow(data)) {
+    warning("Pick nclusters <= nrows")
+    return(NULL)
+  }
+  d <- cluster::daisy(data,stand=TRUE)
+  clustering <- cluster::pam(d, k = nclusters,pamonce=5)
+  w <- which.max(clustering$clusinfo[,"size"])
+  data[clustering$medoids[w], ,drop=F]
+}

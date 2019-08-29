@@ -24,7 +24,7 @@ plotTourDiagnostics <- function(path, data, pathlen=nrow(path),threshold=1,which
   if (1 %in% which){
   rsk <- rowSums(sim) / ncol(sim)
   index <- seq(from=1, to=pathlen, length.out = length(rsk))
-  plot(index, rsk, type = "l", xlab = "Path index", ylab = "sum of k/n",main="")
+  plot(index, rsk, type = "l", xlab = "Path index", ylab = "sum of sim/n",main="")
   w <- round(seq(from=1, to=length(rsk), length.out = pathlen))
   points(index[w],rsk[w], pch=16, col="grey")
   }
@@ -36,13 +36,14 @@ plotTourDiagnostics <- function(path, data, pathlen=nrow(path),threshold=1,which
   #
   # points(q, seq01, pch = 16)
   plot(ecdf(simmax), verticals=T, main="", pch=NA, xlab =
-         "max k attained",ylab="proportion of data", xlim=c(0,1))
+         "max sim per obs",ylab="proportion of data", xlim=c(0,1))
   grid()
   }
 
   if (3 %in% which){
-      plot(density(simmax, from=0, to=1),  xlab="max k per obs", main="")
+      plot(density(simmax, from=0, to=1),  xlab="max sim per obs", main="")
   }
+  par(mfrow=c(1,1))
   tab <- table(cut(simmax, (0:5)/5))
   tab <- c(length(simmax) - sum(tab), tab)
   names(tab)[1] <- "0"

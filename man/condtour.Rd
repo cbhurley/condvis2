@@ -31,10 +31,10 @@ fastkmedPath(data, fits = NULL, length = 10, reorder = TRUE,
   conditionvars = NULL, ...)
 
 lofPath(data, fits, length = 10, reorder = TRUE,
-  conditionvars = NULL, predictArgs = NULL)
+  conditionvars = NULL, predictArgs = NULL, response = NULL, ...)
 
 diffitsPath(data, fits, length = 10, reorder = TRUE,
-  conditionvars = NULL, predictArgs = NULL)
+  conditionvars = NULL, predictArgs = NULL, ...)
 
 createPath(data, score, length = 10, reorder = TRUE,
   conditionvars = NULL)

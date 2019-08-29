@@ -22,7 +22,7 @@ createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
 
 \item{conditionvars}{names of conditionvars}
 
-\item{predsInit}{starting value for predicts. Defaults to median, or mode for factors}
+\item{predsInit}{starting value for predicts. Defaults to medoid.}
 
 \item{pointColor}{a color, or the name of variable to be used for coloring. If the named variable is numeric, it is first converted to a factor with 3 levels.}
 

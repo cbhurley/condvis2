@@ -7,7 +7,7 @@
 #' @param response name of response variable
 #' @param sectionvars names of at most two sectionvars
 #' @param conditionvars names of conditionvars
-#' @param predsInit starting value for predicts. Defaults to median, or mode for factors
+#' @param predsInit starting value for predicts. Defaults to medoid.
 #' @param pointColor a color, or the name of variable to be used for coloring. If the named variable is numeric, it is first converted to a factor with 3 levels.
 #' @param cPlotPCP if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)
 #' @param cPlotn  Shows a sample of this number of points in conditionplots.

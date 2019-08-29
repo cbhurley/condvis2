@@ -7,7 +7,7 @@
 condvis(data, model = NULL, response = NULL, sectionvars = NULL,
   conditionvars = NULL, predsInit = NULL, pointColor = c("steelblue",
   "grey0"), cPlotPCP = FALSE, cPlotn = 1000,
-  orderConditionVars = arrangeC, threshold = 1, thresholdmax = 8 *
+  orderConditionVars = "default", threshold = 1, thresholdmax = 8 *
   threshold, linecols = NULL, showsim = NULL, theta3d = 45,
   phi3d = 20, dataplot = "pcp", tours = NULL, predictArgs = NULL,
   xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
@@ -24,7 +24,7 @@ condvis(data, model = NULL, response = NULL, sectionvars = NULL,
 
 \item{conditionvars}{names of condition vars. If null, extracts from data.}
 
-\item{predsInit}{Optionally provide starting value for some predictors. Defaults to median, or mode for factors}
+\item{predsInit}{Optionally provide starting value for some predictors. Defaults to medoid.}
 
 \item{pointColor}{a color, or the name of variable to be used for coloring. If the named variable is numeric, it is first converted to a factor with 3 levels.}
 

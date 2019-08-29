@@ -24,7 +24,7 @@
 #' @param response name of response variable. If null, tries to extract from model.
 #' @param sectionvars names of sectionvars. If null, extracts from data.
 #' @param conditionvars names of condition vars. If null, extracts from data.
-#'@param predsInit Optionally provide starting value for some predictors. Defaults to median, or mode for factors
+#'@param predsInit Optionally provide starting value for some predictors. Defaults to medoid.
 #'@param pointColor a color, or the name of variable to be used for coloring. If the named variable is numeric, it is first converted to a factor with 3 levels.
 #'@param  cPlotPCP if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)
 #'@param cPlotn Defaults to 1000. Shows a sample of this number of points in conditionplots. Non-numeric values are ignored.
@@ -160,17 +160,35 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   
   if (is.numeric(r)) datar <- data[,-r]
   else datar <- data
-
-  predsInit1 <- datar[1,]
-  predsVal <- lapply(datar, function(p) {
-    if (is.factor(p)) names( which.max(table(p)))
-    else median(p)
-  })
-  predsInit1[1,]<- predsVal
-  if (! is.null(predsInit)){
-    np <- intersect(names(predsInit), names(predsInit1))
-    predsInit1[1,np] <- predsInit[1,np]
+  
+  np <- names(predsInit)
+  np1 <- setdiff(names(datar), np)
+  
+  
+  # predsInit1 <- datar[1,]
+  # 
+  # 
+  # predsVal <- lapply(datar, function(p) {
+  #   if (is.factor(p)) names( which.max(table(p)))
+  #   else median(p)
+  # })
+  # predsInit1[1,]<- predsVal
+  
+  if (length(np1)> 1){
+    predsInit1 <- topMedoid(data[,np1,drop=FALSE], 1) 
   }
+  
+  
+  
+  predsInit2 <- datar[1,,drop=F]
+  
+  if (length(np1)> 1){
+    predsInit2[1,np]<- predsInit[1,np]
+    predsInit2[1,np1]<- predsInit1[1,np1]
+  }
+  else predsInit2[1,np]<- predsInit[1,np]
+  
+
 
   # data <- pointColor2var(data, pointColor[1])
 
