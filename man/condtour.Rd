@@ -11,6 +11,8 @@
 \alias{lofPath}
 \alias{diffitsPath}
 \alias{createPath}
+\alias{centroidPath}
+\alias{medoidPath}
 \title{Tours of data space}
 \usage{
 randomPath(data, fits = NULL, length = 10, reorder = TRUE,
@@ -38,6 +40,10 @@ diffitsPath(data, fits, length = 10, reorder = TRUE,
 
 createPath(data, score, length = 10, reorder = TRUE,
   conditionvars = NULL)
+
+centroidPath(data, cl, reorder = FALSE)
+
+medoidPath(data, cl, reorder = FALSE)
 }
 \arguments{
 \item{data}{A dataset}
@@ -87,5 +93,9 @@ Paths are reordered using dser from package DendSer.
 \item \code{diffitsPath}: Returns a path showing biggest difference in fits
 
 \item \code{createPath}: Returns a path showing highest scores
+
+\item \code{centroidPath}: Returns a path visiting cluster centroids
+
+\item \code{medoidPath}: Returns a path visiting cluster medoids
 }}
 
