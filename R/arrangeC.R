@@ -181,7 +181,7 @@ arrangePCP <- function (data, method = "default"){
   d <- as.matrix(data)
   if (is.numeric(d)){
     d1 <- as.dist(cor(d))
-  o <- dser(d1, cost=costPL)
+  o <- dser(d1)
   }
   else o <- 1:ncol(d)
   

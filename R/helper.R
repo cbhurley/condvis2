@@ -175,7 +175,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   # predsInit1[1,]<- predsVal
   
   if (length(np1)> 1){
-    predsInit1 <- topMedoid(data[,np1,drop=FALSE], 1) 
+    predsInit1 <- medoid(data[,np1,drop=FALSE]) 
   }
   
   
@@ -198,7 +198,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
   ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours, probs, view3d)
 
-  server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit1,pointColor,
+  server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit2,pointColor,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
                            orderConditionVars=orderConditionVars, 
                            threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, showsim=showsim,

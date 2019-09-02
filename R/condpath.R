@@ -204,7 +204,7 @@ claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,
   }
   clustering <- cluster::clara(data, k = length, stand=TRUE)
   centers <- clustering$medoids
-  print(centers)
+  
   if (reorder){
     d <- dist(scale(centers))
     o <- DendSer::dser(d)
@@ -248,6 +248,7 @@ fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NU
 #'@describeIn condtour Returns a path showing biggest absolute residuals from fits.
 #'@export
 
+
 lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,response=NULL,...){
   
   if (!inherits(fits, "list")) fits <- list(fits)
@@ -256,26 +257,39 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
     return(NULL)
   }
   if (is.null(response)) return(NULL)
-   y <- data[[response]]
-   if (!is.numeric(y)) return(NULL)
-  if (length(predictArgs) == length(fits)) {
-    f <- vector("list",length=length(fits))
+  y <- data[[response]]
+  
+  f <- vector("list",length=length(fits))
+  if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
+    }
+  } else {
+    for (i  in 1:length(fits)){
+      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
     }
   }
-  else f <- lapply(fits, CVpredict,data)
   
   w <- sapply(f, is.numeric)
-  
-  if (sum(w)>= 1) {
+  facs <- sapply(f, is.factor)
+  if (is.numeric(y) && sum(w)>= 1) {
     f <- simplify2array(f[w])
     rall <- abs(f - y)
-  r <- apply(rall,1,max)
-  q <- sort(r,decreasing=T)[length]
-  s <- which(r >= q)[1:length]
+    r <- apply(rall,1,max)
+    q <- sort(r,decreasing=T)[length]
+    s <- which(r >= q)[1:length]
+    
+  }
+  else if (is.factor(y) && sum(facs)>= 1) {
+    f <- simplify2array(f[facs])
+    dif <- sapply(1:length(y), function(i) sum(y[i] != f[i,]))
+    
+    q <- sort(dif,decreasing=T)[length]
+    s <-which(dif >= q & dif > 0)
+    
+  }
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
- 
+  
   lpath<- data[s,,drop=F]
   if (reorder){
     d <- cluster::daisy(lpath)
@@ -283,7 +297,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
     lpath <- lpath[o,]
   }
   structure(lpath, rows = s[o])
-  }
+  
 }
 
 # lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL){
@@ -337,13 +351,16 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
     return(NULL)
   }
 
-  if (length(predictArgs) == length(fits)) {
-    f <- vector("list",length=length(fits))
+  f <- vector("list",length=length(fits))
+  if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
+    }
+  } else {
+    for (i  in 1:length(fits)){
+      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
     }
   }
-  else f <- lapply(fits, CVpredict,data)
 
   w <- sapply(f, is.numeric)
   facs <- sapply(f, is.factor)
@@ -453,26 +470,49 @@ pathInterpolate.data.frame <- function(x, ninterp = 4L){
   ans
 }
 
-#' Finds medoid of biggest cluster
+#' Finds medoid of data
 #'
 #' @param data 
-#' @param nclusters 
-#' @param maxn. If non null, calculates distance for pam based on at most maxn observations.  
 #'
-#' @return A dataframe with one row, which is the medoid of the biggest cluster found by pam.
-#' @export
+#' @return A dataframe with one row, which is the medoid of the data, based on (standardised) daisy dist
 #'
 
-topMedoid<- function(data, nclusters=10, maxn=5000) {
-  if (!is.null(maxn) && nrow(data)> maxn){
-    data <- data[sample(nrow(data), maxn),]
-  }
-  if (length > nrow(data)) {
-    warning("Pick nclusters <= nrows")
-    return(NULL)
-  }
-  d <- cluster::daisy(data,stand=TRUE)
-  clustering <- cluster::pam(d, k = nclusters,pamonce=5)
-  w <- which.max(clustering$clusinfo[,"size"])
-  data[clustering$medoids[w], ,drop=F]
+medoid<- function(data) {
+  d <- as.matrix(cluster::daisy(data,stand=TRUE))
+  w <- which.min(colMeans(d))
+  data[w, ,drop=F]
 }
+
+
+#'@describeIn condtour Returns a path visiting cluster centroids
+#'@export
+
+centroidPath<- function(data, cl,reorder=FALSE){
+   centers <- aggregate(data,list(cl),mean)[,-1]
+   if (reorder){
+     d <- cluster::daisy(centers,stand=TRUE)
+     o <- DendSer::dser(d)
+     centers <- centers[o,,drop=F]
+   }
+   centers
+}
+
+#'@describeIn condtour Returns a path visiting cluster medoids
+#'@export
+
+medoidPath<- function(data, cl,reorder=FALSE){
+  clu <- unique(cl)
+  d <- as.matrix(cluster::daisy(data, stand=TRUE))
+  rows <- sapply(clu, function(i){ r <- which(cl==i)
+  m <- which.min(colMeans(d[r,r,drop=FALSE]))
+  r[m]
+  })
+  centers <- data[rows,,drop=FALSE]
+  if (reorder){
+    d <- cluster::daisy(centers,stand=TRUE)
+    o <- DendSer::dser(d)
+    centers <- centers[o,,drop=F]
+  }
+  centers
+}
+  
