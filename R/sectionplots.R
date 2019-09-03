@@ -160,7 +160,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
       grid <- conditionvals
       class(grid)<- "list"
       grid[sectionvar] <- sectionvals[sectionvar]
-      grid <- as.data.frame(grid)
+      grid <- as.data.frame(grid,optional=T)
       grid1 <- grid
       
       if (!is.null(response) && is.factor(CVdata[[response]]))
