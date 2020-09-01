@@ -68,7 +68,7 @@
 sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,conditionvals,pointColor="steelblue",
                         sim=NULL,threshold=1,linecols=NULL,
                         dataplot="pcp", gridsize=50, probs=FALSE, view3d=FALSE,
-                        theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=1,
+                        theta3d = 45, phi3d = 20, xlim=NULL,ylim=NULL, zlim=NULL,pointSize=1.5,
                         predictArgs=NULL, resetpar=TRUE, density=FALSE, showdata=density==FALSE,
                         returnInfo=FALSE, pointColorFromResponse=FALSE, pcolInfo=NULL){
   
@@ -123,7 +123,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
                     xlim=xlim,ylim=ylim,pointSize=pointSize,showdata=TRUE,
                     returnInfo=returnInfo,pcolInfo=pcolInfo)
     else
-      res<-dataplot(CVdata,c(response,sectionvar),  cols,sim,pcolInfo=pcolInfo)
+      res<-dataplot(CVdata,c(response,sectionvar),  cols,sim,pcolInfo=pcolInfo, returnInfo=returnInfo)
   }
   else {
     if (is.null(sim) && showdata)
@@ -440,8 +440,8 @@ sectionPlotnnf <- function(CVdata,fitnames,sectionvar,response, sim,grid,
     if (j ==1 & length(faclevels) >0)
       legend("topleft", legend = faclevels, col = linecols, lwd=2.5,bty="n", title =fac, cex=.7,
              inset=c(0, legendInset[2]), xpd=NA)
-    
-    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && showdata){
+   
+    if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && fac!= pcolInfo$cvar && showdata){
       legend("topright", legend = names(pcolInfo$cols), 
              col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, 
              inset=legendInset, xpd=NA)
@@ -771,8 +771,8 @@ makeFnumeric <- function(grid, fitnames, prob=FALSE){
 }
 
 
-sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
-  
+sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,returnInfo=FALSE,...){
+ 
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
       tck = -.01)
@@ -794,7 +794,7 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
     ppar <- par("pin")
     ppar[1] <- min(ppar[1], 1.8*ppar[2])
     par(pin=ppar)
-    legendInset <- c(-.1,-.2)
+    legendInset <- c(0.05,-.12)
   }
   else legendInset <- c(0,0)
   
@@ -810,6 +810,11 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
              col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, inset=legendInset, xpd=NA)
     }
   
+  }
+  if (length(sectionvars)==2){
+    clickCoords <- data.frame(x=CVdata[o,1],y=CVdata[o,2],casenum=o)
+    if (returnInfo)
+      return (list(clickCoords=clickCoords))
   }
 }
 sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
@@ -843,9 +848,11 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
 
     parcoord1(CVdata[o,], cols[o],lwd=lwd[o],...)
     # axis(2)
+    
     if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){
+      
       if(isRunning()) {
-        legendInset <- c(-.1,-.2)
+        legendInset <- c(.05,-.15)
       }
       else legendInset <- c(0,0)
       
@@ -857,15 +864,18 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
 }
 
 parcoord1 <-
-  function (x, col = 1, lty = 1, horiz=TRUE, autoscale=TRUE,var.label = FALSE, ...){
+  function (x, col = 1, lty = 1, horiz=TRUE, autoscale=FALSE,var.label = FALSE, ...){
     
      if (autoscale){
+   
     rx <- apply(x, 2L, range, na.rm = TRUE)
     rx1 <- rx[2,]- rx[1,]
     if (max(rx1)/min(rx1) > 4)
       x <- apply(x, 2L, function(x) (x - min(x, na.rm = TRUE))/(max(x,
                                                                     na.rm = TRUE) - min(x, na.rm = TRUE)))
-    }
+     }
+
+      
     axisr <- range(x, na.rm = TRUE)
 
     if (horiz){

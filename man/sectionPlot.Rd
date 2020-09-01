@@ -4,14 +4,35 @@
 \alias{sectionPlot}
 \title{Plots the main condvis display}
 \usage{
-sectionPlot(CVdata, CVfit = NULL, response = NULL, preds, sectionvar,
-  conditionvals, pointColor = "steelblue", sim = NULL, threshold = 1,
-  linecols = NULL, dataplot = "pcp", gridsize = 50, probs = FALSE,
-  view3d = FALSE, theta3d = 45, phi3d = 20, xlim = NULL,
-  ylim = NULL, zlim = NULL, pointSize = 1, predictArgs = NULL,
-  resetpar = TRUE, density = FALSE, showdata = density == FALSE,
-  returnInfo = FALSE, pointColorFromResponse = FALSE,
-  pcolInfo = NULL)
+sectionPlot(
+  CVdata,
+  CVfit = NULL,
+  response = NULL,
+  preds,
+  sectionvar,
+  conditionvals,
+  pointColor = "steelblue",
+  sim = NULL,
+  threshold = 1,
+  linecols = NULL,
+  dataplot = "pcp",
+  gridsize = 50,
+  probs = FALSE,
+  view3d = FALSE,
+  theta3d = 45,
+  phi3d = 20,
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
+  pointSize = 1.5,
+  predictArgs = NULL,
+  resetpar = TRUE,
+  density = FALSE,
+  showdata = density == FALSE,
+  returnInfo = FALSE,
+  pointColorFromResponse = FALSE,
+  pcolInfo = NULL
+)
 }
 \arguments{
 \item{CVdata}{the dataset used for the fit}

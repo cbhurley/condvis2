@@ -27,10 +27,19 @@
 
 arrangeC <- function (data, method = "default")
 {
-
+  singles <- which(sapply(data, function(v) is.factor(v) & length(levels(v)>15)))
+  if (length(singles) ==0) data.singles <- NULL
+  else {
+    data.singles <- list(names(data[,singles,drop=FALSE]))
+    data <- data[,-singles, drop=FALSE]
+  }
   nc.data <- ncol(data)
+
+  if (nc.data==0) return(data.singles)
   if (nc.data <= 2L)
-    return(list(colnames(data)))
+    if (length(singles)!= 0) return( c(list(names(data)), data.singles))
+    else return(list(names(data)))
+  
   data <- na.omit(data)
   nr.data <- nrow(data)
   if (nr.data < 5)
@@ -69,8 +78,11 @@ arrangeC <- function (data, method = "default")
   }
   C[[i]] <- colnames(saving)
   #C below is fix added by CH
-  lapply(C, function(y) if (length(y)== 2 & y[1]==y[2]) y[1] else y)
-
+  res <- lapply(C, function(y) if (length(y)== 2 & y[1]==y[2]) y[1] else y)
+  if (length(singles)!= 0) 
+  c(res,data.singles)
+  else res
+ 
 }
 
 
@@ -166,14 +178,15 @@ polygonarea <- function (x, y = NULL)
 
 
 pairoff <- function(vars){
-varsx <- vars[seq(1,length(vars),2)]
-varsy <- vars[seq(2,length(vars),2)]
-if (length(varsx) == length(varsy))
-  ans <- mapply(c, varsx,varsy,SIMPLIFY=F,USE.NAMES = F) else {
-    ans <- mapply(c, varsx[-length(varsx)],varsy,SIMPLIFY=F,USE.NAMES = F)
-    ans[[length(varsx)]]<- varsx[length(varsx)]
-  }
-ans
+  if (length(vars) ==1) return(as.list(vars))
+  varsx <- vars[seq(1,length(vars),2)]
+  varsy <- vars[seq(2,length(vars),2)]
+  if (length(varsx) == length(varsy))
+    ans <- mapply(c, varsx,varsy,SIMPLIFY=F,USE.NAMES = F) else {
+      ans <- mapply(c, varsx[-length(varsx)],varsy,SIMPLIFY=F,USE.NAMES = F)
+      ans[[length(varsx)]]<- varsx[length(varsx)]
+    }
+  ans
 }
 
 

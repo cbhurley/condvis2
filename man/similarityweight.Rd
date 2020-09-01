@@ -4,8 +4,14 @@
 \alias{similarityweight}
 \title{Calculate the similarity weight for a set of observations}
 \usage{
-similarityweight(x, data, threshold = 1, distance = "euclidean",
-  lambda = NULL, scale = TRUE)
+similarityweight(
+  x,
+  data,
+  threshold = 1,
+  distance = "euclidean",
+  lambda = NULL,
+  scale = TRUE
+)
 }
 \arguments{
 \item{x}{A dataframe describing arbitrary points in the space of the data

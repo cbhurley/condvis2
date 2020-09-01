@@ -4,12 +4,32 @@
 \alias{createCVServer}
 \title{Title Creates a shiny server}
 \usage{
-createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
-  conditionvars, predsInit = NULL, pointColor = NULL,
-  cPlotPCP = FALSE, cPlotn = 1000, orderConditionVars, threshold = 1,
-  thresholdmax, linecols = NULL, showsim = FALSE, dataplot = "pcp",
-  probs, view3d, theta3d, phi3d, predictArgs, xlim = NULL, ylim = NULL,
-  zlim = NULL, density = FALSE, showdata = TRUE)
+createCVServer(
+  CVfit,
+  CVdata = NULL,
+  response = NULL,
+  sectionvars,
+  conditionvars,
+  predsInit = NULL,
+  pointColor = NULL,
+  cPlotPCP = FALSE,
+  cPlotn = 1000,
+  orderConditionVars,
+  threshold = 1,
+  thresholdmax,
+  linecols = NULL,
+  dataplot = "pcp",
+  probs,
+  view3d,
+  theta3d,
+  phi3d,
+  predictArgs,
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
+  density = FALSE,
+  showdata = TRUE
+)
 }
 \arguments{
 \item{CVfit}{a list of fits}
@@ -37,8 +57,6 @@ createCVServer(CVfit, CVdata = NULL, response = NULL, sectionvars,
 \item{thresholdmax}{maximum value allowed of threshold.}
 
 \item{linecols}{vector of colors to be used for fits}
-
-\item{showsim}{if TRUE, shows sim in conditionplots with points}
 
 \item{dataplot}{"pcp" or "pairs". Used when there is no response, or more than two sectionvars.}
 

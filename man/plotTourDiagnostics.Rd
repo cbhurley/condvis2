@@ -4,8 +4,14 @@
 \alias{plotTourDiagnostics}
 \title{Plots diagnostics for the tour supplied}
 \usage{
-plotTourDiagnostics(path, data, pathlen = nrow(path), threshold = 1,
-  which = 1:3, ...)
+plotTourDiagnostics(
+  path,
+  data,
+  pathlen = nrow(path),
+  threshold = 1,
+  which = 1:3,
+  ...
+)
 }
 \arguments{
 \item{path}{the tour}

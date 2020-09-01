@@ -4,14 +4,33 @@
 \alias{condvis}
 \title{Creates Condvis Shiny app}
 \usage{
-condvis(data, model = NULL, response = NULL, sectionvars = NULL,
-  conditionvars = NULL, predsInit = NULL, pointColor = c("steelblue",
-  "grey0"), cPlotPCP = FALSE, cPlotn = 1000,
-  orderConditionVars = "default", threshold = 1, thresholdmax = 8 *
-  threshold, linecols = NULL, showsim = NULL, theta3d = 45,
-  phi3d = 20, dataplot = "pcp", tours = NULL, predictArgs = NULL,
-  xlim = NULL, ylim = NULL, zlim = NULL, density = FALSE,
-  showdata = density == FALSE, displayHeight = 950)
+condvis(
+  data,
+  model = NULL,
+  response = NULL,
+  sectionvars = NULL,
+  conditionvars = NULL,
+  predsInit = NULL,
+  pointColor = c("steelblue", "grey0"),
+  cPlotPCP = FALSE,
+  cPlotn = 1000,
+  orderConditionVars = "default",
+  threshold = 1,
+  thresholdmax = NULL,
+  linecols = NULL,
+  showsim = NULL,
+  theta3d = 45,
+  phi3d = 20,
+  dataplot = "pcp",
+  tours = NULL,
+  predictArgs = NULL,
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
+  density = FALSE,
+  showdata = density == FALSE,
+  displayHeight = 950
+)
 }
 \arguments{
 \item{data}{the dataset used for the fit. Should not have NAs for response, sectionvars or conditionvars.}

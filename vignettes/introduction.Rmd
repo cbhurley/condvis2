@@ -46,10 +46,10 @@ lines(wind, predict(fit1, data.frame(Wind=wind)))
 If we add in a second predictor, we can either move to plotting the surface,
 or plot how the fit relates to one predictor, for a fixed value of another.
 
-```{r fig.width=7, fig.height=2.7}
+```{r fig.width=7.3, fig.height=2.7}
 fit2 <- loess(Ozone~Wind+Solar.R, data=ozone)
 par(mfrow=c(1,3))
-par(mar=c(3,3,3,3))
+par(mar=c(5,5,3,1))
 for (s in quantile(ozone$Solar.R, c(.25,.5,.75))){
 plot(Ozone~Wind, data=subset(ozone, Solar.R <= s+20 & Solar.R >= s-20),
      xlim=c(1.5, 21),ylim=c(-5,175), main=paste0("Solar.R=",s))
@@ -175,8 +175,20 @@ types. (See the help page.)
 
 ## Confidence intervals
 
-Condvis2 does not directly support confidence intervals, but they are fairly easy to display.
-The loess fit offers standard errors, which we use for confidence bounds:
+
+Condvis2  supports confidence intervals, for fits that offer them.
+
+Use
+
+```{r eval=F}
+fit5 <- lm(Ozone~Wind+Solar.R+Temp, data=ozone)
+condvis(ozone, fit5, 
+        sectionvars="Wind", conditionvars=c("Solar.R", "Temp"), predictArgs=list(list(pinterval="confidence")))
+
+```
+
+The loess fit does not provide confidence intervals but it does
+offer standard errors, which can be used for confidence bounds:
 
 ```{r eval=F}
 fitu <- fit3
@@ -199,6 +211,9 @@ condvis(ozone, list(loess=fit3,lower=fitl,upper=fitu),
         sectionvars="Wind", conditionvars=c("Solar.R", "Temp"), 
         linecols=c("red", "blue","blue"))
 ```
+
+
+
 
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics(paste0(fpath, "ozone6.png"))

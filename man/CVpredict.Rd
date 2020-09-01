@@ -9,6 +9,7 @@
 \alias{CVpredict.qda}
 \alias{CVpredict.nnet}
 \alias{CVpredict.randomForest}
+\alias{CVpredict.ranger}
 \alias{CVpredict.rpart}
 \alias{CVpredict.tree}
 \alias{CVpredict.C5.0}
@@ -30,105 +31,332 @@
 \alias{CVpredict.bartMachine}
 \alias{CVpredict.model_fit}
 \alias{CVpredict.WrappedModel}
+\alias{CVpredict.Learner}
 \title{A predict generic function for condvis}
 \usage{
-CVpredict(fit, newdata, ..., ptype = "pred", pthreshold = NULL,
-  ylevels = NULL, ptrans = NULL, pinterval = NULL,
-  pinterval_level = 0.95)
+CVpredict(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95
+)
 
-\method{CVpredict}{default}(fit, newdata, ..., ptype = "pred",
-  pthreshold = NULL, pinterval = NULL, pinterval_level = 0.95,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{default}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{lm}(fit, newdata, ..., ptype = "pred",
-  pthreshold = NULL, pinterval = NULL, pinterval_level = 0.95,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{lm}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{glm}(fit, ..., type = "response", ptype = "pred",
-  pthreshold = NULL, pinterval = NULL, pinterval_level = 0.95,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{glm}(
+  fit,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{lda}(fit, ..., ptype = "pred", pthreshold = NULL,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{lda}(
+  fit,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{qda}(fit, ..., ptype = "pred", pthreshold = NULL,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{qda}(
+  fit,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{nnet}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{nnet}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{randomForest}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{randomForest}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{rpart}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{ranger}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{tree}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{rpart}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{C5.0}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{tree}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{svm}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{C5.0}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{gbm}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, n.trees = fit$n.trees,
-  ptrans = NULL)
+\method{CVpredict}{svm}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
+
+\method{CVpredict}{gbm}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  n.trees = fit$n.trees,
+  ptrans = NULL
+)
 
 \method{CVpredict}{loess}(fit, newdata = NULL, ...)
 
-\method{CVpredict}{ksvm}(fit, newdata, ..., type = NULL,
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{ksvm}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{glmnet}(fit, newdata, ..., type = "response",
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  s = NULL, makex = NULL)
+\method{CVpredict}{glmnet}(
+  fit,
+  newdata,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  s = NULL,
+  makex = NULL
+)
 
-\method{CVpredict}{cv.glmnet}(fit, newdata, ..., type = "response",
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  makex = NULL)
+\method{CVpredict}{cv.glmnet}(
+  fit,
+  newdata,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  makex = NULL
+)
 
-\method{CVpredict}{glmnet.formula}(fit, newdata, ..., type = "response",
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  s = NULL)
+\method{CVpredict}{glmnet.formula}(
+  fit,
+  newdata,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  s = NULL
+)
 
-\method{CVpredict}{cv.glmnet.formula}(fit, newdata, ...,
-  type = "response", ptype = "pred", pthreshold = NULL,
-  ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{cv.glmnet.formula}(
+  fit,
+  newdata,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{keras.engine.training.Model}(fit, newdata, ...,
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  batch_size = 32, response = NULL, predictors = NULL)
+\method{CVpredict}{keras.engine.training.Model}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  batch_size = 32,
+  response = NULL,
+  predictors = NULL
+)
 
 \method{CVpredict}{kde}(fit, newdata = fit$x, ..., scale = TRUE)
 
-\method{CVpredict}{densityMclust}(fit, newdata = NULL, ...,
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  scale = TRUE)
+\method{CVpredict}{densityMclust}(
+  fit,
+  newdata = NULL,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  scale = TRUE
+)
 
-\method{CVpredict}{MclustDA}(fit, newdata, ..., ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{MclustDA}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{MclustDR}(fit, newdata, ..., ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{MclustDR}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{Mclust}(fit, newdata, ..., ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{Mclust}(
+  fit,
+  newdata,
+  ...,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{train}(fit, newdata, ..., type = "response",
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{train}(
+  fit,
+  newdata,
+  ...,
+  type = "response",
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{bartMachine}(fit, newdata, ..., type = NULL,
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL)
+\method{CVpredict}{bartMachine}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
 
-\method{CVpredict}{model_fit}(fit, ..., type = NULL, ptype = "pred",
-  pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  pinterval = NULL, pinterval_level = 0.95)
+\method{CVpredict}{model_fit}(
+  fit,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95
+)
 
-\method{CVpredict}{WrappedModel}(fit, newdata, ..., type = NULL,
-  ptype = "pred", pthreshold = NULL, ylevels = NULL, ptrans = NULL,
-  pinterval = NULL, pinterval_level = 0.95)
+\method{CVpredict}{WrappedModel}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95
+)
+
+\method{CVpredict}{Learner}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL,
+  pinterval = NULL,
+  pinterval_level = 0.95
+)
 }
 \arguments{
 \item{fit}{A fitted model}
@@ -197,6 +425,8 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 
 \item \code{randomForest}: CVpredict method
 
+\item \code{ranger}: CVpredict method
+
 \item \code{rpart}: CVpredict method
 
 \item \code{tree}: CVpredict method
@@ -238,6 +468,8 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 \item \code{model_fit}: CVpredict method for parsnip
 
 \item \code{WrappedModel}: CVpredict method for mlr
+
+\item \code{Learner}: CVpredict method for mlr3
 }}
 
 \examples{

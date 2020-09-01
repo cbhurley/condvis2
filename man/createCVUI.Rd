@@ -4,8 +4,21 @@
 \alias{createCVUI}
 \title{Constructs UI for Condvis}
 \usage{
-createCVUI(CVfit, data, response, sectionvars, preds = NULL, pointColor,
-  threshold = 1, thresholdmax, tours, probs, view3d)
+createCVUI(
+  CVfit,
+  data,
+  response,
+  sectionvars,
+  preds = NULL,
+  pointColor,
+  threshold = 1,
+  thresholdmax,
+  tours,
+  probs,
+  view3d,
+  showsim,
+  cPlotPCP
+)
 }
 \arguments{
 \item{CVfit}{a list of fits}
@@ -29,6 +42,10 @@ createCVUI(CVfit, data, response, sectionvars, preds = NULL, pointColor,
 \item{probs}{Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.}
 
 \item{view3d}{Logical; if \code{TRUE}, includes option for a three-dimensional regression surface if possible.}
+
+\item{showsim}{if TRUE, shows sim in conditionplots with points/lines. Defaults to TRUE with 150 or fewer cases.}
+
+\item{cPlotPCP}{if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)}
 }
 \value{
 a dataframe of conditions

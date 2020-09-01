@@ -67,7 +67,7 @@
 condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvars=NULL,
                     predsInit=NULL, pointColor=c("steelblue", "grey0"), cPlotPCP=FALSE,
                     cPlotn = 1000,
-                    orderConditionVars="default", threshold=1, thresholdmax=8*threshold,
+                    orderConditionVars="default", threshold=1, thresholdmax=NULL,
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
                     dataplot="pcp", tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
                     showdata= density==FALSE,displayHeight=950) {
@@ -75,11 +75,16 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   if (!is.data.frame(data) ) 
     stop("'data' must be a data.frame")
   
-  if (thresholdmax==0) thresholdmax <-1
-  if (is.null(model)) showdata<- TRUE
+  ctype <- which(sapply(data, function(v) !is.numeric(v) & ! is.factor(v)))
+  for (ct in ctype) data[[ct]] <- as.factor(data[[ct]])
+  # if (length(ctype)>0)
+  # warning(paste0("Variables ", paste0(names(data)[ctype], collapse=" ")," changed to factor", 
+  #                collapse=" "))
   
-  if (orderConditionVars=="default")
-    orderConditionVars <- if (!cPlotPCP) arrangeC else arrangePCP
+  
+  # if (thresholdmax==0) thresholdmax <-1
+  if (is.null(model)) showdata<- TRUE
+
   
   
   if (density ) {
@@ -107,8 +112,8 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
       else linecols <- colors()[1:length(model)]
 
       if (is.null(response) && !density){
-        frm <- try(formula(model[[1]], silent=TRUE))
-        if (class(frm) != "try-error")
+        frm <-  try(formula(model[[1]]), silent=T)
+         if (class(frm) != "try-error")
           response <- all.vars(frm)[1]
         else stop("could not extract response from 'model'.")
       }
@@ -174,7 +179,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   # })
   # predsInit1[1,]<- predsVal
   
-  if (length(np1)> 1){
+  if (length(np1)> 0){
     predsInit1 <- medoid(data[,np1,drop=FALSE]) 
   }
   
@@ -194,14 +199,19 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
 
   if (is.null(showsim)) showsim <- nrow(data)<= 150 && showdata
 
-  if (thresholdmax==0) thresholdmax <-1
+  # if (thresholdmax==0) thresholdmax <-1
+  
+  # if (!(is.numeric(thresholdmax) && thresholdmax> threshold)) thresholdmax <- length(preds)*threshold
+  if (!(is.numeric(thresholdmax) && thresholdmax> threshold)) 
+    thresholdmax <- max(8*threshold, round(sqrt(length(preds))*threshold))
   # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
-  ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours, probs, view3d)
+  ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours,
+                   probs, view3d,showsim=showsim,cPlotPCP = cPlotPCP)
 
   server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit2,pointColor,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
                            orderConditionVars=orderConditionVars, 
-                           threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, showsim=showsim,
+                           threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, 
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)

@@ -15,7 +15,6 @@
 #' @param threshold used for similarity weights, defaults to 1.
 #' @param thresholdmax maximum value allowed of threshold.
 #' @param linecols vector of colors to be used for fits
-#' @param showsim if TRUE, shows sim in conditionplots with points
 #' @param dataplot "pcp" or "pairs". Used when there is no response, or more than two sectionvars.
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional  regression surface if possible.
@@ -31,7 +30,7 @@
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
                            predsInit=NULL,pointColor=NULL, cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
                            threshold=1,thresholdmax, linecols=NULL,
-                           showsim=FALSE, dataplot="pcp",probs,
+                            dataplot="pcp",probs,
                            view3d,theta3d,phi3d,predictArgs, xlim=NULL,ylim=NULL, zlim=NULL, density=FALSE,
                            showdata=TRUE){
 
@@ -96,9 +95,10 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       # also, does not work with more than one plot via mfrow
       click <- input$display_click
        # print("handling click")
-
+     
       if (is.data.frame(clickCoords)) {
         w <- nearPoints(clickCoords, click, xvar="x", yvar="y", threshold = 5, maxpoints = 1)
+       
         if (nrow(w) ==1){
           rv$pset[1,conditionvars] <- CVdata[w$casenum, conditionvars]
           print(paste("Condition on conditionvars from Case",w$casenum,collapse=" "))
@@ -147,17 +147,22 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       sectionvars <- rv$sectionvars
       conditionvars <<- setdiff(preds, sectionvars)
       if (length(conditionvars) ==0) conditionvars <- NULL
+      cPlotPCP <<- input$showpcp
+      ocv <- orderConditionVars
+      if (identical(ocv, "default"))
+        ocv <- if (!cPlotPCP) arrangeC else arrangePCP
+       
+      
       if (is.null(conditionvars))
         condArr <- NULL
       else if (cPlotPCP) {
-        if (is.null(orderConditionVars))
+        if (is.null(ocv))
           condArr <- list(conditionvars)
-        else condArr <- list(orderConditionVars(CVdata[conditionvars]))
-      } else if (is.null(orderConditionVars))
+        else condArr <- list(ocv(CVdata[conditionvars]))
+      } else if (is.null(ocv))
         condArr <- pairoff(conditionvars)
-      else condArr <- orderConditionVars(CVdata[conditionvars])
+      else condArr <- ocv(CVdata[conditionvars])
 
-      #print(condArr)
       id <- paste0(sample(LETTERS[1:4], 4, replace=T),collapse="")
       if (is.null(condArr)){
         plotnames <<-NULL
@@ -193,19 +198,22 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       # print(input$tour)
       rv$condArr
       mkpath <- input$tour
-      newpath <- NULL
+      newpathxx <- NULL
       condtour <<- NULL
+     
+      
+      
       if (mkpath %in% conditionvars)
-        newpath <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars])) 
+        newpathxx <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars, drop=FALSE])) 
       else if (is.function(get(mkpath))) {
-        newpath <- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,
+        newpathxx <- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,
                                predictArgs=predictArgs, response=response)
-      }  else newpath <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
+      }  else newpathxx <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
       
       
-      if (is.data.frame(newpath)){
-        newpath <-pathInterpolate(as.data.frame(newpath),input$ninterp)
-        condtour <<- newpath
+      if (is.data.frame(newpathxx)){
+        newpathxx <-pathInterpolate(as.data.frame(newpathxx),input$ninterp)
+        condtour <<- newpathxx
       }
       else {
         print("Path not available")
@@ -251,9 +259,13 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     observeEvent(input$sectionvar2, {
       updateCS()
     })
+    
+    
 
-    observeEvent(rv$pset, {
-      allconditions <<- rbind(allconditions, rv$pset)
+    observe( {
+      newcond <- rv$pset
+      newcond[1,rv$sectionvars]<- NA
+      allconditions <<- rbind(allconditions, newcond)
     })
 
     observeEvent(input$quit,{
@@ -263,8 +275,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
 
     output$conditionInfo <- renderPrint({
       if (!is.null(rv$condArr)){
-      ci <- rv$pset[unlist(rv$condArr)]
-      print(ci,digits=3,row.names=F)
+        v <- unlist(rv$condArr)
+        if (length(v) <=10){
+          ci <- rv$pset[unlist(rv$condArr)]
+          print(ci,digits=3,row.names=F)
+        }
       }
     })
 
@@ -286,6 +301,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
         height<- min(210, round(800/length(rv$condArr)))
       plot_output_list <- lapply(1:length(rv$condArr), function(i) {
         plotname <- plotnames[i]
+        var <- rv$condArr[[i]]
+         if (length(var) ==1 && is.factor(CVdata[[var]]) &&
+            length(levels(CVdata[[var]])) <=35)
+          plotOutput(plotname, height = 150, width = 220, click=paste0(plotname,"Click"))
+        else
         plotOutput(plotname, height = height, width = 220, click=paste0(plotname,"Click"))
       })
       do.call(tagList, plot_output_list)
@@ -305,18 +325,13 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
           plotname <- plotnames[i]
           clickname <- paste0(plotname,"Click")
           var <- arr[[i]]
-
-          if (showsim)
-            output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= rv$sim, 
-                            resetpar=FALSE, plotrows=plotrows)
-            })
-          else
-            output[[plotname]] <- renderPlot({
-              conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= NULL, 
-                            resetpar=FALSE, plotrows=plotrows)
-            })
-
+             
+           output[[plotname]] <- renderPlot({
+             conditionPlot(rv$CVdata, var, rv$pset,pointColor= NULL,sim= if (input$showsim) rv$sim else NULL, 
+                           resetpar=FALSE, plotrows=plotrows)
+           })
+           
+         
           observeEvent(input[[clickname]],{
             click <- input[[clickname]]
             res <-conditionClick(CVdata,var,click,plotrows=plotrows)

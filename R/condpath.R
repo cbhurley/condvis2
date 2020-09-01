@@ -6,17 +6,18 @@
 #' @param reorder If TRUE, points on the path are re-ordered so nearby points are close in the path
 #' @param score A vector of length equal to the nrows of data.
 #' @param conditionvars A vector of variable names. Some tours will limit calculation to this subset of variables.
+#' @param maxn If data has more than this number of rows, use maxn sample of rows for speed reasons (pamPath only)
 #' @param predictArgs a list with one entry per fit, giving arguments for CVpredict
 #' @param ...  other arguments, ignored
 #' @name condtour
 #' @return A dataframe, which is the path
 #' @details kmeansPath works for both numeric and factors, which are converted to columns of indicators.
-#' pamPath is not recommended for large datasets, use claraPath instead.
+#' pamPath uses a subset of rows for large datasets, see maxn.
 #' fits are used only in lofPath and diffitsPath.
 #' Paths are reordered using dser from package DendSer.
 #' @importFrom cluster  daisy pam clara
 #' @importFrom DendSer  dser
-#' @importFrom kmed  fastkmed
+
 
 NULL
 
@@ -33,7 +34,6 @@ randomPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   s <- sample(nrow(data),length)
   rpath<- data[s,,drop=FALSE]
-
   if (reorder){
     if (ncol(rpath) ==1)
       rpath <- rpath[order(rpath[,1]),,drop=FALSE]
@@ -46,6 +46,29 @@ randomPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL
   rpath
   }
 
+#' @describeIn condtour Returns a  path of first length cases
+#' @export
+seqPath<- function(data, fits=NULL,length=10, reorder=FALSE,conditionvars=NULL,...){
+  
+  if (length(conditionvars)==0) conditionvars <- NULL
+  if (length > nrow(data)) {
+    warning(paste("Cannot compute path of length", length))
+    return(NULL)
+  }
+  if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
+  s <- 1:length
+  rpath<- data[s,,drop=FALSE]
+  if (reorder){
+    if (ncol(rpath) ==1)
+      rpath <- rpath[order(rpath[,1]),,drop=FALSE]
+    else{
+      d <- cluster::daisy(rpath, stand=TRUE)
+      o <- DendSer::dser(d)
+      rpath <- rpath[o,]
+    }
+  }
+  rpath
+}
 
 #' @describeIn condtour Returns a  path along var
 #' @export
@@ -67,6 +90,8 @@ alongPath<- function(data, var,length=10,current=NULL,...){
   }
   else return (data.frame(var=new))
 }
+
+
 
 expandPath<- function(path,current=NULL){
   if (is.null(path)) return(NULL)
@@ -163,17 +188,24 @@ kmeansPath<- function(data,fits=NULL, length=10, reorder=TRUE,conditionvars=NULL
 #' @describeIn condtour Returns a path using pam medoids from package cluster
 #' @export
 
-pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
+pamPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,maxn=4000,...){
+  if (is.numeric(maxn) && nrow(data) > maxn){
+    data <- data[sample(nrow(data), maxn),]
+  }
   if (length(conditionvars)==0) conditionvars <- NULL
   if (length > nrow(data)) {
     warning("Pick length <= nrows")
     return(NULL)
   }
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
-  if (nrow(data) >= 5000) print("Calculating Kmed path...")
+  if (nrow(data) >= 5000) {
+    print("Calculating Kmed path...")
+    do.swap <- FALSE}
+  else do.swap <- TRUE
   
   d <- cluster::daisy(data,stand=TRUE)
-  clustering <- cluster::pam(d, k = length,pamonce=5)
+  clustering <- cluster::pam(d, k = length,pamonce=5, do.swap=do.swap,
+                             keep.diss=FALSE, keep.data=FALSE)
   centers <- data[clustering$medoids, ,drop=F]
  
   if (reorder){
@@ -214,42 +246,43 @@ claraPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,
 }
 
 
-#' @describeIn condtour Returns a path using fastkmed from package kmed
-#' @export
-
-fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
-  if (length(conditionvars)==0) conditionvars <- NULL
-  if (length > nrow(data)) {
-    warning("Pick length <= nrows")
-    return(NULL)
-  }
-  if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
-  if (nrow(data) >= 5000) print("Calculating Kmed path...")
-  
-  d <- cluster::daisy(data,stand=TRUE)
-  class(d)<- "dist"
-  
-  clustering <- kmed::fastkmed(d, ncluster = length, iterate=50)
-  centers <- data[clustering$medoid, ,drop=FALSE]
-
-  if (reorder){
-    if (ncol(centers) ==1)
-      centers <- centers[order(centers[,1]),,drop=FALSE]
-    else{
-      d <- cluster::daisy(centers,stand=TRUE)
-      o <- DendSer::dser(d)
-      centers <- centers[o,,drop=F]
-    }
-  }
-  if (nrow(data) >= 5000) print("Kmed path calculated")
-  centers
-}
+#' #' @describeIn condtour Returns a path using fastkmed from package kmed
+#' #' @export
+#' 
+#' fastkmedPath<- function(data, fits=NULL,length=10, reorder=TRUE,conditionvars=NULL,...){
+#'   if (length(conditionvars)==0) conditionvars <- NULL
+#'   if (length > nrow(data)) {
+#'     warning("Pick length <= nrows")
+#'     return(NULL)
+#'   }
+#'   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
+#'   if (nrow(data) >= 5000) print("Calculating Kmed path...")
+#'   
+#'   d <- cluster::daisy(data,stand=TRUE)
+#'   class(d)<- "dist"
+#'   
+#'   clustering <- kmed::fastkmed(d, ncluster = length, iterate=50)
+#'   centers <- data[clustering$medoid, ,drop=FALSE]
+#' 
+#'   if (reorder){
+#'     if (ncol(centers) ==1)
+#'       centers <- centers[order(centers[,1]),,drop=FALSE]
+#'     else{
+#'       d <- cluster::daisy(centers,stand=TRUE)
+#'       o <- DendSer::dser(d)
+#'       centers <- centers[o,,drop=F]
+#'     }
+#'   }
+#'   if (nrow(data) >= 5000) print("Kmed path calculated")
+#'   centers
+#' }
 
 #'@describeIn condtour Returns a path showing biggest absolute residuals from fits.
 #'@export
 
 
-lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,response=NULL,...){
+lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
+                   predictArgs=NULL,response=NULL,...){
   
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length > nrow(data)) {
@@ -283,11 +316,12 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predict
   else if (is.factor(y) && sum(facs)>= 1) {
     f <- simplify2array(f[facs])
     dif <- sapply(1:length(y), function(i) sum(y[i] != f[i,]))
-    
+    length <- min(length, sum(dif>0))
     q <- sort(dif,decreasing=T)[length]
-    s <-which(dif >= q & dif > 0)
+    s <-which(dif >= q & dif > 0)[1:length]
     
   }
+  
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   lpath<- data[s,,drop=F]
@@ -368,12 +402,14 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
   f <- simplify2array(f[w])
   
   dif <- apply(f,1,max)- apply(f,1,min)
+  length <- min(length, sum(dif>0))
   q <- sort(dif,decreasing=T)[length]
   s <-which(dif >= q)
   }
   else if (sum(facs)>= 2) {
     f <- simplify2array(f[facs])
     dif <- apply(f,1, function(x) length(unique(x)))
+    length <- min(length, sum(dif>1))
     q <- sort(dif,decreasing=T)[length]
     s <-which(dif >= q & dif > 1)
   }
@@ -473,11 +509,17 @@ pathInterpolate.data.frame <- function(x, ninterp = 4L){
 #' Finds medoid of data
 #'
 #' @param data 
-#'
+#' @param maxn If data has more than this number of rows, use maxn sample of rows for speed reasons
 #' @return A dataframe with one row, which is the medoid of the data, based on (standardised) daisy dist
 #'
 
-medoid<- function(data) {
+medoid<- function(data, maxn = 4000) {
+  if (is.numeric(maxn) && nrow(data) > maxn){
+    data <- data[sample(nrow(data), maxn),]
+  }
+  ctype <- which(sapply(data, function(v) !is.numeric(v) & ! is.factor(v)))
+  for (ct in ctype) data[[ct]] <- as.factor(data[[ct]])
+  
   d <- as.matrix(cluster::daisy(data,stand=TRUE))
   w <- which.min(colMeans(d))
   data[w, ,drop=F]

@@ -13,10 +13,11 @@
 #' @param tours A list of pre-calculated tours
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
 #' @param view3d Logical; if \code{TRUE}, includes option for a three-dimensional regression surface if possible.
-
+#'@param showsim if TRUE, shows sim in conditionplots with points/lines. Defaults to TRUE with 150 or fewer cases.
+#'@param cPlotPCP if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)
 #'@return a dataframe of conditions
 createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,threshold=1,thresholdmax, tours,probs,
-                       view3d){
+                       view3d, showsim, cPlotPCP){
   colorvars <- sapply(data, is.factor)
   colorvars <- union(pointColor, names(data)[colorvars])
   responsePlot <- !is.null(response) & length(sectionvars) <=2
@@ -33,7 +34,8 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
   
   tours1 <- list("Random"= "randomPath",
                  "Kmeans"= "kmeansPath",
-                 "Kmed"= "pamPath")
+                 "Kmed"= "pamPath",
+                 "In order" = "seqPath")
   
   # if (nrow(data) <= 1000)
   #   tours1 <- list("Random"= "randomPath",
@@ -72,13 +74,17 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
       #                                      selected = sectionvars[1]
       #                                      ),
                              #  uiOutput("select2"),
+      
                                uiOutput("cplots"),
                                tags$br(),
                                # tags$br(),
                                verbatimTextOutput("conditionInfo"),
                                width=4,
                                tags$head(tags$style("#conditionInfo{font-size: 9px;}")),
-                                actionButton("quit", "Return conditions")
+                               fluidRow(column(5, offset=0,checkboxInput("showpcp", "One plot", cPlotPCP)),
+                                        column(5, offset=2,checkboxInput("showsim", "Show sim", showsim))),
+                                fluidRow(column(5, offset=0,actionButton("quit", "Return conditions")),
+                                         )
                                ),
 
 
@@ -129,8 +135,12 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
                               radioButtons(inputId = "dist", "Distance",
                                          choices = list("maxnorm" ,"euclidean", "gower"), inline=TRUE))),
              # tags$br(),
-            
+             
+                      
              fluidRow(column(9, offset=1, wellPanel(
+               # fluidRow(column(5, offset=0,checkboxInput("showtour", "Show tour options", FALSE))),
+               # conditionalPanel(
+               #   condition = "input.showtour==true",
               fluidRow(
                column(4, offset=0, selectInput(inputId = "tour",
                                                       label = "Choose tour",
@@ -147,8 +157,8 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
 
              column(4, offset=1, sliderInput(inputId = "ninterp",ticks=FALSE,
                                              label = "Interp steps",min=0, max=6,value=0,step=1
-             )))))
-             )
+             ))))))
+             # )
              
 
              ), position="right")

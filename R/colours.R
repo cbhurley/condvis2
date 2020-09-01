@@ -2,6 +2,13 @@ CVenv <- vector(mode="list")
 CVenv$densityCols <- blues9
 CVenv$responseCols <- RColorBrewer::brewer.pal(11, "PuOr")
 CVenv$probCols <- colorRampPalette(RColorBrewer::brewer.pal(4, "Accent")[c(2,4)])(11)
+# CVenv$probCols <- colorRampPalette(RColorBrewer::brewer.pal(11, "PRGn")[8:4])(100)
+
+
+CVenv$probCols <- scales::div_gradient_pal(low=RColorBrewer::brewer.pal(3, "Accent")[1],
+                                           mid="white",
+                                           high=RColorBrewer::brewer.pal(3, "Accent")[2])(seq(0,1,length.out=20))
+
 
 colorfn <- function(vec, cols= NULL, expand=.07, density=FALSE){
   if (is.null(cols))
@@ -114,9 +121,10 @@ weightcolor <-
     
     ## Discretise `weights`. We just want nlevels different shades
     
-    if (nlevels==3)
-      wmax <- c(0, 0.4, 0.7, 1) # Mark's settings
-    else wmax <- (0:nlevels)/nlevels
+    # if (nlevels==3)
+    #   wmax <- c(0, 0.4, 0.7, 1) # Mark's settings
+    # else 
+    wmax <- (0:nlevels)/nlevels
     
     weights <- wmax[findInterval(weights, c(0, .Machine$double.eps,
                                             wmax[-1]), rightmost.closed = TRUE)]

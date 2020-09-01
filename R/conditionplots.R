@@ -92,18 +92,37 @@ conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
       tck = -.01)
   var1 <- CVdata[[var]]
   tab <- table(var1)
-  
+  if (length(tab)< 16){
   if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
-  b <- barplot(tab,col="paleturquoise3", border="grey60", width=.8,space=.25, xlab=var,horiz=TRUE,las=1)
   
-  
-  varVal <- varVal[[var]]
-  crossy <- match(varVal, names(tab))
-  if (!is.na(crossy)){
-  crossx <- tab[crossy]/2
-  points(crossx,b[crossy,1], pch=43, col="magenta", cex=5)
+    b <- barplot(tab,col="paleturquoise3", border="grey60", width=.8,space=.25, xlab=var,horiz=TRUE,las=1)
+    
+    
+    varVal <- varVal[[var]]
+    crossy <- match(varVal, names(tab))
+    if (!is.na(crossy)){
+      crossx <- tab[crossy]/2
+      points(crossx,b[crossy,1], pch=43, col="magenta", cex=5)
+    }
   }
-}
+  else {
+    par(mar=c(0,0,0,0))
+    n <- length(tab)
+    x <- rep_len(1:5, length.out=n)
+    y<-  rep(1:n, each=5)[1:n]
+    y <- max(y)+1 - y
+    
+    plot(c(1,5.5),range(y),type="n", ann=F, axes=F, mar=c(0,0,0,0))
+    text(x,y,names(tab), offset=0)
+    varVal <- varVal[[var]]
+    cy <- match(varVal, names(tab))
+    if (!is.na(cy)){
+      crossx <- x[cy]
+      crossy <- y[cy]
+      points(crossx,crossy, pch=43, col="magenta", cex=5)
+    }
+    
+  }}
 
 
 
@@ -216,17 +235,39 @@ conditionClickn <- function(CVdata, var, click,plotrows){
 
 
 conditionClickf <- function(CVdata, var, click,plotrows){
-
+  
   ry <- ceiling(click$y)
   var1 <- CVdata[[var]]
   tab <- table(var1)
   
-  if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
-   if (ry >= 1 & ry <= length(names(tab)))
-    setNames(names(tab)[ry],var)
-   else NULL
+  if (length(tab)< 16){
+    if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
+    if (ry >= 1 & ry <= length(names(tab)))
+      setNames(names(tab)[ry],var)
+    else NULL
+  }
+  else {
+    rx <- round(click$x)
+    ry <- round(click$y)
+    n <- length(tab)
+    
+    tabm <- t(matrix(1:n, ncol=5))
+    tabm[]<- ""
+    tabm[1:n] <- names(tab)
+    tabm <- t(tabm)
+    if (rx >=1 & rx <= 5 & ry >=1 & ry <= nrow(tabm)){
+     
+      ry <- nrow(tabm)+1 - ry 
+      nvar <- tabm[ry,rx]
+      if (nvar !="")
+        setNames(nvar,var)
+      else NULL
+    }
+    else NULL
+  }
 }
-
+    
+    
 conditionClicknn <- function(CVdata, var, click,plotrows){
   setNames(c(click$x,click$y), var)
 }

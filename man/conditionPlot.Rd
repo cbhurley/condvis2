@@ -4,8 +4,15 @@
 \alias{conditionPlot}
 \title{Plots a conditionPlot.}
 \usage{
-conditionPlot(CVdata, var, varVal, pointColor = "steelblue",
-  sim = NULL, resetpar = TRUE, plotrows = NULL)
+conditionPlot(
+  CVdata,
+  var,
+  varVal,
+  pointColor = "steelblue",
+  sim = NULL,
+  resetpar = TRUE,
+  plotrows = NULL
+)
 }
 \arguments{
 \item{CVdata}{the dataset used for the fit}

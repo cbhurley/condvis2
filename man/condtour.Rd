@@ -3,11 +3,11 @@
 \name{condtour}
 \alias{condtour}
 \alias{randomPath}
+\alias{seqPath}
 \alias{alongPath}
 \alias{kmeansPath}
 \alias{pamPath}
 \alias{claraPath}
-\alias{fastkmedPath}
 \alias{lofPath}
 \alias{diffitsPath}
 \alias{createPath}
@@ -15,31 +15,76 @@
 \alias{medoidPath}
 \title{Tours of data space}
 \usage{
-randomPath(data, fits = NULL, length = 10, reorder = TRUE,
-  conditionvars = NULL, ...)
+randomPath(
+  data,
+  fits = NULL,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  ...
+)
+
+seqPath(
+  data,
+  fits = NULL,
+  length = 10,
+  reorder = FALSE,
+  conditionvars = NULL,
+  ...
+)
 
 alongPath(data, var, length = 10, current = NULL, ...)
 
-kmeansPath(data, fits = NULL, length = 10, reorder = TRUE,
-  conditionvars = NULL, ...)
+kmeansPath(
+  data,
+  fits = NULL,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  ...
+)
 
-pamPath(data, fits = NULL, length = 10, reorder = TRUE,
-  conditionvars = NULL, ...)
+pamPath(
+  data,
+  fits = NULL,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  maxn = 4000,
+  ...
+)
 
-claraPath(data, fits = NULL, length = 10, reorder = TRUE,
-  conditionvars = NULL, ...)
+claraPath(
+  data,
+  fits = NULL,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  ...
+)
 
-fastkmedPath(data, fits = NULL, length = 10, reorder = TRUE,
-  conditionvars = NULL, ...)
+lofPath(
+  data,
+  fits,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  predictArgs = NULL,
+  response = NULL,
+  ...
+)
 
-lofPath(data, fits, length = 10, reorder = TRUE,
-  conditionvars = NULL, predictArgs = NULL, response = NULL, ...)
+diffitsPath(
+  data,
+  fits,
+  length = 10,
+  reorder = TRUE,
+  conditionvars = NULL,
+  predictArgs = NULL,
+  ...
+)
 
-diffitsPath(data, fits, length = 10, reorder = TRUE,
-  conditionvars = NULL, predictArgs = NULL, ...)
-
-createPath(data, score, length = 10, reorder = TRUE,
-  conditionvars = NULL)
+createPath(data, score, length = 10, reorder = TRUE, conditionvars = NULL)
 
 centroidPath(data, cl, reorder = FALSE)
 
@@ -58,6 +103,8 @@ medoidPath(data, cl, reorder = FALSE)
 
 \item{...}{other arguments, ignored}
 
+\item{maxn}{If data has more than this number of rows, use maxn sample of rows for speed reasons (pamPath only)}
+
 \item{predictArgs}{a list with one entry per fit, giving arguments for CVpredict}
 
 \item{score}{A vector of length equal to the nrows of data.}
@@ -66,17 +113,21 @@ medoidPath(data, cl, reorder = FALSE)
 A dataframe, which is the path
 }
 \description{
-Tours of data space
+
 }
 \details{
 kmeansPath works for both numeric and factors, which are converted to columns of indicators.
-pamPath is not recommended for large datasets, use claraPath instead.
+pamPath uses a subset of rows for large datasets, see maxn.
 fits are used only in lofPath and diffitsPath.
 Paths are reordered using dser from package DendSer.
+
+
 }
 \section{Functions}{
 \itemize{
 \item \code{randomPath}: Returns a random path
+
+\item \code{seqPath}: Returns a  path of first length cases
 
 \item \code{alongPath}: Returns a  path along var
 
@@ -85,8 +136,6 @@ Paths are reordered using dser from package DendSer.
 \item \code{pamPath}: Returns a path using pam medoids from package cluster
 
 \item \code{claraPath}: Returns a path using clara medoids from package cluster
-
-\item \code{fastkmedPath}: Returns a path using fastkmed from package kmed
 
 \item \code{lofPath}: Returns a path showing biggest absolute residuals from fits.
 
