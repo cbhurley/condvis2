@@ -200,15 +200,14 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       mkpath <- input$tour
       newpathxx <- NULL
       condtour <<- NULL
-     
-      
-      
+ 
       if (mkpath %in% conditionvars)
         newpathxx <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars, drop=FALSE])) 
-      else if (is.function(get(mkpath))) {
-        newpathxx <- get(mkpath)(CVdata0,CVfit,input$tourlen, conditionvars=conditionvars,
+      else if (exists(mkpath) && is.function(get(mkpath))) {
+        newpathxx <- get(mkpath)(CVdata0,input$tourlen, conditionvars=conditionvars,fits=CVfit,
                                predictArgs=predictArgs, response=response)
-      }  else newpathxx <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
+      }  else if (exists(mkpath) && is.data.frame(get(mkpath)))
+        newpathxx <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
       
       
       if (is.data.frame(newpathxx)){

@@ -21,29 +21,17 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
   colorvars <- sapply(data, is.factor)
   colorvars <- union(pointColor, names(data)[colorvars])
   responsePlot <- !is.null(response) & length(sectionvars) <=2
-  # if (nrow(data) <= 1000)
-  # tours1 <- list("Random"= "randomPath",
-  #      "Kmeans"= "kmeansPath",
-  #      "Kmed"= "pamPath",
-  #      "Along" = preds)
-  # else tours1 <- list("Random"= "randomPath",
-  #                     "Kmeans"= "kmeansPath",
-  #                     "Kmed"= "fastkmedPath",
-  #                     "Along" = preds)
   
   
   tours1 <- list("Random"= "randomPath",
                  "Kmeans"= "kmeansPath",
-                 "Kmed"= "pamPath",
-                 "In order" = "seqPath")
+                 "Kmed"= "pamPath")
   
-  # if (nrow(data) <= 1000)
-  #   tours1 <- list("Random"= "randomPath",
-  #                  "Kmeans"= "kmeansPath",
-  #                  "Kmed"= "pamPath")
-  # else tours1 <- list("Random"= "randomPath",
-  #                     "Kmeans"= "kmeansPath",
-  #                     "Kmed"= "fastkmedPath")
+  if (!is.null(response) && response != "densityY") {
+    tours1$HighY <- "hiresponsePath"
+    tours1$LowY <- "loresponsePath"
+  }
+  tours1$Along <- preds
   
   if (!is.null(CVfit)){
     tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
@@ -163,6 +151,7 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
 
              ), position="right")
   )
+
 }
 
 
