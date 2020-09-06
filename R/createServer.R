@@ -14,6 +14,7 @@
 #' @param orderConditionVars If supplied, a function to order the Condition Vars
 #' @param threshold used for similarity weights, defaults to 1.
 #' @param thresholdmax maximum value allowed of threshold.
+#' @param tours A list of pre-calculated tours
 #' @param linecols vector of colors to be used for fits
 #' @param dataplot "pcp" or "pairs". Used when there is no response, or more than two sectionvars.
 #' @param probs Logical; if \code{TRUE}, shows predicted class probabilities instead of just predicted classes.
@@ -29,11 +30,10 @@
 
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
                            predsInit=NULL,pointColor=NULL, cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
-                           threshold=1,thresholdmax, linecols=NULL,
+                           threshold=1,thresholdmax,tours=NULL,linecols=NULL,
                             dataplot="pcp",probs,
                            view3d,theta3d,phi3d,predictArgs, xlim=NULL,ylim=NULL, zlim=NULL, density=FALSE,
                            showdata=TRUE){
-
 
   # if (is.null(CVdata)) CVdata <- extractModelData(CVdata)
 
@@ -53,7 +53,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     condtour <- NULL
     plotrows <- NULL
     allconditions <- NULL
-
+    
     if (is.numeric(cPlotn) && nrow(CVdata) > cPlotn) plotrows <- sample(nrow(CVdata), cPlotn, replace=FALSE)
 
     if (threshold >= thresholdmax)
@@ -200,18 +200,29 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       mkpath <- input$tour
       newpathxx <- NULL
       condtour <<- NULL
- 
-      if (mkpath %in% conditionvars)
-        newpathxx <- alongPath(CVdata0, mkpath, input$tourlen, current=isolate(rv$pset[1,conditionvars, drop=FALSE])) 
-      else if (exists(mkpath) && is.function(get(mkpath))) {
-        newpathxx <- get(mkpath)(CVdata0,input$tourlen, conditionvars=conditionvars,fits=CVfit,
-                               predictArgs=predictArgs, response=response)
-      }  else if (exists(mkpath) && is.data.frame(get(mkpath)))
-        newpathxx <- expandPath(get(mkpath), current=isolate(rv$pset[1,conditionvars]))
+      # print(mkpath)
+      mkpathf <- try(
+        get(mkpath, as.environment("package:condvis2"), mode="function"), 
+        silent=TRUE)
       
+      mkpathd <- try(get(mkpath, mode="list"), silent=TRUE)
+     
+      if (mkpath %in% conditionvars){
+        newpathxx <- alongPath(CVdata0, mkpath, input$tourlen, 
+                               current=isolate(rv$pset[1,conditionvars, drop=FALSE])) 
+        # print("conditionvars")
+      }
+      else if (is.function(mkpathf)) {
+        newpathxx <- mkpathf(CVdata0,input$tourlen, conditionvars=conditionvars,fits=CVfit,
+                               predictArgs=predictArgs, response=response)
+        # print("function")
+      }  else if (is.data.frame(mkpathd)){
+        newpathxx <- expandPath(mkpathd, current=isolate(rv$pset[1,conditionvars]))
+        # print("data.frame")
+      }
       
       if (is.data.frame(newpathxx)){
-        newpathxx <-pathInterpolate(as.data.frame(newpathxx),input$ninterp)
+        newpathxx <-pathInterpolate(newpathxx,input$ninterp)
         condtour <<- newpathxx
       }
       else {
@@ -293,6 +304,15 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
                   width=220,
                   selected = sv2
       )
+    })
+    
+    observe({
+      rv$condArr 
+      CVtours <- mktourlist(CVfit, conditionvars, response,tours)
+      
+      updateSelectInput(session, inputId = "tour",
+                                       choices= CVtours,
+                                     )
     })
 
     output$cplots <- renderUI({

@@ -44,7 +44,7 @@ fitlm <-
   set_engine("lm") %>%
   fit(medv ~ ., data = Boston1)
 
-fitrf <- rand_forest() %>%
+fitrf <- rand_forest(mode="regression") %>%
   set_engine("randomForest") %>%
   fit(medv ~ ., data = Boston1)
   
@@ -93,7 +93,7 @@ Fit a survival model and explore with condvis:
 library(survival) # for the data
 smodel <-
   surv_reg() %>%
-  set_engine("survreg") %>%
+  set_engine("survival") %>%
   fit(Surv(time, status) ~ inst+age+sex+ph.ecog, data=lung)
 
 condvis(na.omit(lung), smodel, response="time", sectionvars = c("inst","sex"), conditionvars=c("age","ph.ecog"))

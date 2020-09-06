@@ -131,6 +131,14 @@ scorePath<- function(data, score,length=10, reorder=TRUE,conditionvars=NULL){
 
 
 
+#' Interpolation
+#'
+#' @param x a numeric or factor vector or dataframe
+#' @param ninterp number of interpolated steps
+#'
+#' @return interpolated version of x
+#' @export
+#'
 
 
 pathInterpolate <-function (x, ninterp=4){
@@ -140,7 +148,8 @@ pathInterpolate <-function (x, ninterp=4){
   else UseMethod("pathInterpolate", x)
   }
 
-
+#' @describeIn pathInterpolate Default interpolate method
+#' @export
 pathInterpolate.default <- function (x, ninterp = 4L){
      x <- as.numeric(x)
     xdiff <- diff(x) / (ninterp + 1L)
@@ -149,7 +158,8 @@ pathInterpolate.default <- function (x, ninterp = 4L){
   }
 
 
-
+#' @describeIn pathInterpolate  pathInterpolate method for factor
+#' @export
 pathInterpolate.factor <- pathInterpolate.character <-function (x, ninterp = 4L){
        # if (!identical(ninterp %% 2, 0))
     #   warning("'ninterp' should be even for factor/character vector")
@@ -160,7 +170,8 @@ pathInterpolate.factor <- pathInterpolate.character <-function (x, ninterp = 4L)
 
 
 
-
+#' @describeIn pathInterpolate  pathInterpolate method for data.frame
+#' @export
 pathInterpolate.data.frame <- function(x, ninterp = 4L){
   ans <- lapply(x, pathInterpolate, ninterp)
   ans <- data.frame(ans)

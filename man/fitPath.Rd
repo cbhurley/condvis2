@@ -34,7 +34,8 @@ hiresponsePath(
   response = NULL,
   length = 10,
   reorder = TRUE,
-  conditionvars = NULL
+  conditionvars = NULL,
+  ...
 )
 
 loresponsePath(
@@ -42,7 +43,8 @@ loresponsePath(
   response = NULL,
   length = 10,
   reorder = TRUE,
-  conditionvars = NULL
+  conditionvars = NULL,
+  ...
 )
 }
 \arguments{
@@ -61,8 +63,6 @@ loresponsePath(
 \item{response}{The name of the response variable}
 
 \item{...}{ignored}
-
-\item{y}{"high" or "low"}
 }
 \value{
 A dataframe with the path

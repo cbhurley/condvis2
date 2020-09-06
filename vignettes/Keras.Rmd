@@ -97,18 +97,20 @@ Condvis uses a generic `CVpredict` to provide a uniform interface to `predict` m
 - matrix of predicted probabilities for each class `ptype` = "probmatrix"
 
 ```{r}
-CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7)
-CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7, ptype="prob")
-CVpredict(model, dtf.te[1:10,], response=8, predictors=1:7, ptype="probmatrix")
+kresponse <- "Pima.testLabels"
+kpreds <- setdiff(names(dtf.te),kresponse)
+CVpredict(model, dtf.te[1:10,], response=kresponse, predictors=kpreds)
+CVpredict(model, dtf.te[1:10,], response=kresponse, predictors=kpreds, ptype="prob")
+CVpredict(model, dtf.te[1:10,], response=kresponse, predictors=kpreds, ptype="probmatrix")
 ```
 
 
-Note that `keras` models do not use the formula interface, so one needs to specify the name of response and predictors for `CVpredict`. When creating the Condvis shiny app, arguments for `CVpredict` can be passed in `condvis` using `predictArgs` argument.
+Note that for `keras` models  so one needs to specify the name of response and predictors for `CVpredict`. When creating the Condvis shiny app, arguments for `CVpredict` can be passed in `condvis` using `predictArgs` argument.
 
 Calculate model accuracy from:
 
 ```{r}
-mean(CVpredict(model, dtf.te, response=8, predictors=1:7) == dtf.te$Pima.testLabels)
+mean(CVpredict(model, dtf.te, response=kresponse, predictors=kpreds) == dtf.te$Pima.testLabels)
 ```
 
 
@@ -124,13 +126,13 @@ mean(CVpredict(fit.lda, dtf.te) == dtf.te$Pima.testLabels)
 LDA scores higher on accuracy. It is known that a linear model performs best for this dataset.
 
 ```{r eval=F}
-
-kArgs1 <-  list(response=8,predictors=1:7, ptype="prob")
-kArgs2 <-  list(response=8,predictors=1:7, ptype="prob")
-condvis(dtf, list(model.keras = model, model.lda = fit.lda), sectionvars = c("bmi", "glu"), response="Pima.trainLabels",predictArgs = list(kArgs1, kArgs2), pointColor = "Pima.trainLabels")
+kresponse <- "Pima.trainLabels"
+kArgs1 <-  list(response=kresponse,predictors=kpreds)
+condvis(dtf, list(model.keras = model, model.lda = fit.lda), sectionvars = c("bmi", "glu"), response="Pima.trainLabels",predictArgs = list(kArgs1, NULL), pointColor = "Pima.trainLabels")
 
 ```
 
+Click the showprobs button to see class probabilities.
 
 ```{r echo=FALSE, out.width='100%', eval=T}
 knitr::include_graphics(paste0(fpath, "Pima.png"))
@@ -221,12 +223,13 @@ column_names <- c('CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE',
                   'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT')
 train_df <- data.frame(train_data)
 colnames(train_df) <- column_names
-train_df$medv <- train_labels
+train_df$medv <- as.numeric(train_labels)
 
 test_df <- data.frame(test_data)
 colnames(test_df) <- column_names
-test_df$medv <- test_labels
-
+test_df$medv <- as.numeric(test_labels)
+kpreds <- column_names
+kresponse <- "medv"
 ```
 Fit some other models for comparison (a random forest and a generalised additive model):
 
@@ -242,7 +245,8 @@ rf.model <- randomForest(formula = medv ~ ., data = train_df)
 Use `CVpredict` to compare RMSE in the scaled data:
 
 ```{r}
-mean((test_labels - CVpredict(model, test_df, response=14, predictors=1:13))^2)
+
+mean((test_labels - CVpredict(model, test_df, response=kresponse, predictors=kpreds))^2)
 mean((test_labels - CVpredict(gam.model, test_df))^2)
 mean((test_labels - CVpredict(rf.model, test_df))^2, na.rm=TRUE)
 ```
@@ -251,8 +255,8 @@ RF gives the best fit.
 
 ```{r eval = FALSE}
 
-kArgs <-  list(response=14,predictors=1:13)
-condvis(train_df, list(gam = gam.model, rf = rf.model, kerasmodel = model), sectionvars = c("LSTAT", "RM"),predictArgs = c(kArgs, kArgs, kArgs) )
+kArgs <-  list(response=kresponse,predictors=kpreds)
+condvis(train_df, list(gam = gam.model, rf = rf.model, kerasmodel = model), sectionvars = c("LSTAT", "RM"),predictArgs = list(NULL, NULL, kArgs) )
 
 ```
 

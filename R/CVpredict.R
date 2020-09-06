@@ -573,40 +573,48 @@ CVpredict.cv.glmnet.formula <- function(fit,newdata,..., type="response",ptype="
 #' @export
 
 CVpredict.keras.engine.training.Model  <- function(fit, newdata,...,  ptype = "pred", pthreshold = NULL,
-                                              ylevels = NULL, ptrans = NULL, batch_size = 32,response=NULL, predictors=NULL){
-
-
+                                                   ylevels = NULL, ptrans = NULL, batch_size = 32,response=NULL, predictors=NULL){
+  
+  
   if (is.null(ylevels)){
-  if (!is.null(response))
-     ylevels <- levels(newdata[, response])
+    if (!is.null(response))
+      ylevels <- levels(newdata[[response]])
   }
-
+  
   if (!is.null(predictors)) x <- newdata[,predictors] else x <- newdata
-   x <- as.matrix(x)
-
-
-   if (ptype=="pred" && is.null(ylevels)){
-     # numeric prediction
-     p <- as.numeric(predict(fit,x,  batch_size = batch_size,...))
-   }
-   else if (ptype=="pred" && is.numeric(pthreshold)){
-     # calc probmatrix for class prediction using threshold
-     p <- keras::predict_proba(fit,x,  batch_size = batch_size,...)
-     if(length(ylevels)==2){
-       p <- cbind(1-p,p)
-     }
-   }
-   else if (ptype=="pred"){
-     # calc predicted classes
-     p <- keras::predict_classes(fit,x,  batch_size = batch_size,...) +1
-     p <- factor(ylevels[p], levels=ylevels)
-   }
-   else {
-     # ptype is "prob" or "probmatrix", calculate probs
-     p <- keras::predict_proba(fit,x,  batch_size = batch_size,...)
-   }
-   calcPred(ptype,p, pthreshold, ylevels,ptrans)
+  x <- as.matrix(x)
+  print("here in cv predict")
+  print("response")
+  print(response)
+  print("predictors")
+  print(predictors)
+  print("ylevels")
+  print(ylevels)
+  xx <<- x
+  
+  if (ptype=="pred" && is.null(ylevels)){
+    # numeric prediction
+    p <- as.numeric(predict(fit,x,  batch_size = batch_size,...))
+  }
+  else if (ptype=="pred" && is.numeric(pthreshold)){
+    # calc probmatrix for class prediction using threshold
+    p <- keras::predict_proba(fit,x,  batch_size = batch_size,...)
+    if(length(ylevels)==2){
+      p <- cbind(1-p,p)
+    }
+  }
+  else if (ptype=="pred"){
+    # calc predicted classes
+    p <- keras::predict_classes(fit,x,  batch_size = batch_size,...) +1
+    p <- factor(ylevels[p], levels=ylevels)
+  }
+  else {
+    # ptype is "prob" or "probmatrix", calculate probs
+    p <- keras::predict_proba(fit,x,  batch_size = batch_size,...)
+  }
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
 }
+
 
 
 

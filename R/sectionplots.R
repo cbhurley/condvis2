@@ -73,7 +73,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
                         returnInfo=FALSE, pointColorFromResponse=FALSE, pcolInfo=NULL){
   
   op <- par(no.readonly=TRUE)
-  
+ 
   if (view3d) gridsize <- 20
   if (!showdata) returnInfo<-FALSE
   
@@ -133,10 +133,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
     if (is.null(names(CVfit)))
       names(CVfit) <- paste0("fit", 1:length(CVfit))
     fitnames <- names(CVfit)
-    # hasprob <- sapply(1:length(CVfit), 
-    #                       function(i) hasprobs(CVfit[[i]], CVdata, predictArgs=predictArgs[[i]]))
-    
-    # if (sp == "fnn" && probs && 
+   
         if (probs && 
         (length(levels(CVdata[[response]])) > 2) ){
       substring(sp,1,1)<- "p"
@@ -167,6 +164,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
         ylevels <- levels(CVdata[[response]])
       else ylevels <- NULL
       
+      
       if (length(predictArgs)!= length(CVfit)) predictArgs<- NULL
       
       if (!is.null(ylevels)  & probs)
@@ -176,6 +174,7 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
       
       
       if (!is.null(predictArgs)){
+        
         for (i  in 1:length(CVfit)){
           fitname <- fitnames[i]
           f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
@@ -803,7 +802,7 @@ sectionPlotpairs <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,returnI
        o <- attr(cols, "order")
     xo <- which(!(1:nrow(CVdata) %in% o))
     o <- c(o,xo)
-    plot(CVdata[o,,drop=FALSE], col=cols[o],pch=19,...)
+    plot(CVdata[o,,drop=FALSE], col=cols[o],pch=19)
    
     if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){
       legend("topright", legend = names(pcolInfo$cols), 
@@ -846,7 +845,7 @@ sectionPlotpcp <- function(CVdata, sectionvars, cols,sim,pcolInfo=NULL,...){
     o <- c(o,xo)
     
 
-    parcoord1(CVdata[o,], cols[o],lwd=lwd[o],...)
+    parcoord1(CVdata[o,], cols[o],lwd=lwd[o])
     # axis(2)
     
     if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) ){

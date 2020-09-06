@@ -9,7 +9,6 @@
 #' @param conditionvars A vector of variable names. The returned tour is for this subset of variables.
 #' @param predictArgs Extra inputs to CVpredict
 #' @param response The name of the response variable
-#' @param y "high" or "low"
 #' @param ... ignored
 #' @return A dataframe with the path
 #' @examples
@@ -36,14 +35,20 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
   if (is.null(response)) return(NULL)
   y <- data[[response]]
   
+  # y <- matrix(y, ncol=length(fits), nrow=length(y))
   f <- vector("list",length=length(fits))
+  
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
+      pargs <- predictArgs[[i]]
+      if (!is.null(pargs$response))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), pargs))
+      else
+        f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred", response=response), pargs))
     }
   } else {
     for (i  in 1:length(fits)){
-      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
+      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred", response=response)
     }
   }
   
@@ -51,7 +56,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
   facs <- sapply(f, is.factor)
   if (is.numeric(y) && sum(w)>= 1) {
     f <- simplify2array(f[w])
-    rall <- abs(f - y)
+    rall <- abs(f - as.numeric(y))  
     r <- apply(rall,1,max)
     q <- sort(r,decreasing=T)[length]
     s <- which(r >= q)[1:length]
@@ -66,15 +71,18 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
     
   }
   
+  if (is.na(s[1])) return(NULL)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   lpath<- data[s,,drop=F]
-  if (reorder){
+
+  if (reorder & nrow(lpath)> 2){
     d <- cluster::daisy(lpath,warnType=FALSE)
     o <- DendSer::dser(d)
     lpath <- lpath[o,]
-  }
-  structure(lpath, rows = s[o])
+    structure(lpath, rows = s[o])
+  } else
+  structure(lpath, rows = s)
   
 }
 
@@ -126,7 +134,8 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
     warning("Cannot calculate differences")
     return(NULL)
   }
-  
+ 
+  if (is.na(s[1])) return(NULL)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   if (length(s) > length)

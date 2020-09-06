@@ -24,6 +24,17 @@ Suggests:
     randomForest,
     parsnip,
     mlr,
+    C50,
+    bartMachine,
+    caret,
+    e1071,
+    gbm,
+    glmnet,
+    glmnetUtils,
+    mlr3,
+    nnet,
+    rpart,
+    tree,
     testthat
 VignetteBuilder: knitr
 BugReports: https://github.com/cbhurley/condvis2/issues

@@ -38,6 +38,8 @@ centroidPath(data, cl, reorder = FALSE)
 \item{...}{ignored}
 
 \item{maxn}{(pamPath only) For datasets with more than maxn rows, use maxn randomly selected rows.}
+
+\item{cl}{A vector specifying cluster membership for rows of data.}
 }
 \value{
 A dataframe with the path

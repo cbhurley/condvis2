@@ -7,6 +7,7 @@
 #' @param reorder If TRUE  uses DendSer to reorder the path \code{\link[DendSer]{dser}}
 #' @param conditionvars A vector of variable names. The returned tour is for this subset of variables.
 #' @param maxn (pamPath only) For datasets with more than maxn rows, use maxn randomly selected rows.
+#' @param cl A vector specifying cluster membership for rows of data.
 #' @param ... ignored
 #' @return A dataframe with the path
 #' @importFrom cluster  daisy pam clara

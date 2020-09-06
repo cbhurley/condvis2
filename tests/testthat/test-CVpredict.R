@@ -340,58 +340,58 @@ test_that("CVpredict cv.glmnet numeric", {
 
 
 
-test_that("CVpredict keras.engine.training.Model factor", {
-  skip_if_not_installed("keras")
-  suppressMessages(library(keras))
-  f <- keras::keras_model_sequential() 
-  keras::layer_dense(f,units = 8, activation = 'relu', 
-              input_shape = c(4)) %>% layer_dense(units = 3, activation = 'softmax')
-  
-  keras::compile(f,
-          loss = 'categorical_crossentropy',
-          optimizer = 'adam',
-          metrics = 'accuracy')
-  irisX <- as.matrix(iris[,1:4])
-  irisY <- keras::to_categorical(as.numeric(iris$Species))[, 2:4]
-  
-  keras::fit(f,irisX, irisY,
-      epochs = 10,
-      batch_size = 5,
-      validation_split = 0.2,view_metrics=F,verbose=0)
-  
-  r <- CVpredict(f, iris[1:4,], response=5, predictors=1:4) 
-  expect_vector(r ,  size = 4) 
-  expect_that(r, is_a("factor"))
-  expect_vector(CVpredict(f, iris[1:4,], ptype="prob",response=5, predictors=1:4)  , ptype = double(), size = 4) 
-  
-  m <- CVpredict(f, iris[1:4,],ptype="probmatrix",response=5, predictors=1:4)
-  expect_that(m, is_a("matrix"))
-  expect_type(m, "double")
-  expect_that(dim(m), equals(c(4,3)))
-})
-
-
-test_that("CVpredict keras.engine.training.Model numeric", {
-  skip_if_not_installed("keras")
-  suppressMessages(library(keras))
-  f <- keras::keras_model_sequential() 
-  keras::layer_dense(f,units = 2, activation = 'relu', 
-                     input_shape =3) %>% layer_dense(units = 1, activation = 'relu')
-  
-  keras::compile(f,
-                 loss = 'mse', optimizer = optimizer_rmsprop(),
-                 metrics = list("mean_absolute_error"))
-  irisX <- as.matrix(iris[,2:4])
-  irisY <- iris$Sepal.Length
-  
-  keras::fit(f,irisX, irisY,
-             epochs = 10,
-             batch_size = 5,
-             validation_split = 0.2,view_metrics=F,verbose=0)
-  
-  # expect_vector(CVpredict(f) , ptype = double(), size = nrow(iris)) 
-  expect_vector(CVpredict(f, iris[1:4,],response=1, predictors=2:4) , ptype = double(), size = 4) 
-})
+# test_that("CVpredict keras.engine.training.Model factor", {
+#   skip_if_not_installed("keras")
+#   suppressMessages(library(keras))
+#   f <- keras::keras_model_sequential() 
+#   keras::layer_dense(f,units = 8, activation = 'relu', 
+#               input_shape = c(4)) %>% layer_dense(units = 3, activation = 'softmax')
+#   
+#   keras::compile(f,
+#           loss = 'categorical_crossentropy',
+#           optimizer = 'adam',
+#           metrics = 'accuracy')
+#   irisX <- as.matrix(iris[,1:4])
+#   irisY <- keras::to_categorical(as.numeric(iris$Species))[, 2:4]
+#   
+#   keras::fit(f,irisX, irisY,
+#       epochs = 10,
+#       batch_size = 5,
+#       validation_split = 0.2,view_metrics=F,verbose=0)
+#   
+#   r <- CVpredict(f, iris[1:4,], response=5, predictors=1:4) 
+#   expect_vector(r ,  size = 4) 
+#   expect_that(r, is_a("factor"))
+#   expect_vector(CVpredict(f, iris[1:4,], ptype="prob",response=5, predictors=1:4)  , ptype = double(), size = 4) 
+#   
+#   m <- CVpredict(f, iris[1:4,],ptype="probmatrix",response=5, predictors=1:4)
+#   expect_that(m, is_a("matrix"))
+#   expect_type(m, "double")
+#   expect_that(dim(m), equals(c(4,3)))
+# })
+# 
+# 
+# test_that("CVpredict keras.engine.training.Model numeric", {
+#   skip_if_not_installed("keras")
+#   suppressMessages(library(keras))
+#   f <- keras::keras_model_sequential() 
+#   keras::layer_dense(f,units = 2, activation = 'relu', 
+#                      input_shape =3) %>% layer_dense(units = 1, activation = 'relu')
+#   
+#   keras::compile(f,
+#                  loss = 'mse', optimizer = optimizer_rmsprop(),
+#                  metrics = list("mean_absolute_error"))
+#   irisX <- as.matrix(iris[,2:4])
+#   irisY <- iris$Sepal.Length
+#   
+#   keras::fit(f,irisX, irisY,
+#              epochs = 10,
+#              batch_size = 5,
+#              validation_split = 0.2,view_metrics=F,verbose=0)
+#   
+#   # expect_vector(CVpredict(f) , ptype = double(), size = nrow(iris)) 
+#   expect_vector(CVpredict(f, iris[1:4,],response=1, predictors=2:4) , ptype = double(), size = 4) 
+# })
 
 
 

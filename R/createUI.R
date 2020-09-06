@@ -23,26 +23,8 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
   responsePlot <- !is.null(response) & length(sectionvars) <=2
   
   
-  tours1 <- list("Random"= "randomPath",
-                 "Kmeans"= "kmeansPath",
-                 "Kmed"= "pamPath")
   
-  if (!is.null(response) && response != "densityY") {
-    tours1$HighY <- "hiresponsePath"
-    tours1$LowY <- "loresponsePath"
-  }
-  tours1$Along <- preds
-  
-  if (!is.null(CVfit)){
-    tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
-   
-    if (length(CVfit)> 1)
-      tours1 <- c( tours1, list("Diff fits" = "diffitsPath") )
-  }
-
-  if ( !is.null(tours) & is.null(names(tours)))
-    names(tours) <- paste0("Tour", seq(along=tours))
-  tours <- c(tours, tours1)
+  CVtours <- mktourlist(CVfit, preds, response,tours)
 
   fluidPage(
      # h3("Condvis"),
@@ -130,9 +112,10 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
                # conditionalPanel(
                #   condition = "input.showtour==true",
               fluidRow(
-               column(4, offset=0, selectInput(inputId = "tour",
+               column(4, offset=0, 
+                      selectInput(inputId = "tour",
                                                       label = "Choose tour",
-                                                      choices= tours,
+                                                      choices= CVtours,
                                                       width=150)
              ),
              # tags$br(), column(2, offset=0, actionButton(inputId = "start",label = "Move")),
@@ -156,3 +139,26 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
 
 
 
+mktourlist <- function(CVfit, cvars, response,tours){
+  tours1 <- list("Random"= "randomPath",
+                 "Kmeans"= "kmeansPath",
+                 "Kmed"= "pamPath")
+  
+  if (!is.null(response) && response != "densityY") {
+    tours1$HighY <- "hiresponsePath"
+    tours1$LowY <- "loresponsePath"
+  }
+  tours1$Along <- cvars
+  
+  if (!is.null(CVfit)){
+    tours1 <- c(tours1, list("Lack of fit" = "lofPath"))
+    
+    if (length(CVfit)> 1)
+      tours1 <- c( tours1, list("Diff fits" = "diffitsPath") )
+  }
+  
+  if ( !is.null(tours) & is.null(names(tours)))
+    names(tours) <- paste0("Tour", seq(along=tours))
+  tours <- c(tours, tours1)
+  tours
+}

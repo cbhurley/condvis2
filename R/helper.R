@@ -205,17 +205,19 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   if (!(is.numeric(thresholdmax) && thresholdmax> threshold)) 
     thresholdmax <- max(8*threshold, round(sqrt(length(preds))*threshold))
   # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
+  
   ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours,
                    probs, view3d,showsim=showsim,cPlotPCP = cPlotPCP)
-
+  
   server <- createCVServer(model,data, response,sectionvars,conditionvars,predsInit2,pointColor,
                            cPlotPCP = cPlotPCP, cPlotn = cPlotn,
                            orderConditionVars=orderConditionVars, 
-                           threshold=threshold,thresholdmax=thresholdmax, linecols=linecols, 
+                           threshold=threshold,thresholdmax=thresholdmax, tours=tours,linecols=linecols, 
                            dataplot=dataplot,theta3d, phi3d, probs=probs, view3d=view3d,
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
   s <-shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
+ 
   if(interactive()) 
     runApp(s) 
    else s

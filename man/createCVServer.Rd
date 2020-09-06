@@ -17,6 +17,7 @@ createCVServer(
   orderConditionVars,
   threshold = 1,
   thresholdmax,
+  tours = NULL,
   linecols = NULL,
   dataplot = "pcp",
   probs,
@@ -55,6 +56,8 @@ createCVServer(
 \item{threshold}{used for similarity weights, defaults to 1.}
 
 \item{thresholdmax}{maximum value allowed of threshold.}
+
+\item{tours}{A list of pre-calculated tours}
 
 \item{linecols}{vector of colors to be used for fits}
 
