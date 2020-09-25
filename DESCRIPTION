@@ -1,5 +1,5 @@
 Package: condvis2
-Title: Conditional Visualization for supervised and unsupervised models in Shiny
+Title: Interactive Conditional Visualization for Supervised and Unsupervised Models in Shiny
 Version: 0.1.1
 Authors@R: c(person("Catherine", "Hurley", email = "catherine.hurley@mu.ie", role = c("aut", "cre")),person("Mark", "OConnell", email = "mark_ajoc@yahoo.ie", role = c( "aut")),person("Katarina", "Domijan", email = "katarina.domijan@mu.ie", role = c("aut")))
 Description: Constructs a shiny app function with interactive displays for conditional visualization of models, 

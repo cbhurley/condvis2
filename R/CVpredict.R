@@ -427,8 +427,8 @@ CVpredict.svm <- function (fit,...,type=NULL, ptype="pred",pthreshold=NULL, ylev
 
 CVpredict.gbm <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,
                            n.trees=fit$n.trees,ptrans=NULL) {
-  if (is.null(ylevels))
-    ylevels <- fit$classes
+  # if (is.null(ylevels))
+  #   ylevels <- fit$classes
 
   if (ptype=="pred" && is.null(ylevels)){
     # numeric prediction
@@ -441,6 +441,7 @@ CVpredict.gbm <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, yle
   else if (ptype=="pred"){
     # calc predicted classes
     p <- predict(fit,...,type="response", n.trees=n.trees)
+    pthreshold <- .5
   }
   else {
     # ptype is "prob" or "probmatrix", calculate probs
@@ -583,14 +584,7 @@ CVpredict.keras.engine.training.Model  <- function(fit, newdata,...,  ptype = "p
   
   if (!is.null(predictors)) x <- newdata[,predictors] else x <- newdata
   x <- as.matrix(x)
-  print("here in cv predict")
-  print("response")
-  print(response)
-  print("predictors")
-  print(predictors)
-  print("ylevels")
-  print(ylevels)
-  xx <<- x
+ 
   
   if (ptype=="pred" && is.null(ylevels)){
     # numeric prediction
@@ -787,7 +781,7 @@ CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthre
   else {
     # ptype is "prob" or "probmatrix", calculate probs
     # bart gives prob of first class
-    p <- 1-predict(fit,newdata,...,type="prob")
+    p <- 1-predict(fit,newdata,...,type="prob", verbose=FALSE)
   }
   calcPred(ptype,p, NULL, ylevels,ptrans)
 }

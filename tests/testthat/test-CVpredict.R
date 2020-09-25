@@ -186,16 +186,19 @@ test_that("CVpredict svm numeric", {
 
 test_that("CVpredict gbm factor", {
   skip_if_not_installed("gbm")
-  f <- gbm::gbm(Species ~ ., data=iris, distribution="multinomial")
-  r <- CVpredict(f, iris[1:4,]) 
+  iris1 <- droplevels(iris[1:100,])
+  ylevels <- levels(iris1$Species)
+  iris1$Species <- as.numeric(iris1$Species)-1
+  f <- gbm::gbm(Species ~ ., data=iris1, distribution="bernoulli")
+  r <- CVpredict(f, iris1[1:4,], ylevels=ylevels) 
   expect_vector(r ,  size = 4) 
   expect_that(r, is_a("factor"))
   expect_vector(CVpredict(f, iris[1:4,], ptype="prob")  , ptype = double(), size = 4) 
   
-  m <- CVpredict(f, iris[1:4,],ptype="probmatrix")
+  m <- CVpredict(f, iris[1:4,],ptype="probmatrix",ylevels=ylevels)
   expect_that(m, is_a("matrix"))
   expect_type(m, "double")
-  expect_that(dim(m), equals(c(4,3)))
+  expect_that(dim(m), equals(c(4,2)))
 })
 
 test_that("CVpredict gbm numeric", {

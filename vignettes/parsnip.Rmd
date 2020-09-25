@@ -26,7 +26,7 @@ By writing an interface between `condvis2` and `parsnip` a vast number
 of machine learning fits may be explored with `condvis`.
 
 A list of models supported by parsnip is found on this link:
-<https://tidymodels.github.io/parsnip/articles/articles/Models.html>
+<https://www.tidymodels.org/find/parsnip/>
 
 
 ## Regression
