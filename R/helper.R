@@ -75,6 +75,8 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   if (!is.data.frame(data) ) 
     stop("'data' must be a data.frame")
   
+  data <- as.data.frame(data)  # gets rid of tbl
+  
   ctype <- which(sapply(data, function(v) !is.numeric(v) & ! is.factor(v)))
   for (ct in ctype) data[[ct]] <- as.factor(data[[ct]])
   # if (length(ctype)>0)
@@ -186,14 +188,12 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   
   
   predsInit2 <- datar[1,,drop=F]
-  
   if (length(np1)> 1){
-    predsInit2[1,np]<- predsInit[1,np]
+     predsInit2[1,np]<- predsInit[1,np]
     predsInit2[1,np1]<- predsInit1[1,np1]
   }
-  else predsInit2[1,np]<- predsInit[1,np]
-  
-
+  else  predsInit2[1,np]<- predsInit[1,np]
+ 
 
   # data <- pointColor2var(data, pointColor[1])
 
