@@ -87,8 +87,28 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
          
     })
 
+    output$downloadPlots <- downloadHandler(
+      filename =
+        paste("sectionplot-", Sys.time(), ".pdf", sep="")
+      ,
+      content = function(file) {
+        pdf(file, width = 8, height = 5)
+        CVdata <- rv$CVdata
+        pointColorFromResponse <- !is.null(response) && (input$colourvar== response)
+       sectionPlot(CVdata,CVfit,response,preds,sectionvar= rv$sectionvars,
+                         conditionvals=rv$pset, pointColor= NULL,sim=rv$sim, linecols=linecols,
+                         dataplot=dataplot,
+                         probs=probs && input$showprobs, theta3d=input$theta3d,phi3d=phi3d,
+                         view3d=view3d && input$view3d,xlim = ranges$x,
+                         ylim=ranges$y,zlim=zlim,predictArgs=predictArgs, resetpar=FALSE, density=density,
+                         showdata=showdata, returnInfo=FALSE,pointColorFromResponse=pointColorFromResponse,pcolInfo= pcolInfo)
 
+        dev.off()
+      }
+    )
 
+   
+    
     observeEvent(input$display_click, {
       # clickCoords is a data frame constructed by drawing functions.
       # clicks are not always recorded when using layouts, ???

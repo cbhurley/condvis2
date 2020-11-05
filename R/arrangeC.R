@@ -27,7 +27,7 @@
 
 arrangeC <- function (data, method = "default")
 {
-  singles <- which(sapply(data, function(v) is.factor(v) & length(levels(v)>15)))
+  singles <- which(sapply(data, function(v) is.factor(v) & length(levels(v))>15))
   if (length(singles) ==0) data.singles <- NULL
   else {
     data.singles <- list(names(data[,singles,drop=FALSE]))

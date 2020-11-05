@@ -128,10 +128,10 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
 
              column(4, offset=1, sliderInput(inputId = "ninterp",ticks=FALSE,
                                              label = "Interp steps",min=0, max=6,value=0,step=1
-             ))))))
-             # )
+             )))))),
+            
+              # fluidRow( column(3, offset=1, downloadButton("downloadPlots", "Save plots")))
              
-
              ), position="right")
   )
 
