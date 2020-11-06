@@ -1,6 +1,6 @@
 
 
-#' Title Creates a shiny server
+#'  Creates a shiny server
 #'
 #' @param CVfit a list of fits
 #' @param CVdata the dataset used for the fit
@@ -28,6 +28,7 @@
 #'@param showdata  If FALSE, data on section not shown.
 #' @return a function
 
+#' @noRd 
 createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditionvars,
                            predsInit=NULL,pointColor=NULL, cPlotPCP=FALSE, cPlotn= 1000,orderConditionVars,
                            threshold=1,thresholdmax,tours=NULL,linecols=NULL,

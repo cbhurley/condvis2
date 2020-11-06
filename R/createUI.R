@@ -16,6 +16,7 @@
 #'@param showsim if TRUE, shows sim in conditionplots with points/lines. Defaults to TRUE with 150 or fewer cases.
 #'@param cPlotPCP if TRUE, conditionplots are drawn as a single PCP (for more than two conditionvars)
 #'@return a dataframe of conditions
+#' @noRd 
 createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,threshold=1,thresholdmax, tours,probs,
                        view3d, showsim, cPlotPCP){
   colorvars <- sapply(data, is.factor)

@@ -25,6 +25,7 @@
 #'   \strong{condvis} Package in R.''\emph{Journal of Statistical Software},
 #'   \strong{81}(5), pp. 1-20. <URL:http://dx.doi.org/10.18637/jss.v081.i05>.
 
+#' @noRd 
 arrangeC <- function (data, method = "default")
 {
   singles <- which(sapply(data, function(v) is.factor(v) & length(levels(v))>15))
