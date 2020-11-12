@@ -149,14 +149,14 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     updateCS <- function(){
       s1 <- input$sectionvar
       s2 <- input$sectionvar2
+       sectionvars <- rv$sectionvars
      
-      sectionvars <- rv$sectionvars
-
       newS <- s1
       if (! is.null(s1)  & ! is.null(s2)){
+        if (s1 == s2) s2 <- "None"
         if (s2 != "None") newS <- c(newS,s2 )
-        if (! is.null(setdiff(newS, sectionvars))){
-          rv$sectionvars <- newS
+        if (!setequal(newS, sectionvars)){
+            rv$sectionvars <- newS
         }
       }
       ranges$x <- xlim
