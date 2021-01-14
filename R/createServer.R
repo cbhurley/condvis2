@@ -393,10 +393,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
               res <- CVdata[1,names(res0),drop=F]
               res[1,names(res0)]<- res0
               s<- similarityweight(res,CVdata[,names(res),drop=F], 
-                                   input$threshold, input$dist)
+                                   1, input$dist)
               w <- which(s==max(s))
-              
-              conditionvars<<- conditionvars
               
               if (length(w) ==1)
                 ans <- CVdata[w, conditionvars, drop=F]
