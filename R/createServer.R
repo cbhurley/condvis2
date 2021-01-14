@@ -344,9 +344,11 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
         var <- rv$condArr[[i]]
          if (length(var) ==1 && is.factor(CVdata[[var]]) &&
             length(levels(CVdata[[var]])) <=35)
-          plotOutput(plotname, height = 150, width = 220, click=paste0(plotname,"Click"))
+          plotOutput(plotname, height = 150, width = 220, click=paste0(plotname,"Click"),
+                     paste0(plotname,"DClick"))
         else
-        plotOutput(plotname, height = height, width = 220, click=paste0(plotname,"Click"))
+        plotOutput(plotname, height = height, width = 220, click=paste0(plotname,"Click"),
+                   dblclick = paste0(plotname,"DClick"))
       })
       do.call(tagList, plot_output_list)
     })
@@ -364,6 +366,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
           i <- j
           plotname <- plotnames[i]
           clickname <- paste0(plotname,"Click")
+          clicknameD <- paste0(plotname,"DClick")
           var <- arr[[i]]
              
            output[[plotname]] <- renderPlot({
@@ -378,6 +381,30 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
             # print(res)
             rv$pset[1,names(res)]<- res
 
+          })
+          
+          observeEvent(input[[clicknameD]],{
+            
+            click <- input[[clicknameD]]
+            res0 <-conditionClick(CVdata,var,click,plotrows=plotrows)
+            # find the row of CV data closes to selected value
+            # if there is one such row, use it for rv, conditionvars only, otherwise use medoid
+            
+            if (!is.null(res0)){
+              res <- CVdata[1,names(res0),drop=F]
+              res[1,names(res0)]<- res0
+              s<- similarityweight(res,CVdata[,names(res),drop=F], 
+                                   input$threshold, input$dist)
+              
+              w <- which(s==max(s))
+              
+              if (length(w) ==1)
+                ans <- CVdata[w, conditionvars, drop=F]
+              else ans <- medoid(CVdata[w, conditionvars, drop=F])
+              
+              rv$pset[1,names(ans)]<- ans
+              
+            }
           })
         })
       } # end for
