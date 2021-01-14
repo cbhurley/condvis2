@@ -336,6 +336,7 @@ dataprepPCP <- function(x){
   }
   nums <- sapply(x, is.numeric)
   x <- as.matrix(x[nums])
+  x<- x[,ncol(x):1]
   x <- apply(x, 2L, function(x) (x - min(x, na.rm = TRUE))/
                (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
   x

@@ -345,7 +345,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
          if (length(var) ==1 && is.factor(CVdata[[var]]) &&
             length(levels(CVdata[[var]])) <=35)
           plotOutput(plotname, height = 150, width = 220, click=paste0(plotname,"Click"),
-                     paste0(plotname,"DClick"))
+                     dblclick =paste0(plotname,"DClick"))
         else
         plotOutput(plotname, height = height, width = 220, click=paste0(plotname,"Click"),
                    dblclick = paste0(plotname,"DClick"))
