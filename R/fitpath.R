@@ -38,17 +38,27 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
   # y <- matrix(y, ncol=length(fits), nrow=length(y))
   f <- vector("list",length=length(fits))
   
+  # if (length(predictArgs) == length(fits)){
+  #   for (i  in 1:length(fits)){
+  #     pargs <- predictArgs[[i]]
+  #     if (!is.null(pargs$response))
+  #     f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), pargs))
+  #     else
+  #       f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred", response=response), pargs))
+  #   }
+  # } else {
+  #   for (i  in 1:length(fits)){
+  #     f[[i]] <- CVpredict(fits[[i]],data, ptype="pred", response=response)
+  #   }
+  # }
+  
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      pargs <- predictArgs[[i]]
-      if (!is.null(pargs$response))
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), pargs))
-      else
-        f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred", response=response), pargs))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
     }
   } else {
     for (i  in 1:length(fits)){
-      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred", response=response)
+      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
     }
   }
   

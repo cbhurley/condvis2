@@ -413,6 +413,8 @@ CVpredict.svm <- function (fit,...,type=NULL, ptype="pred",pthreshold=NULL, ylev
       p <- matrix(0, nrow=length(p1), ncol=length(ylevels))
       p[,as.numeric(p1)] <- 1
     }
+    else if (length(ylevels) == ncol(p))
+      p <- p[,ylevels]
   }
   calcPred(ptype,p, pthreshold, ylevels,ptrans)
 }
