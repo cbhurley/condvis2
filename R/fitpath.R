@@ -35,35 +35,21 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
   if (is.null(response)) return(NULL)
   y <- data[[response]]
   
-  # y <- matrix(y, ncol=length(fits), nrow=length(y))
   f <- vector("list",length=length(fits))
-  
-  # if (length(predictArgs) == length(fits)){
-  #   for (i  in 1:length(fits)){
-  #     pargs <- predictArgs[[i]]
-  #     if (!is.null(pargs$response))
-  #     f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), pargs))
-  #     else
-  #       f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred", response=response), pargs))
-  #   }
-  # } else {
-  #   for (i  in 1:length(fits)){
-  #     f[[i]] <- CVpredict(fits[[i]],data, ptype="pred", response=response)
-  #   }
-  # }
-  
+ 
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
     }
   } else {
     for (i  in 1:length(fits)){
-      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
+      f[[i]] <- CVpredict(fits[[i]],data)
     }
   }
   
   w <- sapply(f, is.numeric)
   facs <- sapply(f, is.factor)
+  s <- NULL
   if (is.numeric(y) && sum(w)>= 1) {
     f <- simplify2array(f[w])
     rall <- abs(f - as.numeric(y))  
@@ -80,8 +66,8 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
     s <-which(dif >= q & dif > 0)[1:length]
     
   }
-  
-  if (is.na(s[1])) return(NULL)
+ 
+  if (is.null(s) || is.na(s[1])) return(NULL)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   lpath<- data[s,,drop=F]
@@ -101,6 +87,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
 #' @describeIn fitPath Constructs a tour of data space showing biggest differences in fits.
 #' @export
 diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,...){
+  print(predictArgs)
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length(fits) <2) {
     warning("Provide two or more fits")
@@ -115,11 +102,11 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
   f <- vector("list",length=length(fits))
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
-      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data, ptype="pred"), predictArgs[[i]]))
+      f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
     }
   } else {
     for (i  in 1:length(fits)){
-      f[[i]] <- CVpredict(fits[[i]],data, ptype="pred")
+      f[[i]] <- CVpredict(fits[[i]],data)
     }
   }
 
@@ -158,6 +145,7 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
     lpath <- lpath[o,,drop=F]
   }
   else o <- 1:nrow(lpath)
+  print(lpath)
   structure(lpath, rows = s[o])
   
 }

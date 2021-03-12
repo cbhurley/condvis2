@@ -91,7 +91,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     output$downloadPlots <- downloadHandler(
       filename =
         paste("sectionplot-", Sys.time(), ".pdf", sep="")
-      ,
+      , contentType = "image/pdf",
       content = function(file) {
         pdf(file, width = 8, height = 5)
         CVdata <- rv$CVdata
@@ -231,15 +231,12 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       if (mkpath %in% conditionvars){
         newpathxx <- alongPath(CVdata0, mkpath, input$tourlen, 
                                current=isolate(rv$pset[1,conditionvars, drop=FALSE])) 
-        # print("conditionvars")
       }
       else if (is.function(mkpathf)) {
         newpathxx <- mkpathf(CVdata0,input$tourlen, conditionvars=conditionvars,fits=CVfit,
                              predictArgs=predictArgs, response=response)
-        # print("function")
       }  else if (is.data.frame(mkpathd)){
         newpathxx <- expandPath(mkpathd, current=isolate(rv$pset[1,conditionvars]))
-        # print("data.frame")
       }
       
       if (is.data.frame(newpathxx)){
@@ -258,14 +255,8 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
     
     observeEvent(input$tourstep,{
       if (input$tourstep > 0 & !is.null(condtour)){
-        
-        # print("tourstep")
-        # print(input$tourstep)
         index <- round(input$tourstep*(input$ninterp+1))
-        
-        
         rv$pset[1,conditionvars] <- condtour[index,conditionvars]
-        
       }
     })
     
