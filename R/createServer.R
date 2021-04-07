@@ -386,7 +386,6 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
               s<- similarityweight(res,CVdata[,names(res),drop=F], 
                                    1, input$dist)
               w <- which(s==max(s))
-              
               if (length(w) ==1)
                 ans <- CVdata[w, conditionvars, drop=F]
               else ans <- medoid(CVdata[w, conditionvars, drop=F])

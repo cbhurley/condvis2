@@ -46,6 +46,7 @@
 #'@param showdata defaults to \code{density==TRUE}. If FALSE, data on section not shown.
 #' @param displayHeight supply a value for the display height
 
+
 #' @return NULL
 #' @export
 #' @examples

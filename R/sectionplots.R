@@ -172,14 +172,14 @@ sectionPlot <- function(CVdata, CVfit=NULL,response=NULL,preds,sectionvar,condit
           predictArgs <- lapply(predictArgs, function(x) { x$ptype <- "prob"; x})
       else predictArgs <- lapply(CVfit, function(x) list(ptype="prob"))
       
-      
       if (!is.null(predictArgs)){
-        
+       
         for (i  in 1:length(CVfit)){
           fitname <- fitnames[i]
-          f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
           
-          if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
+          f <- do.call(CVpredict,  c(list(CVfit[[i]],grid1,ylevels=ylevels), predictArgs[[i]]))
+       
+         if (is.character(f) & !is.null(ylevels)) f <- factor(f, ylevels)
           
           if (is.vector(f) | is.factor(f))
             grid[[fitname]] <- f

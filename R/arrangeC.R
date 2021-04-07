@@ -193,11 +193,10 @@ pairoff <- function(vars){
 
 arrangePCP <- function (data, method = "default"){
   d <- as.matrix(data)
-  if (is.numeric(d)){
+  if (is.numeric(d) & ncol(d)> 2){
     d1 <- as.dist(cor(d))
   o <- dser(d1)
   }
   else o <- 1:ncol(d)
-  
   names(data)[o]
 }
