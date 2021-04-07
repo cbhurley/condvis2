@@ -67,6 +67,6 @@ Catherine B. Hurley and Mark O’Connell and Katarina Domijan, Interactive
 slice visualization for exploring machine learning models. arXiv
 2101.06986, 2021.
 
-Mark O’Connell and Catherine Hurley and Katarina Domijan, Interactive
-slice visualization for exploring machine learning models. Journal of
-Statistical Software 81(5) 1–20, 2017.
+Mark O’Connell and Catherine Hurley and Katarina Domijan, Conditional
+Visualization for Statistical Models: An Introduction to the condvis
+Package in R. Journal of Statistical Software 81(5) 1–20, 2017.
