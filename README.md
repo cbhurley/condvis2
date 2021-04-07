@@ -61,3 +61,13 @@ The result is shown in the screenshot below. It shows the estimated
 density of two variables conditional on the third.
 
 <img src="vignettes/vignettefigs/iris1.png" width="100%" />
+
+## References
+
+Catherine B. Hurley and Mark O’Connell and Katarina Domijan, Interactive
+slice visualization for exploring machine learning models. arXiv
+2101.06986, 2021.
+
+Mark O’Connell and Catherine Hurley and Katarina Domijan, Interactive
+slice visualization for exploring machine learning models. Journal of
+Statistical Software 81(5) 1–20, 2017.
