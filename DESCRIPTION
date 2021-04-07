@@ -38,4 +38,4 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 BugReports: https://github.com/cbhurley/condvis2/issues
-URL: https://github.com/cbhurley/condvis2
+URL: https://cbhurley.github.io/condvis2, https://github.com/cbhurley/condvis2
