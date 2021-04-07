@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=5, fig.height=5 ,fig.align="center"
 )
-fpath <- "vignettefigs/"
+fpath <- ""
 ```
 
 `mlr` is a R package that offers

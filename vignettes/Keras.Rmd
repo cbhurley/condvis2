@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=5, fig.height=5 ,fig.align="center", eval=FALSE
 )
-fpath <- "vignettefigs/"
+fpath <- ""
 ```
 
 `keras` is an R based interface to the [Keras](https://keras.io/): the Python Deep Learning library. It uses the [TensorFlow](https://www.tensorflow.org/) backend engine.
