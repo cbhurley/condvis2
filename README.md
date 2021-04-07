@@ -63,10 +63,10 @@ density of two variables conditional on the third.
 
 ## References
 
-Catherine B. Hurley, Mark O’Connell, Katarina Domijan, Interactive slice
-visualization for exploring machine learning models. arXiv 2101.06986,
-2021.
+Catherine B. Hurley, Mark O’Connell, Katarina Domijan. (2021)
+Interactive slice visualization for exploring machine learning models.
+arXiv 2101.06986.
 
-Mark O’Connell, Catherine Hurley, Katarina Domijan, Conditional
+Mark O’Connell, Catherine Hurley, Katarina Domijan. (2017) Conditional
 Visualization for Statistical Models: An Introduction to the condvis
-Package in R. Journal of Statistical Software 81(5) 1–20, 2017.
+Package in R. Journal of Statistical Software 81(5) 1–20.

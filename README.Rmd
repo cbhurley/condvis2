@@ -80,11 +80,11 @@ knitr::include_graphics('vignettes/iris.png')
 
 
 
-Catherine B. Hurley, Mark O'Connell, Katarina Domijan,
+Catherine B. Hurley, Mark O'Connell, Katarina Domijan. (2021)
 Interactive slice visualization for exploring machine learning models.
-arXiv 2101.06986, 2021.
+arXiv 2101.06986.
 
-Mark O'Connell, Catherine Hurley, Katarina Domijan,
+Mark O'Connell, Catherine Hurley, Katarina Domijan. (2017)
 Conditional Visualization for Statistical Models: An Introduction to the condvis Package in R.
-Journal of Statistical Software 81(5) 1--20, 2017.
+Journal of Statistical Software 81(5) 1--20.
 
