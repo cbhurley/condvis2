@@ -137,7 +137,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cbhurley.github.io/condvis2">condvis2</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit2</span>,sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></code></pre></div>
 <p>This gives the following display:</p>
-<p><img src="vignettefigs/ozone.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="ozone.png" width="100%" style="display: block; margin: auto;"></p>
 <ul>
 <li>The histogram on the right shows the values for Solar.R.</li>
 <li>The selected value of Solar.R is 207. By clicking on the histogram, you can change this selection.</li>
@@ -155,7 +155,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit3</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>the result is shown in the screenshot below.</p>
-<p><img src="vignettefigs/ozone1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="ozone1.png" width="100%" style="display: block; margin: auto;"></p>
 <ul>
 <li>The plot on the right shows the values for Solar.R and Temp. By clicking on this plot, you can change the selected values.</li>
 <li>The main display (on the left) shows the predicted values of Ozone, varying Wind and fixing Solar.R and Temp.</li>
@@ -168,9 +168,9 @@
 <h2 class="hasAnchor">
 <a href="#two-section-variables" class="anchor"></a>Two section variables</h2>
 <p>You can also pick a second section variable, to see how the fitted surface looks as a function of two variables, while the third is modified interactively.</p>
-<p><img src="vignettefigs/ozone4.png" width="100%" style="display: block; margin: auto;"> The image shows fitted surface levels as a function of two predictors. The points shown are near the fixed conditioning values. For an image plot, the point colour represents the observed response, coloured in the same way as the fitted surface. Here we convey the distance of an observations condition values to the fixed condition levels by size. You will see some points in the main display whose colour does not match the image colour, for example, the two darker points around Wind=10, with low Solar.R. As the points are large, they are near the conditioning values which are poorly fit.</p>
+<p><img src="ozone4.png" width="100%" style="display: block; margin: auto;"> The image shows fitted surface levels as a function of two predictors. The points shown are near the fixed conditioning values. For an image plot, the point colour represents the observed response, coloured in the same way as the fitted surface. Here we convey the distance of an observations condition values to the fixed condition levels by size. You will see some points in the main display whose colour does not match the image colour, for example, the two darker points around Wind=10, with low Solar.R. As the points are large, they are near the conditioning values which are poorly fit.</p>
 <p>There is very little data at low Temp, and none of these observations have a Wind value below 7. So the steep incline at the left hand side of the main plot is not supported by the data. Prediction in this area is extrapolation.</p>
-<p><img src="vignettefigs/ozone3.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="ozone3.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Alternatively, the relationship between Ozone and (Wind, Solar.R) for fixed Temp may be displayed as a 3-d surface. The points near the selected value of Temp are dark blue, lightening in colour as the distance increases. The residual sizes are shown via line segments.</p>
 </div>
 <div id="comparing-two-fits" class="section level2">
@@ -181,7 +181,7 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">e1071</span><span class="op">)</span>
 <span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html">svm</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span>
 <span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,svm<span class="op">=</span><span class="va">fit4</span><span class="op">)</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="vignettefigs/ozone5.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="ozone5.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We see big differences between the fits, especially for low Wind.</p>
 <p>Note: condvis uses CVpredict to extract predictions from fitted models. By default CVpredict uses predict, but there are customised versions of CVpredict for many fit types. (See the help page.)</p>
 </div>
@@ -215,7 +215,7 @@
 <span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,lower<span class="op">=</span><span class="va">fitl</span>,upper<span class="op">=</span><span class="va">fitu</span><span class="op">)</span>, 
         sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span>, 
         linecols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>,<span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="vignettefigs/ozone6.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="ozone6.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div id="tour-controls" class="section level2">
 <h2 class="hasAnchor">

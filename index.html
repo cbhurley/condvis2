@@ -119,7 +119,7 @@
 <span class="fu"><a href="reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The result is shown in the screenshot below. It shows the loess prediction for Wind, conditional on values of the other two predictors.<br>
 Only observations whose Solar.R and Temp values are near (207,79) are shown. The user can move around the pink cross to see how the prediction varies.</p>
-<p><img src="articles/vignettefigs/ozone1.png" width="100%"> Check out the vignette <code>Introduction to condvis2</code> for more information and details.</p>
+<p><img src="articles/ozone1.png" width="100%"> Check out the vignette <code>Introduction to condvis2</code> for more information and details.</p>
 </div>
 <div id="example-2-a-density-estimate" class="section level2">
 <h2 class="hasAnchor">
@@ -133,7 +133,7 @@ Only observations whose Solar.R and Temp values are near (207,79) are shown. The
         sectionvars<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Sepal.Width"</span><span class="op">)</span>, 
         conditionvars<span class="op">=</span> <span class="st">"Petal.Length"</span>, density<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p>The result is shown in the screenshot below. It shows the estimated density of two variables conditional on the third.</p>
-<p><img src="articles/vignettefigs/iris1.png" width="100%"></p>
+<p><img src="articles/iris.png" width="100%"></p>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">

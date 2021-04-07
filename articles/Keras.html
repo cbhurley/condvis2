@@ -194,7 +194,7 @@
 <span class="va">kArgs1</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>response<span class="op">=</span><span class="va">kresponse</span>,predictors<span class="op">=</span><span class="va">kpreds</span><span class="op">)</span>
 <span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">dtf</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>model.keras <span class="op">=</span> <span class="va">model</span>, model.lda <span class="op">=</span> <span class="va">fit.lda</span><span class="op">)</span>, sectionvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bmi"</span>, <span class="st">"glu"</span><span class="op">)</span>, response<span class="op">=</span><span class="st">"Pima.trainLabels"</span>,predictArgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">kArgs1</span>, <span class="cn">NULL</span><span class="op">)</span>, pointColor <span class="op">=</span> <span class="st">"Pima.trainLabels"</span><span class="op">)</span></code></pre></div>
 <p>Click the showprobs button to see class probabilities.</p>
-<p><img src="vignettefigs/Pima.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="Pima.png" width="100%" style="display: block; margin: auto;"></p>
 <div id="tour-controls" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tour-controls" class="anchor"></a>Tour controls</h3>
@@ -296,7 +296,7 @@
 <span class="va">kArgs</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>response<span class="op">=</span><span class="va">kresponse</span>,predictors<span class="op">=</span><span class="va">kpreds</span><span class="op">)</span>
 <span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">train_df</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gam <span class="op">=</span> <span class="va">gam.model</span>, rf <span class="op">=</span> <span class="va">rf.model</span>, kerasmodel <span class="op">=</span> <span class="va">model</span><span class="op">)</span>, sectionvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LSTAT"</span>, <span class="st">"RM"</span><span class="op">)</span>,predictArgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="cn">NULL</span>, <span class="va">kArgs</span><span class="op">)</span> <span class="op">)</span></code></pre></div>
 <p>Ticking <code>Show 3d surface</code> shows the 3d-surface of the fit and you can use the <code>Rotate</code> slider to rotate them around the z-axis.</p>
-<p><img src="vignettefigs/Boston.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="Boston.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Random forest gives a blockier fit, compared to the smooth gams and the neural net. The RF fit is more flexible in the areas where there is more data points.</p>
 </div>
   </div>
