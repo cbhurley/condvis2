@@ -233,6 +233,27 @@ to form the sections.
 
 
 
+
+## Example : A density estimate
+
+```{r eval=F}
+library(ks)
+data(iris)
+irisf <- kde(x=iris[,1:3])
+
+condvis(data = iris, model = list(kde=irisf), 
+        sectionvars= c("Sepal.Length", "Sepal.Width"), 
+        conditionvars= "Petal.Length", density=T)
+
+```
+
+The result is shown in the screenshot below. It shows the estimated density of  two
+variables conditional on the third.
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics(paste0(fpath, "iris.png"))
+```
+
 ## References
 
 
