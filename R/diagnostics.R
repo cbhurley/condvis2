@@ -29,12 +29,7 @@ plotTourDiagnostics <- function(path, data, pathlen=nrow(path),threshold=1,which
   points(index[w],rsk[w], pch=16, col="grey")
   }
   if (2 %in% which){
-  # seq01 <- seq(0, 1, 0.1)
-  # q <- quantile(simmax, probs = seq01)
-  # plot(q, seq01, type = "l", ylab = "proportion of data", xlab =
-  #        "max k attained", ylim = c(0, 1),main="")
-  #
-  # points(q, seq01, pch = 16)
+  
   plot(ecdf(simmax), verticals=T, main="", pch=NA, xlab =
          "max sim per obs",ylab="proportion of data", xlim=c(0,1))
   grid()
