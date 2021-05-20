@@ -72,7 +72,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                     linecols=NULL,showsim=NULL, theta3d = 45, phi3d = 20,
                     dataplot="pcp", tours=NULL, predictArgs=NULL,xlim=NULL,ylim=NULL,zlim=NULL,density=FALSE,
                     showdata= density==FALSE,displayHeight=950) {
-
+  
   if (!is.data.frame(data) ) 
     stop("'data' must be a data.frame")
   
@@ -80,75 +80,59 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   
   ctype <- which(sapply(data, function(v) !is.numeric(v) & ! is.factor(v)))
   for (ct in ctype) data[[ct]] <- as.factor(data[[ct]])
-  # if (length(ctype)>0)
-  # warning(paste0("Variables ", paste0(names(data)[ctype], collapse=" ")," changed to factor", 
-  #                collapse=" "))
   
-  
-  # if (thresholdmax==0) thresholdmax <-1
   if (is.null(model)) showdata<- TRUE
-
+  
   
   
   if (density ) {
     response <- "densityY"
-    # if (is.null(ylim)){
-    # maxy <- sapply(1:length(model), function(w)
-    #   do.call(CVpredict,  c(list(model[[w]],data), predictArgs[[w]])))
-    #
-    # maxy <- max(maxy)
-    # # maxy <- max(sapply(model, function(m) max(CVpredict(m,data))))
-    # ylim<- c(0,1.05*maxy)
+    
     data$densityY <- runif(nrow(data))
-    # if (is.null(zlim)) zlim <- ylim
+    
   }
-
+  
   if (!is.null(model)){
     if (!inherits(model, "list")) model <- list(model)
-
+    
     if (is.null(names(model)))
       names(model) <- paste0("fit", 1:length(model))
-
+    
     if (length(linecols) != length(model))
       if (length(model) <= 8)
         linecols <- rev(RColorBrewer::brewer.pal(max(3, length(model)), "Dark2"))[1:length(model)]
-      else linecols <- colors()[1:length(model)]
-
-      if (is.null(response) && !density){
-        frm <-  try(formula(model[[1]]), silent=T)
-         if (class(frm) != "try-error")
-          response <- all.vars(frm)[1]
-        else stop("could not extract response from 'model'.")
-      }
-      if (!is.null(sectionvars) & !is.null(conditionvars))
-        preds <- c(sectionvars, conditionvars)
-      else if (is.null (conditionvars) & !is.null(sectionvars)){
-        preds <- names(data)
-        preds<- preds[preds!=response]
-        conditionvars <- setdiff(preds, sectionvars)
-      } else if (is.null (sectionvars) & !is.null(conditionvars)){
-        preds <- conditionvars
-        sectionvars <- preds[1]
-        conditionvars <- preds[-1]
-      }else {
-        preds <- names(data)
-        preds<- preds[preds!=response]
-        sectionvars <- preds[1]
-        conditionvars <- preds[-1]
-      }
-
-      
-
-
-      # probs <- is.factor(data[[response]])  &&
-      #   any(sapply(1:length(model),
-      #              function(i) hasprobs(model[[i]], data, predictArgs=predictArgs[[i]])))
-      # 
-      probs <- is.factor(data[[response]])
-      view3d <-  is.numeric(data[[response]]) && (sum(sapply(data[,c(sectionvars,conditionvars)], is.numeric)) >=2)
-
-
-
+    else linecols <- colors()[1:length(model)]
+    
+    if (is.null(response) && !density){
+      frm <-  try(formula(model[[1]]), silent=T)
+      if (class(frm) != "try-error")
+        response <- all.vars(frm)[1]
+      else stop("could not extract response from 'model'.")
+    }
+    if (!is.null(sectionvars) & !is.null(conditionvars))
+      preds <- c(sectionvars, conditionvars)
+    else if (is.null (conditionvars) & !is.null(sectionvars)){
+      preds <- names(data)
+      preds<- preds[preds!=response]
+      conditionvars <- setdiff(preds, sectionvars)
+    } else if (is.null (sectionvars) & !is.null(conditionvars)){
+      preds <- conditionvars
+      sectionvars <- preds[1]
+      conditionvars <- preds[-1]
+    }else {
+      preds <- names(data)
+      preds<- preds[preds!=response]
+      sectionvars <- preds[1]
+      conditionvars <- preds[-1]
+    }
+    
+    
+    
+    probs <- is.factor(data[[response]])
+    view3d <-  is.numeric(data[[response]]) && (sum(sapply(data[,c(sectionvars,conditionvars)], is.numeric)) >=2)
+    
+    
+    
   } else {
     probs <- FALSE
     view3d <- FALSE
@@ -173,15 +157,6 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   np1 <- setdiff(names(datar), np)
   
   
-  # predsInit1 <- datar[1,]
-  # 
-  # 
-  # predsVal <- lapply(datar, function(p) {
-  #   if (is.factor(p)) names( which.max(table(p)))
-  #   else median(p)
-  # })
-  # predsInit1[1,]<- predsVal
-  
   if (length(np1)> 0){
     predsInit1 <- medoid(data[,np1,drop=FALSE]) 
   }
@@ -190,22 +165,17 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
   
   predsInit2 <- datar[1,,drop=F]
   if (length(np1)> 1){
-     predsInit2[1,np]<- predsInit[1,np]
+    predsInit2[1,np]<- predsInit[1,np]
     predsInit2[1,np1]<- predsInit1[1,np1]
   }
   else  predsInit2[1,np]<- predsInit[1,np]
- 
-
-  # data <- pointColor2var(data, pointColor[1])
-
-  if (is.null(showsim)) showsim <- nrow(data)<= 150 && showdata
-
-  # if (thresholdmax==0) thresholdmax <-1
   
-  # if (!(is.numeric(thresholdmax) && thresholdmax> threshold)) thresholdmax <- length(preds)*threshold
+  
+  if (is.null(showsim)) showsim <- nrow(data)<= 150 && showdata
+  
+  
   if (!(is.numeric(thresholdmax) && thresholdmax> threshold)) 
     thresholdmax <- max(8*threshold, round(sqrt(length(preds))*threshold))
-  # if (length(sectionvars)==1) sectionvars <- c(sectionvars, "None")
   
   ui <- createCVUI(model,data,response,sectionvars,preds,pointColor,threshold, thresholdmax,tours,
                    probs, view3d,showsim=showsim,cPlotPCP = cPlotPCP)
@@ -218,10 +188,10 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
                            predictArgs=predictArgs,xlim=xlim,ylim=ylim, zlim=zlim,density=density,
                            showdata=showdata)
   s <-shiny::shinyApp(ui, server,options=list(width="100%", height=displayHeight, width=700))
- 
+  
   if(interactive()) 
     runApp(s) 
-   else s
+  else s
 }
 
 
