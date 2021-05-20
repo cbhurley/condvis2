@@ -38,13 +38,7 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
     tags$head(tags$style("#quit{font-size: 12px;}")),
 
     sidebarLayout(sidebarPanel(
-      # selectInput(inputId = "sectionvar",
-      #                                      label = "Choose a sectionvar",
-      #                                      choices = preds,
-      #                                      width=220,
-      #                                      selected = sectionvars[1]
-      #                                      ),
-                             #  uiOutput("select2"),
+   
       
                                uiOutput("cplots"),
                                tags$br(),
@@ -109,9 +103,7 @@ createCVUI <- function(CVfit,data,response,sectionvars,preds=NULL, pointColor,th
              
                       
              fluidRow(column(9, offset=1, wellPanel(
-               # fluidRow(column(5, offset=0,checkboxInput("showtour", "Show tour options", FALSE))),
-               # conditionalPanel(
-               #   condition = "input.showtour==true",
+             
               fluidRow(
                column(4, offset=0, 
                       selectInput(inputId = "tour",
