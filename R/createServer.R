@@ -115,7 +115,6 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       # clicks are not always recorded when using layouts, ???
       # also, does not work with more than one plot via mfrow
       click <- input$display_click
-      # print("handling click")
       
       if (is.data.frame(clickCoords)) {
         w <- nearPoints(clickCoords, click, xvar="x", yvar="y", threshold = 5, maxpoints = 1)
@@ -309,8 +308,7 @@ createCVServer <- function(CVfit,CVdata=NULL, response=NULL,sectionvars,conditio
       sv <- isolate(rv$sectionvars)
       sv2 <- sv[2]
       if (is.na(sv2) | sv[2]==sv[1]) sv2 <- "None"
-      #print("in select 2")
-      selectInput(inputId = "sectionvar2",
+       selectInput(inputId = "sectionvar2",
                   label = "Second sectionvar",
                   choices = c("None", setdiff(preds, input$sectionvar)),
                   width=220,
