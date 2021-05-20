@@ -7,7 +7,6 @@ getCPlotFN <- function(CVdata, var){
   if (length(var)> 1)
     if (is.numeric(CVdata[[var[2]]])) cp[2]<- "n"else cp[2] <- "f"
     CPlotFN <- paste(c("conditionPlot",cp),collapse="")
-    # if (type=="gg") CPlotFN <-paste0("gg",CPlotFN)
     if (length(var) > 2) CPlotFN <-"conditionPlotpcp"
     get(CPlotFN)
 }
@@ -50,9 +49,6 @@ conditionPlot <- function(CVdata, var, varVal, pointColor="steelblue",
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
   }
-  
-  
-  
   f <- getCPlotFN (CVdata, var)
   f(CVdata, var,varVal, pointColor,sim,plotrows=plotrows)
   return(NULL)
@@ -64,8 +60,7 @@ conditionPlot <- function(CVdata, var, varVal, pointColor="steelblue",
 
 
 conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
-  # op <- par(no.readonly = TRUE)
-  # on.exit(par(op))
+  
   par(mar = c(3, 3, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = -.01)
@@ -85,8 +80,7 @@ conditionPlotn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
 
 conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
-  # op <- par(no.readonly = TRUE)
-  # on.exit(par(op))
+  
   par(mar = c(3, 5, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = -.01)
@@ -96,7 +90,6 @@ conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
   if (!is.ordered(var1)) tab <- sort(tab, increasing=T)
   
     b <- barplot(tab,col="paleturquoise3", border="grey60", width=.8,space=.25, xlab=var,horiz=TRUE,las=1)
-    
     
     varVal <- varVal[[var]]
     crossy <- match(varVal, names(tab))
@@ -127,8 +120,7 @@ conditionPlotf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
 
 conditionPlotnn <- function(CVdata, var, varVal,pointColor=NULL,sim,plotrows){
-  # op <- par(no.readonly = TRUE)
-  # on.exit(par(op))
+  
   par(mar = c(3, 3, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = -.01)
@@ -160,8 +152,7 @@ conditionPlotnf <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
 
 conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
-  # op <- par(no.readonly = TRUE)
-  # on.exit(par(op))
+  
   par(mar = c(3, 3, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = -.01)
@@ -177,32 +168,29 @@ conditionPlotfn <- function(CVdata, var, varVal,pointColor,sim,plotrows){
 
 
 conditionPlotff <- function(CVdata, var, varVal,pointColor,sim,plotrows){
-
+  
   par(mar = c(3, 3, .5,.5),
       mgp = c(1.5, .2, 0),
       tck = 0,las=1)
-
+  
   var2 <- CVdata[[var[2]]]
   var1 <- CVdata[[var[1]]]
   tab <- table(var2, var1)
   barplot(tab, col=scales::hue_pal(h.start=30, l=90)(length(levels(var2))), axes=F, xlab=var[1], ylab=var[2],width=.8,space=.25)
-  #axis(1, at=1:length(levels(var1)), labels=levels(var1))
   breaks<- head(seq(0, max(table(var1)),
-                  length.out=length(levels(var2))+2),-1)[-1]
-
+                    length.out=length(levels(var2))+2),-1)[-1]
+  
   axis(2,at=breaks,labels=levels(var2), lwd=0)
-
+  
   tab1 <- rbind(0,(tab[-nrow(tab),]))
   mid <- (apply(tab,2,cumsum) + apply(tab1,2,cumsum))/2
   crossx <- match(varVal[[var[1]]], levels(var1))
   crossy <- match(varVal[[var[2]]], levels(var2))
-  # print(c(crossx, crossy))
-  # print(mid)
-   crossy <- mid[crossy,crossx]
-  #print(c(crossx, crossy))
- # print(b)
+  
+  crossy <- mid[crossy,crossx]
+  
   points(x = crossx-.4,y=crossy, pch=43, col="magenta",cex=5)
-  }
+}
 
 
 
@@ -222,13 +210,11 @@ getCClickFN <- function(CVdata, var){
   if (length(var)> 1)
     if (is.numeric(CVdata[[var[2]]])) cp[2]<- "n"else cp[2] <- "f"
     CPlotFN <- paste(c("conditionClick",cp),collapse="")
-    # if (type=="gg") CPlotFN <-paste0("gg",CPlotFN)
     if (length(var) > 2) CPlotFN <-"conditionClickpcp"
     get(CPlotFN)
 }
 
 conditionClickn <- function(CVdata, var, click,plotrows){
-
   setNames(click$x,var)
 }
 
@@ -299,7 +285,7 @@ conditionClickff <- function(CVdata, var, click,plotrows){
   var1 <- CVdata[[var[1]]]
   var2 <- CVdata[[var[2]]]
   tab <- table(var2, var1)
-  #tab <- tab[nrow(tab):1, ]
+ 
   xc <- ceiling(click$x)
 
   if (xc < 1 | xc > length(levels(var1)))
