@@ -7,7 +7,7 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
       tck = -.01)
   
   fitcolfn <- colorfnf(CVdata[[response]])
-
+  
   fitnames <- names(CVfit)
   
   nlevels <- 15
@@ -26,7 +26,7 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
   }
   )
   nlevels <- sapply(sectionvals, length)
-    
+  
   names(sectionvals)<- sectionvar
   
   sectionvals <- expand.grid(sectionvals)
@@ -35,7 +35,7 @@ sectionPlotpnn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predi
   class(grid)<- "list"
   grid[sectionvar] <- sectionvals[sectionvar]
   grid <- as.data.frame(grid)
-
+  
   ylevels <- levels(CVdata[[response]])
   
   w <- 1
@@ -168,7 +168,7 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
   }
   else {m <- matrix(1:2)
   layout(mat = m,heights = c(.9,.1))
- }
+  }
   
   plot(c(min(gx)-xoffset,max(gx)+xoffset),  c(0,1),
        type="n",xlab=sectionvar[1], ylab= paste("prob", response),
@@ -176,7 +176,7 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
   
   totalwidth <- diff(range(gx))+2*xoffset
   if (is.factor(xvar))
-  barw <- 0.4 * totalwidth / nlevels
+    barw <- 0.4 * totalwidth / nlevels
   else barw <- .85*totalwidth / nlevels
   o1 <- apply(cbind(sectionvalsn, p1), 1,
               function (x) myglyph2a(x[1], 0,barw,
@@ -191,7 +191,7 @@ sectionPlotpn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
     axis(1, at=1:nlevels -.5, labels=levels(xvar),lwd=0)
   else axis(1)
   
-
+  
   legendf(fitcolfn)
   par(mfrow=c(1,1))
   layout(1)
@@ -208,7 +208,7 @@ sectionPlotpf <- function(CVdata,CVfit,sectionvar,response, conditionvals,predic
 
 sectionPlotpfn <- function(CVdata,CVfit,sectionvar,response, conditionvals,predictArgs=NULL,...) {
   sectionPlotpnn(CVdata,CVfit,rev(sectionvar),response, conditionvals,xlim=xlim,ylim=ylim,
-                predictArgs=predictArgs,...)
+                 predictArgs=predictArgs,...)
   
 }
 
@@ -244,9 +244,7 @@ myglyph2 <-
 
 
 # for stacked barplots
-myglyph2a <-
-  function (x, y, xw, yw, heights)
-  {
+myglyph2a <- function (x, y, xw, yw, heights) {
     o <- order(heights, decreasing=TRUE)
     cols <- 1:length(heights)
     cols <- cols[o]
@@ -268,9 +266,6 @@ myglyph2a <-
 
 sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,linecols,
                           theta3d, phi3d,density=FALSE,zlim=NULL,predictArgs=NULL,showdata,pcolInfo=NULL,... ){
-  
-  
-  
   
   par(mar = c(3, 3, 3,.5),
       mgp = c(2, 0.4, 0),
@@ -309,15 +304,12 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
   
   }
   
-  # m <- rbind(seq(along=fitnames), length(fitnames)+1)
-  # 
-  # layout(mat = m,heights = c(.9,.1))
   preds <- names(grid)
   fitpos <- match(fitnames[1], preds)
   preds <- preds[1:(fitpos - 1)]
   
   for (w in seq(along=fitnames)){
-    # yhat <- CVpredict(CVfit[[w]],CVdata[,preds])
+    
     z <- matrix(grid[[fitnames[w]]], ncol = 20L, byrow = FALSE)
     zfacet <- (z[-1, -1] + z[-1, -ncol(z)] + z[-nrow(z), -1]
                + z[-nrow(z), -ncol(z)]) / 4
@@ -335,7 +327,7 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
     
     if (length(o) > 0 && !density && showdata){
       
-      # yhat <- yhat[o]
+      
       paw <- predictArgs[[w]]
       paw$pinterval <- NULL
       
@@ -360,7 +352,7 @@ sectionPlot3D <- function(CVdata,CVfit,fitnames,sectionvar,response, sim,grid,li
       }
     }
   }
-    legendn(fitcolfn)
+  legendn(fitcolfn)
   par(mfrow=c(1,1))
   layout(1)
 }
