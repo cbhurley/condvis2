@@ -36,7 +36,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
   y <- data[[response]]
   
   f <- vector("list",length=length(fits))
- 
+  
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
       f[[i]] <- do.call(CVpredict,  c(list(fits[[i]],data), predictArgs[[i]]))
@@ -56,7 +56,6 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
     r <- apply(rall,1,max)
     q <- sort(r,decreasing=T)[length]
     s <- which(r >= q)[1:length]
-    
   }
   else if (is.factor(y) && sum(facs)>= 1) {
     f <- simplify2array(f[facs])
@@ -64,21 +63,20 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
     length <- min(length, sum(dif>0))
     q <- sort(dif,decreasing=T)[length]
     s <-which(dif >= q & dif > 0)[1:length]
-    
   }
- 
+  
   if (is.null(s) || is.na(s[1])) return(NULL)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   lpath<- data[s,,drop=F]
-
+  
   if (reorder & nrow(lpath)> 2){
     d <- cluster::daisy(lpath,warnType=FALSE)
     o <- DendSer::dser(d)
     lpath <- lpath[o,]
     structure(lpath, rows = s[o])
   } else
-  structure(lpath, rows = s)
+    structure(lpath, rows = s)
   
 }
 
@@ -87,7 +85,7 @@ lofPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,
 #' @describeIn fitPath Constructs a tour of data space showing biggest differences in fits.
 #' @export
 diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,predictArgs=NULL,...){
-  print(predictArgs)
+  
   if (!inherits(fits, "list")) fits <- list(fits)
   if (length(fits) <2) {
     warning("Provide two or more fits")
@@ -98,7 +96,7 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
     warning("Pick length <= nrows")
     return(NULL)
   }
-
+  
   f <- vector("list",length=length(fits))
   if (length(predictArgs) == length(fits)){
     for (i  in 1:length(fits)){
@@ -109,16 +107,16 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
       f[[i]] <- CVpredict(fits[[i]],data)
     }
   }
-
+  
   w <- sapply(f, is.numeric)
   facs <- sapply(f, is.factor)
   if (sum(w)>= 2) {
-  f <- simplify2array(f[w])
-  
-  dif <- apply(f,1,max)- apply(f,1,min)
-  length <- min(length, sum(dif>0))
-  q <- sort(dif,decreasing=T)[length]
-  s <-which(dif >= q)
+    f <- simplify2array(f[w])
+    
+    dif <- apply(f,1,max)- apply(f,1,min)
+    length <- min(length, sum(dif>0))
+    q <- sort(dif,decreasing=T)[length]
+    s <-which(dif >= q)
   }
   else if (sum(facs)>= 2) {
     f <- simplify2array(f[facs])
@@ -131,23 +129,21 @@ diffitsPath<- function(data, fits,length=10, reorder=TRUE,conditionvars=NULL,pre
     warning("Cannot calculate differences")
     return(NULL)
   }
- 
+  
   if (is.na(s[1])) return(NULL)
   if (!is.null(conditionvars)) data <- data[,conditionvars,drop=FALSE]
   
   if (length(s) > length)
     s <- s[1:length]
   lpath<- data[s,,drop=F]
- 
+  
   if (reorder & nrow(lpath)> 2){
     d <- cluster::daisy(lpath, warnType=FALSE)
     o <- DendSer::dser(d)
     lpath <- lpath[o,,drop=F]
   }
   else o <- 1:nrow(lpath)
-  print(lpath)
   structure(lpath, rows = s[o])
-  
 }
 
 
