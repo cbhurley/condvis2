@@ -861,14 +861,14 @@ CVpredict.WrappedModel <- function (fit, newdata,...,type=NULL, ptype="pred",pth
   }
   else if (ptype=="pred" && is.numeric(pthreshold)){
     # calc probmatrix for class prediction using threshold
-    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp, ylevels))
   }
   else if (ptype=="pred"){
     # calc predicted classes
     p <- mlr::getPredictionResponse(fitp)
   }
   else if (ptype=="prob"){
-    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp, ylevels))
     p <- p[,ncol(p)]
     # if (!is.null(pinterval)){
     #   intype <- if (pinterval=="prediction") "pred_int" else "conf_int"
@@ -881,7 +881,7 @@ CVpredict.WrappedModel <- function (fit, newdata,...,type=NULL, ptype="pred",pth
   }
   else {
     # ptype is"probmatrix", calculate probs
-    p <- as.matrix(mlr::getPredictionProbabilities(fitp))
+    p <- as.matrix(mlr::getPredictionProbabilities(fitp,ylevels))
   }
   if (is.null(pinterval) | !is.matrix(p))
     calcPred(ptype,p, pthreshold, ylevels,ptrans)
