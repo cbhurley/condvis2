@@ -607,7 +607,7 @@ sectionPlotd2 <- function(CVdata,fitnames,sectionvar,response, sim,grid,
        xlab=xlab, ylab=ylab,pch=19,cex=pointSize,main="",...)
   
   if (! is.null(pcolInfo) && !is.null(pcolInfo$cols) && showdata){
-    legend("topright", legend = names(pcolInfo$cols), 
+    legend("topright", legend = names(pcolInfo$cols),
            col = pcolInfo$cols, pch=19,bty="n", cex=.7, title=pcolInfo$cvar, inset=legendInset,xpd=NA)
   }
   if (!is.null(grid)){
