@@ -827,6 +827,7 @@ CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NUL
   else {
     # ptype is"probmatrix", calculate probs
     p <- as.matrix(predict(fit,...,type="prob"))
+    colnames(p)<- ylevels
   }
   if (is.null(pinterval) | !is.matrix(p))
     calcPred(ptype,p, pthreshold, ylevels,ptrans)
