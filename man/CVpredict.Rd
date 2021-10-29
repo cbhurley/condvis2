@@ -29,6 +29,10 @@
 \alias{CVpredict.Mclust}
 \alias{CVpredict.train}
 \alias{CVpredict.bartMachine}
+\alias{CVpredict.wbart}
+\alias{CVpredict.lbart}
+\alias{CVpredict.pbart}
+\alias{CVpredict.bart}
 \alias{CVpredict.model_fit}
 \alias{CVpredict.WrappedModel}
 \alias{CVpredict.Learner}
@@ -320,6 +324,50 @@ CVpredict(
   ptrans = NULL
 )
 
+\method{CVpredict}{wbart}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
+
+\method{CVpredict}{lbart}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
+
+\method{CVpredict}{pbart}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
+
+\method{CVpredict}{bart}(
+  fit,
+  newdata,
+  ...,
+  type = NULL,
+  ptype = "pred",
+  pthreshold = NULL,
+  ylevels = NULL,
+  ptrans = NULL
+)
+
 \method{CVpredict}{model_fit}(
   fit,
   ...,
@@ -464,6 +512,14 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 \item \code{train}: CVpredict method for caret
 
 \item \code{bartMachine}: CVpredict method
+
+\item \code{wbart}: CVpredict method
+
+\item \code{lbart}: CVpredict method
+
+\item \code{pbart}: CVpredict method
+
+\item \code{bart}: CVpredict method
 
 \item \code{model_fit}: CVpredict method for parsnip
 

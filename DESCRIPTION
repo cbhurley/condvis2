@@ -9,7 +9,7 @@ License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true
 Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr, colorspace, gower
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown,

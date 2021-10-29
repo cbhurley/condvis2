@@ -788,6 +788,68 @@ CVpredict.bartMachine <- function (fit,newdata,...,type=NULL, ptype="pred",pthre
   calcPred(ptype,p, NULL, ylevels,ptrans)
 }
 
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.wbart <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
+  # BART for numerical response
+  
+  cols <- names(fit$varcount.mean)
+  
+  newdata <- BART::bartModelMatrix(newdata)[,cols]
+  if (ptype=="pred" && is.null(ylevels)){
+    # numeric prediction
+    p <- colMeans(predict(fit,newdata,mc.cores=getOption("mc.cores", 1),...))
+  }
+  else stop("Argument ptype must be 'pred'")
+  calcPred(ptype,p, NULL, ylevels,ptrans)
+}
+
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.lbart <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
+  # logistic BART
+  
+  cols <- names(fit$varcount.mean)
+  if (is.null(ylevels))
+    ylevels <- c("0","1")
+  
+  newdata <- BART::bartModelMatrix(newdata)[,cols]
+  p <- predict(fit,newdata,mc.cores=getOption("mc.cores", 1),...)$prob.test.mean
+  if (is.null(pthreshold)) pthreshold <- .5
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
+}
+
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.pbart <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
+  # logistic BART
+  
+  cols <- names(fit$varcount.mean)
+  if (is.null(ylevels))
+    ylevels <- c("0","1")
+  
+  newdata <- BART::bartModelMatrix(newdata)[,cols]
+  p <- predict(fit,newdata,mc.cores=getOption("mc.cores", 1),...)$prob.test.mean
+  if (is.null(pthreshold)) pthreshold <- .5
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
+}
+
+
+#' @describeIn CVpredict  CVpredict method
+#' @export
+CVpredict.bart <- function (fit,newdata,...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,ptrans=NULL) {
+  
+  if (is.null(ylevels) && fit$fit$control@binary)
+    ylevels <- c("0","1")
+  p <- colMeans(predict(fit,newdata))
+  if (is.null(pthreshold)) pthreshold <- .5
+  calcPred(ptype,p, pthreshold, ylevels,ptrans)
+}
+
+
 #' @describeIn CVpredict  CVpredict method for parsnip
 #' @export
 CVpredict.model_fit <- function (fit, ...,type=NULL, ptype="pred",pthreshold=NULL, ylevels=NULL,
