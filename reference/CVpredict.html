@@ -457,6 +457,54 @@
   ptrans <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span>
 
+<span class='co'># S3 method for wbart</span>
+<span class='fu'>CVpredict</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>newdata</span>,
+  <span class='va'>...</span>,
+  type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptype <span class='op'>=</span> <span class='st'>"pred"</span>,
+  pthreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylevels <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptrans <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for lbart</span>
+<span class='fu'>CVpredict</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>newdata</span>,
+  <span class='va'>...</span>,
+  type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptype <span class='op'>=</span> <span class='st'>"pred"</span>,
+  pthreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylevels <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptrans <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for pbart</span>
+<span class='fu'>CVpredict</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>newdata</span>,
+  <span class='va'>...</span>,
+  type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptype <span class='op'>=</span> <span class='st'>"pred"</span>,
+  pthreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylevels <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptrans <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for bart</span>
+<span class='fu'>CVpredict</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>newdata</span>,
+  <span class='va'>...</span>,
+  type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptype <span class='op'>=</span> <span class='st'>"pred"</span>,
+  pthreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylevels <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ptrans <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
+
 <span class='co'># S3 method for model_fit</span>
 <span class='fu'>CVpredict</span><span class='op'>(</span>
   <span class='va'>fit</span>,
@@ -615,6 +663,10 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 <li><p><code>Mclust</code>: CVpredict method</p></li>
 <li><p><code>train</code>: CVpredict method for caret</p></li>
 <li><p><code>bartMachine</code>: CVpredict method</p></li>
+<li><p><code>wbart</code>: CVpredict method</p></li>
+<li><p><code>lbart</code>: CVpredict method</p></li>
+<li><p><code>pbart</code>: CVpredict method</p></li>
+<li><p><code>bart</code>: CVpredict method</p></li>
 <li><p><code>model_fit</code>: CVpredict method for parsnip</p></li>
 <li><p><code>WrappedModel</code>: CVpredict method for mlr</p></li>
 <li><p><code>Learner</code>: CVpredict method for mlr3</p></li>

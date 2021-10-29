@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Exploring keras models with condvis2</h1>
                         <h4 class="author">K. Domijan</h4>
             
-            <h4 class="date">2021-07-01</h4>
+            <h4 class="date">2021-10-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cbhurley/condvis2/blob/master/vignettes/Keras.Rmd"><code>vignettes/Keras.Rmd</code></a></small>
       <div class="hidden name"><code>Keras.Rmd</code></div>
@@ -131,9 +131,9 @@
 <span class="va">Pima.testing</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Pima.testing</span>, center<span class="op">=</span><span class="va">means</span>, scale<span class="op">=</span><span class="va">sds</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># One hot encode training target values</span>
-<span class="va">Pima.trainLabels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/to_categorical.html">to_categorical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Pima.tr</span><span class="op">[</span>,<span class="fl">8</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>
+<span class="va">Pima.trainLabels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/to_categorical.html">to_categorical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Pima.tr</span><span class="op">[</span>,<span class="fl">8</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>
 <span class="co"># One hot encode test target values</span>
-<span class="va">Pima.testLabels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/to_categorical.html">to_categorical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Pima.te</span><span class="op">[</span>,<span class="fl">8</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>
+<span class="va">Pima.testLabels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/to_categorical.html">to_categorical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Pima.te</span><span class="op">[</span>,<span class="fl">8</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>
 
 <span class="co"># Create dataframes for Condvis</span>
 <span class="va">dtf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">Pima.training</span><span class="op">)</span>
@@ -144,10 +144,10 @@
 <p>Define and fit the model:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/keras_model_sequential.html">keras_model_sequential</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Add layers to the model</span>
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/keras_model_sequential.html">keras_model_sequential</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Add layers to the model</span>
 <span class="va">model</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">8</span>, activation <span class="op">=</span> <span class="st">'tanh'</span>, input_shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">1</span>, activation <span class="op">=</span> <span class="st">'sigmoid'</span><span class="op">)</span>
+  <span class="fu"><a href="https://keras.rstudio.com/reference/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">8</span>, activation <span class="op">=</span> <span class="st">'tanh'</span>, input_shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://keras.rstudio.com/reference/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">1</span>, activation <span class="op">=</span> <span class="st">'sigmoid'</span><span class="op">)</span>
 
 <span class="co"># Print a summary of a model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
@@ -207,7 +207,7 @@
 <p>Use the Boston housing data. This is one of the examples from <a href="https://keras.rstudio.com/reference/dataset_boston_housing.html">keras</a></p>
 <p>Prepare data:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">boston_housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/dataset_boston_housing.html">dataset_boston_housing</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">boston_housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/dataset_boston_housing.html">dataset_boston_housing</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span>, <span class="va">train_labels</span><span class="op">)</span> <span class="op">%&lt;-%</span> <span class="va">boston_housing</span><span class="op">$</span><span class="va">train</span>
 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">test_data</span>, <span class="va">test_labels</span><span class="op">)</span> <span class="op">%&lt;-%</span> <span class="va">boston_housing</span><span class="op">$</span><span class="va">test</span>
 
@@ -222,15 +222,15 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">build_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
 
-  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/keras_model_sequential.html">keras_model_sequential</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">64</span>, activation <span class="op">=</span> <span class="st">"relu"</span>,
+  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/keras_model_sequential.html">keras_model_sequential</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://keras.rstudio.com/reference/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">64</span>, activation <span class="op">=</span> <span class="st">"relu"</span>,
                 input_shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">64</span>, activation <span class="op">=</span> <span class="st">"relu"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/keras/man/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+    <span class="fu"><a href="https://keras.rstudio.com/reference/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">64</span>, activation <span class="op">=</span> <span class="st">"relu"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://keras.rstudio.com/reference/layer_dense.html">layer_dense</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 
   <span class="va">model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/compile.html">compile</a></span><span class="op">(</span>
     loss <span class="op">=</span> <span class="st">"mse"</span>,
-    optimizer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_rmsprop.html">optimizer_rmsprop</a></span><span class="op">(</span><span class="op">)</span>,
+    optimizer <span class="op">=</span> <span class="fu"><a href="https://keras.rstudio.com/reference/optimizer_rmsprop.html">optimizer_rmsprop</a></span><span class="op">(</span><span class="op">)</span>,
     metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"mean_absolute_error"</span><span class="op">)</span>
   <span class="op">)</span>
 
@@ -242,7 +242,7 @@
 
 
 <span class="co"># Display training progress by printing a single dot for each completed epoch.</span>
-<span class="va">print_dot_callback</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/callback_lambda.html">callback_lambda</a></span><span class="op">(</span>
+<span class="va">print_dot_callback</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/callback_lambda.html">callback_lambda</a></span><span class="op">(</span>
   on_epoch_end <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">epoch</span>, <span class="va">logs</span><span class="op">)</span> <span class="op">{</span>
     <span class="kw">if</span> <span class="op">(</span><span class="va">epoch</span> <span class="op">%%</span> <span class="fl">80</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span>
@@ -252,7 +252,7 @@
 <span class="va">epochs</span> <span class="op">&lt;-</span> <span class="fl">500</span>
 
 <span class="co"># Fit the model </span>
-<span class="va">early_stop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/callback_early_stopping.html">callback_early_stopping</a></span><span class="op">(</span>monitor <span class="op">=</span> <span class="st">"val_loss"</span>, patience <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
+<span class="va">early_stop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://keras.rstudio.com/reference/callback_early_stopping.html">callback_early_stopping</a></span><span class="op">(</span>monitor <span class="op">=</span> <span class="st">"val_loss"</span>, patience <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
 
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">build_model</span><span class="op">(</span><span class="op">)</span>
 <span class="va">history</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span>
