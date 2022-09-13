@@ -1,6 +1,4 @@
-#' @title Make a list of variable pairings for condition selecting plots
-#'
-#'
+#' @title Make a list of variable pairings for condition selecting plots.
 #' @description This function arranges a number of variables in pairs, ordered
 #' by their bivariate relationships. The goal is to discover which variable
 #' pairings are most helpful in avoiding extrapolations when exploring the data

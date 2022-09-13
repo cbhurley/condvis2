@@ -4,12 +4,12 @@ Version: 0.1.2
 Authors@R: c(person("Catherine", "Hurley", email = "catherine.hurley@mu.ie", role = c("aut", "cre")),person("Mark", "OConnell", email = "mark_ajoc@yahoo.ie", role = c( "aut")),person("Katarina", "Domijan", email = "katarina.domijan@mu.ie", role = c("aut")))
 Description: Constructs a shiny app function with interactive displays for conditional visualization of models, 
      data and density functions. An extended version of package 'condvis'. 
-     Mark O'Connell, Catherine B. Hurley, Katarina Domijan (2017) <doi:10.18637/jss.v081.i05>.
+    Catherine B. Hurley, Mark O'Connell,Katarina Domijan (2021) <10.1080/10618600.2021.1983439>. 
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true
 Imports: shiny, RColorBrewer, ggplot2,scales, cluster, DendSer,methods,plyr, colorspace, gower
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Suggests: 
     knitr,
     rmarkdown,
@@ -26,6 +26,7 @@ Suggests:
     mlr,
     C50,
     bartMachine,
+    BART,
     caret,
     e1071,
     gbm,
@@ -38,4 +39,4 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 BugReports: https://github.com/cbhurley/condvis2/issues
-URL: https://cbhurley.github.io/condvis2, https://github.com/cbhurley/condvis2
+URL: https://cbhurley.github.io/condvis2/, https://github.com/cbhurley/condvis2

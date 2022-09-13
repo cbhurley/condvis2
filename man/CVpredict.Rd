@@ -459,75 +459,75 @@ For ptype="probmatrix", the result is a matrix  of probabilities for each factor
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: CVpredict method
+\item \code{CVpredict(default)}: CVpredict method
 
-\item \code{lm}: CVpredict method
+\item \code{CVpredict(lm)}: CVpredict method
 
-\item \code{glm}: CVpredict method
+\item \code{CVpredict(glm)}: CVpredict method
 
-\item \code{lda}: CVpredict method
+\item \code{CVpredict(lda)}: CVpredict method
 
-\item \code{qda}: CVpredict method
+\item \code{CVpredict(qda)}: CVpredict method
 
-\item \code{nnet}: CVpredict method
+\item \code{CVpredict(nnet)}: CVpredict method
 
-\item \code{randomForest}: CVpredict method
+\item \code{CVpredict(randomForest)}: CVpredict method
 
-\item \code{ranger}: CVpredict method
+\item \code{CVpredict(ranger)}: CVpredict method
 
-\item \code{rpart}: CVpredict method
+\item \code{CVpredict(rpart)}: CVpredict method
 
-\item \code{tree}: CVpredict method
+\item \code{CVpredict(tree)}: CVpredict method
 
-\item \code{C5.0}: CVpredict method
+\item \code{CVpredict(C5.0)}: CVpredict method
 
-\item \code{svm}: CVpredict method
+\item \code{CVpredict(svm)}: CVpredict method
 
-\item \code{gbm}: CVpredict method
+\item \code{CVpredict(gbm)}: CVpredict method
 
-\item \code{loess}: CVpredict method
+\item \code{CVpredict(loess)}: CVpredict method
 
-\item \code{ksvm}: CVpredict method
+\item \code{CVpredict(ksvm)}: CVpredict method
 
-\item \code{glmnet}: CVpredict method
+\item \code{CVpredict(glmnet)}: CVpredict method
 
-\item \code{cv.glmnet}: CVpredict method
+\item \code{CVpredict(cv.glmnet)}: CVpredict method
 
-\item \code{glmnet.formula}: CVpredict method
+\item \code{CVpredict(glmnet.formula)}: CVpredict method
 
-\item \code{cv.glmnet.formula}: CVpredict method
+\item \code{CVpredict(cv.glmnet.formula)}: CVpredict method
 
-\item \code{keras.engine.training.Model}: CVpredict method
+\item \code{CVpredict(keras.engine.training.Model)}: CVpredict method
 
-\item \code{kde}: CVpredict method
+\item \code{CVpredict(kde)}: CVpredict method
 
-\item \code{densityMclust}: CVpredict method
+\item \code{CVpredict(densityMclust)}: CVpredict method
 
-\item \code{MclustDA}: CVpredict method
+\item \code{CVpredict(MclustDA)}: CVpredict method
 
-\item \code{MclustDR}: CVpredict method
+\item \code{CVpredict(MclustDR)}: CVpredict method
 
-\item \code{Mclust}: CVpredict method
+\item \code{CVpredict(Mclust)}: CVpredict method
 
-\item \code{train}: CVpredict method for caret
+\item \code{CVpredict(train)}: CVpredict method for caret
 
-\item \code{bartMachine}: CVpredict method
+\item \code{CVpredict(bartMachine)}: CVpredict method
 
-\item \code{wbart}: CVpredict method
+\item \code{CVpredict(wbart)}: CVpredict method
 
-\item \code{lbart}: CVpredict method
+\item \code{CVpredict(lbart)}: CVpredict method
 
-\item \code{pbart}: CVpredict method
+\item \code{CVpredict(pbart)}: CVpredict method
 
-\item \code{bart}: CVpredict method
+\item \code{CVpredict(bart)}: CVpredict method
 
-\item \code{model_fit}: CVpredict method for parsnip
+\item \code{CVpredict(model_fit)}: CVpredict method for parsnip
 
-\item \code{WrappedModel}: CVpredict method for mlr
+\item \code{CVpredict(WrappedModel)}: CVpredict method for mlr
 
-\item \code{Learner}: CVpredict method for mlr3
+\item \code{CVpredict(Learner)}: CVpredict method for mlr3
+
 }}
-
 \examples{
 #Fit a model. 
 f <- lm(Fertility~ ., data=swiss)

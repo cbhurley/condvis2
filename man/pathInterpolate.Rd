@@ -28,10 +28,10 @@ Interpolation
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default interpolate method
+\item \code{pathInterpolate(default)}: Default interpolate method
 
-\item \code{factor}: pathInterpolate method for factor
+\item \code{pathInterpolate(factor)}: pathInterpolate method for factor
 
-\item \code{data.frame}: pathInterpolate method for data.frame
+\item \code{pathInterpolate(data.frame)}: pathInterpolate method for data.frame
+
 }}
-

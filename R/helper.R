@@ -105,7 +105,7 @@ condvis <- function(data,model=NULL, response=NULL,sectionvars=NULL,conditionvar
     
     if (is.null(response) && !density){
       frm <-  try(formula(model[[1]]), silent=T)
-      if (class(frm) != "try-error")
+      if (!inherits(frm, "try-error"))
         response <- all.vars(frm)[1]
       else stop("could not extract response from 'model'.")
     }

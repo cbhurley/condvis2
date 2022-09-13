@@ -36,14 +36,14 @@ Constructs a various tours of data space
 }
 \section{Functions}{
 \itemize{
-\item \code{randomPath}: Constructs a tour of data space following random observations
+\item \code{randomPath()}: Constructs a tour of data space following random observations
 
-\item \code{seqPath}: Constructs a tour of data space following first length observations
+\item \code{seqPath()}: Constructs a tour of data space following first length observations
 
-\item \code{alongPath}: Constructs a tour of data space  of length equi-spaced values in the range of var.
+\item \code{alongPath()}: Constructs a tour of data space  of length equi-spaced values in the range of var.
 If var is a factor, its levels are used.
-}}
 
+}}
 \examples{
 randomPath(mtcars,length=5)
 seqPath(mtcars,length=5)

@@ -49,17 +49,17 @@ Constructs  tours of data space based on centers of clusters
 }
 \section{Functions}{
 \itemize{
-\item \code{kmeansPath}: Constructs a tour of data space following  length k-means centroids
+\item \code{kmeansPath()}: Constructs a tour of data space following  length k-means centroids
 
-\item \code{pamPath}: Constructs a tour of data space following  length \code{\link[cluster]{pam}} medoids
+\item \code{pamPath()}: Constructs a tour of data space following  length \code{\link[cluster]{pam}} medoids
 
-\item \code{claraPath}: Constructs a tour of data space following  length \code{\link[cluster]{clara}} medoids
+\item \code{claraPath()}: Constructs a tour of data space following  length \code{\link[cluster]{clara}} medoids
 
-\item \code{medoidPath}: Returns a path visiting cluster medoids
+\item \code{medoidPath()}: Returns a path visiting cluster medoids
 
-\item \code{centroidPath}: Returns a path visiting cluster centroids
+\item \code{centroidPath()}: Returns a path visiting cluster centroids
+
 }}
-
 \examples{
 kmeansPath(mtcars,length=4)
 pamPath(mtcars,length=4)

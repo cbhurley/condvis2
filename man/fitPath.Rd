@@ -72,15 +72,15 @@ Constructs tours of data space based on fits.
 }
 \section{Functions}{
 \itemize{
-\item \code{lofPath}: Constructs a tour of data space showing biggest absolute residuals from fits.
+\item \code{lofPath()}: Constructs a tour of data space showing biggest absolute residuals from fits.
 
-\item \code{diffitsPath}: Constructs a tour of data space showing biggest differences in fits.
+\item \code{diffitsPath()}: Constructs a tour of data space showing biggest differences in fits.
 
-\item \code{hiresponsePath}: Constructs a tour of data space showing high  (numeric) response values
+\item \code{hiresponsePath()}: Constructs a tour of data space showing high  (numeric) response values
 
-\item \code{loresponsePath}: Constructs a tour of data space showing low  (numeric) response values
+\item \code{loresponsePath()}: Constructs a tour of data space showing low  (numeric) response values
+
 }}
-
 \examples{
 fit1 <- lm(mpg ~ wt+hp+am, data=mtcars)
 fit2 <- lm(mpg ~ wt, data=mtcars)
