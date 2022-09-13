@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">condvis2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cbhurley/condvis2/">
+  <a href="https://github.com/cbhurley/condvis2/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,11 +91,11 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to condvis2</h1>
-                        <h4 class="author">Catherine B. Hurley</h4>
+                        <h4 data-toc-skip class="author">Catherine B. Hurley</h4>
             
-            <h4 class="date">2021-10-29</h4>
+            <h4 data-toc-skip class="date">2022-09-13</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cbhurley/condvis2/blob/master/vignettes/introduction.Rmd"><code>vignettes/introduction.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cbhurley/condvis2/blob/HEAD/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="hidden name"><code>introduction.Rmd</code></div>
 
     </div>
@@ -107,35 +103,35 @@
     
     
 <p>This vignette is an introduction to condvis2. This package constructs shiny-based interactive visualisations of prediction models.</p>
-<div id="ozone-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#ozone-data" class="anchor"></a>Ozone data</h2>
+<div class="section level2">
+<h2 id="ozone-data">Ozone data<a class="anchor" aria-label="anchor" href="#ozone-data"></a>
+</h2>
 <p>We will use the airquality data built in to R.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ozone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">airquality</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ozone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">airquality</span><span class="op">)</span></span></code></pre></div>
 <p>The first fit we consider uses Wind only to predict ozone. Here we construct the fit and plot the results.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="va">ozone</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">21</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">175</span><span class="op">)</span><span class="op">)</span>
-<span class="va">wind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Wind</span><span class="op">)</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Wind</span><span class="op">)</span>, length.out<span class="op">=</span><span class="fl">30</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">wind</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Wind<span class="op">=</span><span class="va">wind</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="va">ozone</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">21</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">175</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">wind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Wind</span><span class="op">)</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Wind</span><span class="op">)</span>, length.out<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">wind</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Wind<span class="op">=</span><span class="va">wind</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-2-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>If we add in a second predictor, we can either move to plotting the surface, or plot how the fit relates to one predictor, for a fixed value of another.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">3</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">s</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Solar.R</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.25</span>,<span class="fl">.5</span>,<span class="fl">.75</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">Solar.R</span> <span class="op">&lt;=</span> <span class="va">s</span><span class="op">+</span><span class="fl">20</span> <span class="op">&amp;</span> <span class="va">Solar.R</span> <span class="op">&gt;=</span> <span class="va">s</span><span class="op">-</span><span class="fl">20</span><span class="op">)</span>,
-     xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">21</span><span class="op">)</span>,ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">175</span><span class="op">)</span>, main<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Solar.R="</span>,<span class="va">s</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">wind</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit2</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Wind<span class="op">=</span><span class="va">wind</span>, Solar.R<span class="op">=</span> <span class="va">s</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">3</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">s</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">ozone</span><span class="op">$</span><span class="va">Solar.R</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.25</span>,<span class="fl">.5</span>,<span class="fl">.75</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span>, data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">Solar.R</span> <span class="op">&lt;=</span> <span class="va">s</span><span class="op">+</span><span class="fl">20</span> <span class="op">&amp;</span> <span class="va">Solar.R</span> <span class="op">&gt;=</span> <span class="va">s</span><span class="op">-</span><span class="fl">20</span><span class="op">)</span>,</span>
+<span>     xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">21</span><span class="op">)</span>,ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">175</span><span class="op">)</span>, main<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Solar.R="</span>,<span class="va">s</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">wind</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit2</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Wind<span class="op">=</span><span class="va">wind</span>, Solar.R<span class="op">=</span> <span class="va">s</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-3-1.png" width="700.8" style="display: block; margin: auto;"></p>
 <p>Notice in the above plots we are only plotting observations where Solar.R values are close to the value used for prediction.</p>
 <p>These plots can be constructed interactively in <code>condvis2</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cbhurley.github.io/condvis2">condvis2</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit2</span>,sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cbhurley.github.io/condvis2/">condvis2</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit2</span>,sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></span></code></pre></div>
 <p>This gives the following display:</p>
 <p><img src="ozone.png" width="100%" style="display: block; margin: auto;"></p>
 <ul>
@@ -150,10 +146,10 @@
 <p>In this way we can see how well the curve fits to observations in its section.</p>
 <p>If we include another predictor in the fit</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></span></code></pre></div>
 <p>and invoke condvis</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit3</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit3</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>the result is shown in the screenshot below.</p>
 <p><img src="ozone1.png" width="100%" style="display: block; margin: auto;"></p>
 <ul>
@@ -164,62 +160,62 @@
 <li>The plot on the right shows all the observations, but points near the pink cross (those visible in the main plot) are slightly larger with a dark outline.</li>
 </ul>
 </div>
-<div id="two-section-variables" class="section level2">
-<h2 class="hasAnchor">
-<a href="#two-section-variables" class="anchor"></a>Two section variables</h2>
+<div class="section level2">
+<h2 id="two-section-variables">Two section variables<a class="anchor" aria-label="anchor" href="#two-section-variables"></a>
+</h2>
 <p>You can also pick a second section variable, to see how the fitted surface looks as a function of two variables, while the third is modified interactively.</p>
 <p><img src="ozone4.png" width="100%" style="display: block; margin: auto;"> The image shows fitted surface levels as a function of two predictors. The points shown are near the fixed conditioning values. For an image plot, the point colour represents the observed response, coloured in the same way as the fitted surface. Here we convey the distance of an observations condition values to the fixed condition levels by size. You will see some points in the main display whose colour does not match the image colour, for example, the two darker points around Wind=10, with low Solar.R. As the points are large, they are near the conditioning values which are poorly fit.</p>
 <p>There is very little data at low Temp, and none of these observations have a Wind value below 7. So the steep incline at the left hand side of the main plot is not supported by the data. Prediction in this area is extrapolation.</p>
 <p><img src="ozone3.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Alternatively, the relationship between Ozone and (Wind, Solar.R) for fixed Temp may be displayed as a 3-d surface. The points near the selected value of Temp are dark blue, lightening in colour as the distance increases. The residual sizes are shown via line segments.</p>
 </div>
-<div id="comparing-two-fits" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparing-two-fits" class="anchor"></a>Comparing two fits</h2>
+<div class="section level2">
+<h2 id="comparing-two-fits">Comparing two fits<a class="anchor" aria-label="anchor" href="#comparing-two-fits"></a>
+</h2>
 <p>We could fit a second fit to the same data and compare the results.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">e1071</span><span class="op">)</span>
-<span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html">svm</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span>
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,svm<span class="op">=</span><span class="va">fit4</span><span class="op">)</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">e1071</span><span class="op">)</span></span>
+<span><span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/e1071/man/svm.html" class="external-link">svm</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,svm<span class="op">=</span><span class="va">fit4</span><span class="op">)</span>, sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ozone5.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We see big differences between the fits, especially for low Wind.</p>
 <p>Note: condvis uses CVpredict to extract predictions from fitted models. By default CVpredict uses predict, but there are customised versions of CVpredict for many fit types. (See the help page.)</p>
 </div>
-<div id="confidence-intervals" class="section level2">
-<h2 class="hasAnchor">
-<a href="#confidence-intervals" class="anchor"></a>Confidence intervals</h2>
+<div class="section level2">
+<h2 id="confidence-intervals">Confidence intervals<a class="anchor" aria-label="anchor" href="#confidence-intervals"></a>
+</h2>
 <p>Condvis2 supports confidence intervals, for fits that offer them.</p>
 <p>Use</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span>
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit5</span>, 
-        sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span>, predictArgs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pinterval<span class="op">=</span><span class="st">"confidence"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Ozone</span><span class="op">~</span><span class="va">Wind</span><span class="op">+</span><span class="va">Solar.R</span><span class="op">+</span><span class="va">Temp</span>, data<span class="op">=</span><span class="va">ozone</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="va">fit5</span>, </span>
+<span>        sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span>, predictArgs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pinterval<span class="op">=</span><span class="st">"confidence"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The loess fit does not provide confidence intervals but it does offer standard errors, which can be used for confidence bounds:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fitu</span> <span class="op">&lt;-</span> <span class="va">fit3</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"upper"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">CVpredict.upper</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, se<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
-  <span class="va">p</span><span class="op">$</span><span class="va">fit</span><span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="va">p</span><span class="op">$</span><span class="va">se.fit</span>
-<span class="op">}</span>
-
-<span class="va">fitl</span> <span class="op">&lt;-</span> <span class="va">fit3</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fitl</span><span class="op">)</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lower"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">CVpredict.lower</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, se<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
-  <span class="va">p</span><span class="op">$</span><span class="va">fit</span><span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="va">p</span><span class="op">$</span><span class="va">se.fit</span>
-<span class="op">}</span>
-
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,lower<span class="op">=</span><span class="va">fitl</span>,upper<span class="op">=</span><span class="va">fitu</span><span class="op">)</span>, 
-        sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span>, 
-        linecols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>,<span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fitu</span> <span class="op">&lt;-</span> <span class="va">fit3</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"upper"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">CVpredict.upper</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, se<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">p</span><span class="op">$</span><span class="va">fit</span><span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="va">p</span><span class="op">$</span><span class="va">se.fit</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">fitl</span> <span class="op">&lt;-</span> <span class="va">fit3</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">fitl</span><span class="op">)</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lower"</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">fitu</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">CVpredict.lower</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">newdata</span>, se<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">p</span><span class="op">$</span><span class="va">fit</span><span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="va">p</span><span class="op">$</span><span class="va">se.fit</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span><span class="va">ozone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>loess<span class="op">=</span><span class="va">fit3</span>,lower<span class="op">=</span><span class="va">fitl</span>,upper<span class="op">=</span><span class="va">fitu</span><span class="op">)</span>, </span>
+<span>        sectionvars<span class="op">=</span><span class="st">"Wind"</span>, conditionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Temp"</span><span class="op">)</span>, </span>
+<span>        linecols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>,<span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ozone6.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div id="tour-controls" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tour-controls" class="anchor"></a>Tour controls</h2>
+<div class="section level2">
+<h2 id="tour-controls">Tour controls<a class="anchor" aria-label="anchor" href="#tour-controls"></a>
+</h2>
 <p>As the conditioning dimension increases, it might be easier to view sections that are automatically chosen. The tour controls offer various controls.</p>
 <ul>
 <li>The simplest method chooses random observations in conditioning space to form the sections.</li>
@@ -228,23 +224,23 @@
 <li>If you want a smoother appearance to the tour, increase <code>Interp steps</code> from 0.</li>
 </ul>
 </div>
-<div id="example-a-density-estimate" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-a-density-estimate" class="anchor"></a>Example : A density estimate</h2>
+<div class="section level2">
+<h2 id="example-a-density-estimate">Example : A density estimate<a class="anchor" aria-label="anchor" href="#example-a-density-estimate"></a>
+</h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.mvstat.net/mvksa/">ks</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>
-<span class="va">irisf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ks/man/kde.html">kde</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iris</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>kde<span class="op">=</span><span class="va">irisf</span><span class="op">)</span>, 
-        sectionvars<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Sepal.Width"</span><span class="op">)</span>, 
-        conditionvars<span class="op">=</span> <span class="st">"Petal.Length"</span>, density<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.mvstat.net/mvksa/" class="external-link">ks</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span>
+<span><span class="va">irisf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ks/man/kde.html" class="external-link">kde</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iris</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>kde<span class="op">=</span><span class="va">irisf</span><span class="op">)</span>, </span>
+<span>        sectionvars<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Sepal.Width"</span><span class="op">)</span>, </span>
+<span>        conditionvars<span class="op">=</span> <span class="st">"Petal.Length"</span>, density<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>The result is shown in the screenshot below. It shows the estimated density of two variables conditional on the third.</p>
 <p><img src="iris.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <p>Catherine B. Hurley, Mark O’Connell, Katarina Domijan. (2021) Interactive slice visualization for exploring machine learning models. arXiv 2101.06986.</p>
 <p>Mark O’Connell, Catherine Hurley, Katarina Domijan. (2017) Conditional Visualization for Statistical Models: An Introduction to the condvis Package in R. Journal of Statistical Software 81(5) 1–20.</p>
 </div>
@@ -261,11 +257,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Catherine Hurley, Mark OConnell, Katarina Domijan.</p>
+  <p></p>
+<p>Developed by Catherine Hurley, Mark OConnell, Katarina Domijan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -273,6 +271,8 @@
 
   
 
+
+  
 
   </body>
 </html>

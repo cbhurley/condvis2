@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">condvis2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cbhurley/condvis2/">
+  <a href="https://github.com/cbhurley/condvis2/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,11 +91,11 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Exploring model-based clustering with condvis2</h1>
-                        <h4 class="author">Catherine B. Hurley</h4>
+                        <h4 data-toc-skip class="author">Catherine B. Hurley</h4>
             
-            <h4 class="date">2021-10-29</h4>
+            <h4 data-toc-skip class="date">2022-09-13</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cbhurley/condvis2/blob/master/vignettes/mclust.Rmd"><code>vignettes/mclust.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cbhurley/condvis2/blob/HEAD/vignettes/mclust.Rmd" class="external-link"><code>vignettes/mclust.Rmd</code></a></small>
       <div class="hidden name"><code>mclust.Rmd</code></div>
 
     </div>
@@ -109,113 +105,117 @@
 <p><code>mclust</code> is a R package that offers - model-based clustering: <code>Mclust</code> - classification ( discriminant analysis): <code>MclustDA</code> - density estimation <code>densityMclust</code> all based on mixtures of Normals.</p>
 <p><code>condvis2</code> offers an interface to all of these.</p>
 <p>We start with</p>
-<div id="classification-mclustda" class="section level2">
-<h2 class="hasAnchor">
-<a href="#classification-mclustda" class="anchor"></a>Classification: MclustDA</h2>
+<div class="section level3">
+<h3 id="classification-mclustda">Classification: MclustDA<a class="anchor" aria-label="anchor" href="#classification-mclustda"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cbhurley.github.io/condvis2">condvis2</a></span><span class="op">)</span>
-<span class="co">#&gt; Registered S3 method overwritten by 'seriation':</span>
-<span class="co">#&gt;   method         from </span>
-<span class="co">#&gt;   reorder.hclust gclus</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/">mclust</a></span><span class="op">)</span>
-<span class="co">#&gt; Package 'mclust' version 5.4.7</span>
-<span class="co">#&gt; Type 'citation("mclust")' for citing this R package in publications.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cbhurley.github.io/condvis2/">condvis2</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'seriation':</span></span>
+<span><span class="co">#&gt;   method         from </span></span>
+<span><span class="co">#&gt;   reorder.hclust gclus</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/" class="external-link">mclust</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Package 'mclust' version 5.4.10</span></span>
+<span><span class="co">#&gt; Type 'citation("mclust")' for citing this R package in publications.</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span>
-<span class="va">bankDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/MclustDA.html">MclustDA</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">banknote</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span></span>
+<span><span class="va">bankDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/MclustDA.html" class="external-link">MclustDA</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">banknote</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p>This fits an XXX=ellipsoidal multivariate normal for the genuine notes and EVE2 = ellipsoidal, equal volume and equal shape with two components for counterfeits.</p>
 <p>Condvis uses a generic <code>CVpredict</code> to provide a uniform interface to <code>predict</code> methods. We will use it to find the number of misclassifications:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">$</span><span class="va">Status</span>, <span class="fu"><a href="../reference/CVpredict.html">CVpredict</a></span><span class="op">(</span><span class="va">bankDA</span>, <span class="va">banknote</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;              </span>
-<span class="co">#&gt;               counterfeit genuine</span>
-<span class="co">#&gt;   counterfeit         100       0</span>
-<span class="co">#&gt;   genuine               0     100</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">$</span><span class="va">Status</span>, <span class="fu"><a href="../reference/CVpredict.html">CVpredict</a></span><span class="op">(</span><span class="va">bankDA</span>, <span class="va">banknote</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              </span></span>
+<span><span class="co">#&gt;               counterfeit genuine</span></span>
+<span><span class="co">#&gt;   counterfeit         100       0</span></span>
+<span><span class="co">#&gt;   genuine               0     100</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">svars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Top"</span>, <span class="st">"Diagonal"</span><span class="op">)</span>
-<span class="va">cvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">svars</span><span class="op">)</span>
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="va">bankDA</span>, 
-        response<span class="op">=</span><span class="st">"Status"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, 
-        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">TRUE</span>
-        <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">svars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Top"</span>, <span class="st">"Diagonal"</span><span class="op">)</span></span>
+<span><span class="va">cvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">svars</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="va">bankDA</span>, </span>
+<span>        response<span class="op">=</span><span class="st">"Status"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, </span>
+<span>        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>        <span class="op">)</span></span></code></pre></div>
 <p>The <code>showsim=TRUE</code> setting means that the condition plots will mark points considered sufficiently near the section with a dark outline. This is the default setting only when <span class="math inline">\(n &lt;= 150\)</span>. In the condition plots, the green points are the genuine ones, pink are counterfeit.</p>
 <p>Here is a views of the result:</p>
 <p><img src="mclustda1.png" width="100%" style="display: block; margin: auto;"> There is one point that appears to be mis-classified (though it is not). However, as it’s size is small it is not very close to the selected section.</p>
 <p>Selecting <code>Show probs</code>: we see there is some uncertainty about the classification on the classification boundaries.</p>
 <p>A different, simpler fit is got using</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bankDAe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/MclustDA.html">MclustDA</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">banknote</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, modelType<span class="op">=</span><span class="st">"EDDA"</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bankDAe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/MclustDA.html" class="external-link">MclustDA</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">banknote</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, modelType<span class="op">=</span><span class="st">"EDDA"</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p>This uses an EVE1 for each class, and there is one mis-classification, at case 70.</p>
 <p>We can use condvis to compare the two fits:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>bankDA<span class="op">=</span><span class="va">bankDA</span>, bankDAe<span class="op">=</span><span class="va">bankDAe</span><span class="op">)</span>, 
-        response<span class="op">=</span><span class="st">"Status"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, 
-        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">T</span>
-        <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>bankDA<span class="op">=</span><span class="va">bankDA</span>, bankDAe<span class="op">=</span><span class="va">bankDAe</span><span class="op">)</span>, </span>
+<span>        response<span class="op">=</span><span class="st">"Status"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, </span>
+<span>        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">T</span></span>
+<span>        <span class="op">)</span></span></code></pre></div>
 <p>If you go to Tour, <code>Diff fits</code>, you can move through views where the conditioning points are those where the fits disagree. In this case there is only one such point. Here <code>Show probs</code> is selected so there is some uncertainty visible at the classification boundaries.</p>
 <p>The screenshot shows that in this view. <img src="mclustda6.png" width="100%" style="display: block; margin: auto;"></p>
 <p>The mis-classified point is a genuine note (green) which is just inside the region classified as counterfeit by EDDA. Here also the Similarity threshold is made small so only the point on the section is visible in the section plot. From the condition plots it is evident this note has a low Diagonal size, like the counterfeits.</p>
 </div>
-<div id="density-estimation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#density-estimation" class="anchor"></a>Density estimation</h2>
+<div class="section level3">
+<h3 id="density-estimation">Density estimation<a class="anchor" aria-label="anchor" href="#density-estimation"></a>
+</h3>
 <p>First calculate a density estimate of two variables.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span>
-<span class="va">dens2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/densityMclust.html">densityMclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Diagonal"</span>,<span class="st">"Left"</span><span class="op">)</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">dens2</span><span class="op">)</span>
-<span class="co">#&gt; ------------------------------------------------------- </span>
-<span class="co">#&gt; Density estimation via Gaussian finite mixture modeling </span>
-<span class="co">#&gt; ------------------------------------------------------- </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Mclust EEI (diagonal, equal volume and shape) model with 4 components: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  log-likelihood   n df       BIC       ICL</span>
-<span class="co">#&gt;       -289.6722 200 13 -648.2225 -664.0955</span></code></pre></div>
-<p>We can visualise the density as a surface or contour plot. Alternatively, we can use condvis to show the conditional density, fixing one of the variables.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">)</span></span>
+<span><span class="va">dens2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/densityMclust.html" class="external-link">densityMclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Diagonal"</span>,<span class="st">"Left"</span><span class="op">)</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="mclust_files/figure-html/unnamed-chunk-10-1.png" width="480" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="va">dens2</span>, response<span class="op">=</span><span class="cn">NULL</span>,
-        sectionvars<span class="op">=</span><span class="st">"Diagonal"</span>,conditionvars<span class="op">=</span><span class="st">"Left"</span>,
-        density<span class="op">=</span><span class="cn">T</span>, showdata<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dens2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; Density estimation via Gaussian finite mixture modeling </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Mclust EEI (diagonal, equal volume and shape) model with 4 components: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  log-likelihood   n df       BIC       ICL</span></span>
+<span><span class="co">#&gt;       -289.6722 200 13 -648.2225 -664.0955</span></span></code></pre></div>
+<p>We can visualise the density as a surface or contour plot. Alternatively, we can use condvis to show the conditional density, fixing one of the variables.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="va">dens2</span>, response<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>        sectionvars<span class="op">=</span><span class="st">"Diagonal"</span>,conditionvars<span class="op">=</span><span class="st">"Left"</span>,</span>
+<span>        density<span class="op">=</span><span class="cn">T</span>, showdata<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>The density of Diagonal varies with the Left value. Click on left to check this. <img src="left1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Estimating the density of three variables:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dens3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/densityMclust.html">densityMclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Right"</span>, <span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">dens3</span><span class="op">)</span>
-<span class="co">#&gt; ------------------------------------------------------- </span>
-<span class="co">#&gt; Density estimation via Gaussian finite mixture modeling </span>
-<span class="co">#&gt; ------------------------------------------------------- </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Mclust EEI (diagonal, equal volume and shape) model with 4 components: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  log-likelihood   n df       BIC       ICL</span>
-<span class="co">#&gt;        -544.611 200 18 -1184.592 -1197.047</span></code></pre></div>
-<p>By way of comparison, here is the kernel density estimate to compare with mclust:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.mvstat.net/mvksa/">ks</a></span><span class="op">)</span>
-<span class="va">kdens3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ks/man/kde.html">kde</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Right"</span>, <span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dens3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/densityMclust.html" class="external-link">densityMclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Right"</span>, <span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="mclust_files/figure-html/unnamed-chunk-13-1.png" width="480" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mclust<span class="op">=</span><span class="va">dens3</span>, kde<span class="op">=</span><span class="va">kdens3</span><span class="op">)</span>, response<span class="op">=</span><span class="cn">NULL</span>,
-        sectionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span>,conditionvars<span class="op">=</span><span class="st">"Right"</span>,
-        density<span class="op">=</span><span class="cn">T</span>, showdata<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dens3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; Density estimation via Gaussian finite mixture modeling </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Mclust EEI (diagonal, equal volume and shape) model with 4 components: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  log-likelihood   n df       BIC       ICL</span></span>
+<span><span class="co">#&gt;        -544.611 200 18 -1184.592 -1197.047</span></span></code></pre></div>
+<p>By way of comparison, here is the kernel density estimate to compare with mclust:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.mvstat.net/mvksa/" class="external-link">ks</a></span><span class="op">)</span></span>
+<span><span class="va">kdens3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ks/man/kde.html" class="external-link">kde</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Right"</span>, <span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote</span>, model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mclust<span class="op">=</span><span class="va">dens3</span>, kde<span class="op">=</span><span class="va">kdens3</span><span class="op">)</span>, response<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>        sectionvars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bottom"</span>, <span class="st">"Diagonal"</span><span class="op">)</span>,conditionvars<span class="op">=</span><span class="st">"Right"</span>,</span>
+<span>        density<span class="op">=</span><span class="cn">T</span>, showdata<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>As you vary the level of Right, both densities look quite similar.</p>
 <p><img src="dens3Right2.png" width="100%" style="display: block; margin: auto;"><!-- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5096736/ --></p>
 <p>Click on “Show 3d surface” to get a wireframe plot.</p>
 </div>
-<div id="clustering-example" class="section level1">
-<h1 class="hasAnchor">
-<a href="#clustering-example" class="anchor"></a>Clustering example</h1>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bankC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="co"># picks 3 clusters</span>
-<span class="va">banknote1</span> <span class="op">&lt;-</span> <span class="va">banknote</span>
-<span class="va">banknote1</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="../reference/CVpredict.html">CVpredict</a></span><span class="op">(</span><span class="va">bankC</span>, <span class="va">banknote</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">svars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Top"</span>, <span class="st">"Diagonal"</span><span class="op">)</span>
-<span class="va">cvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Left"</span>,    <span class="st">"Right"</span> ,  <span class="st">"Bottom"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote1</span>, model <span class="op">=</span> <span class="va">bankC</span>, 
-        response<span class="op">=</span><span class="st">"cluster"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, 
-        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="clustering-example">Clustering example<a class="anchor" aria-label="anchor" href="#clustering-example"></a>
+</h2>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bankC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html" class="external-link">Mclust</a></span><span class="op">(</span><span class="va">banknote</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="co"># picks 3 clusters</span></span>
+<span><span class="va">banknote1</span> <span class="op">&lt;-</span> <span class="va">banknote</span></span>
+<span><span class="va">banknote1</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="../reference/CVpredict.html">CVpredict</a></span><span class="op">(</span><span class="va">bankC</span>, <span class="va">banknote</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">svars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Top"</span>, <span class="st">"Diagonal"</span><span class="op">)</span></span>
+<span><span class="va">cvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Left"</span>,    <span class="st">"Right"</span> ,  <span class="st">"Bottom"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/condvis.html">condvis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">banknote1</span>, model <span class="op">=</span> <span class="va">bankC</span>, </span>
+<span>        response<span class="op">=</span><span class="st">"cluster"</span>, sectionvars<span class="op">=</span><span class="va">svars</span>,conditionvars<span class="op">=</span><span class="va">cvars</span>, </span>
+<span>        pointColor<span class="op">=</span><span class="st">"Status"</span>, showsim<span class="op">=</span><span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -230,11 +230,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Catherine Hurley, Mark OConnell, Katarina Domijan.</p>
+  <p></p>
+<p>Developed by Catherine Hurley, Mark OConnell, Katarina Domijan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -242,6 +244,8 @@
 
   
 
+
+  
 
   </body>
 </html>
